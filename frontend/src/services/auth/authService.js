@@ -1,7 +1,7 @@
 /**
- * Authentication Service Module
+ * Authentication & Profile Service Module
  * Connects React frontend with MediGuard Django backend API for authentication flows:
- * registration, login, token storage, user profile, and logout.
+ * registration, login, token storage, user profile onboarding, and logout.
  */
 
 const API_BASE_URL = ''; // Relative path leverages Vite dev proxy (/api -> http://127.0.0.1:8000)
@@ -17,6 +17,9 @@ export const storeAuthSession = (token, user) => {
   }
   if (user) {
     localStorage.setItem('currentUser', JSON.stringify(user));
+    if (user.profileCompleted) {
+      localStorage.setItem('mediGuard_profileCompleted', 'true');
+    }
   }
 };
 
@@ -43,17 +46,30 @@ export const getCurrentUser = () => {
 };
 
 /**
+ * Check if the user has completed the onboarding health profile.
+ * @returns {boolean}
+ */
+export const isProfileCompleted = () => {
+  const user = getCurrentUser();
+  if (user && user.profileCompleted) return true;
+  return localStorage.getItem('mediGuard_profileCompleted') === 'true';
+};
+
+/**
  * Clear stored auth session from localStorage.
  */
 export const clearAuthSession = () => {
   localStorage.removeItem('authToken');
   localStorage.removeItem('currentUser');
+  localStorage.removeItem('mediGuard_profileCompleted');
 };
 
 /**
  * Register a new user with MediGuard backend API.
+ * Registration creates the account and returns response data.
+ * Does NOT set active login session so user proceeds to Login flow.
  * @param {Object} userData - { fullName, email, password }
- * @returns {Promise<Object>} Response data containing token and user profile
+ * @returns {Promise<Object>} Response data from registration API
  */
 export const registerUser = async (userData) => {
   const response = await fetch(`${API_BASE_URL}/api/auth/register/`, {
@@ -75,14 +91,12 @@ export const registerUser = async (userData) => {
     throw new Error(errorMsg);
   }
 
-  // Store auth session
-  storeAuthSession(data.token, data.user);
-
   return data;
 };
 
 /**
  * Login a user with MediGuard backend API.
+ * Authenticates user, stores active session tokens, and returns user profile.
  * @param {Object} credentials - { email, password }
  * @returns {Promise<Object>} Response data containing token and user profile
  */
@@ -105,10 +119,71 @@ export const loginUser = async (credentials) => {
     throw new Error(errorMsg);
   }
 
-  // Store auth session
+  // Store auth session upon successful login
   storeAuthSession(data.token, data.user);
 
   return data;
+};
+
+/**
+ * Save user's initial onboarding health profile.
+ * @param {Object} profileData - { age, medicalConditions, regularMedicines }
+ * @returns {Promise<Object>} Updated user profile
+ */
+export const saveHealthProfile = async (profileData) => {
+  const token = getAuthToken();
+
+  // 1. Try sending to backend API if authenticated token is present
+  if (token) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/profile/onboarding/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+        },
+        body: JSON.stringify({
+          age: profileData.age,
+          medicalConditions: profileData.medicalConditions,
+          regularMedicines: profileData.regularMedicines,
+          profileCompleted: true,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        const currentUser = getCurrentUser() || {};
+        const updatedUser = {
+          ...currentUser,
+          ...data.user,
+          age: profileData.age,
+          medicalConditions: profileData.medicalConditions,
+          regularMedicines: profileData.regularMedicines,
+          profileCompleted: true,
+        };
+        storeAuthSession(data.token || token, updatedUser);
+        return updatedUser;
+      }
+    } catch (networkError) {
+      console.warn('Backend profile onboarding endpoint unreachable, persisting session locally:', networkError);
+    }
+  }
+
+  // 2. Fallback persistence to localStorage session for offline/mock architecture
+  const currentUser = getCurrentUser() || {};
+  const updatedUser = {
+    ...currentUser,
+    age: profileData.age,
+    medicalConditions: profileData.medicalConditions,
+    regularMedicines: profileData.regularMedicines,
+    profileCompleted: true,
+  };
+
+  localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+  localStorage.setItem('mediGuard_profileCompleted', 'true');
+
+  return updatedUser;
 };
 
 /**
@@ -164,7 +239,7 @@ export const fetchUserProfile = async () => {
   }
 
   if (data.user) {
-    localStorage.setItem('currentUser', JSON.stringify(data.user));
+    storeAuthSession(token, data.user);
   }
 
   return data.user;
