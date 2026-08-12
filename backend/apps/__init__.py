@@ -1,0 +1,3 @@
+"""
+MediGuard Django apps package.
+"""
