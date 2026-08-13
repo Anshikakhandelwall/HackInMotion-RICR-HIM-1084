@@ -99,6 +99,7 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
     : mockMedicines;
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [interactions, setInteractions] = useState(mockInteractions);
 
   // Helper to dynamically calculate summary counts
@@ -123,11 +124,14 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
       setLoading(true);
     } else if (forceState === 'empty') {
       setInteractions([]);
+    } else if (forceState === 'error') {
+      setError(true);
     }
   }, []);
 
   const handleCheckMedicines = () => {
     setLoading(true);
+    setError(false);
     setTimeout(() => {
       setLoading(false);
       // If cabinet has no medicines (empty array), render empty state
@@ -139,6 +143,7 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
       }
     }, 1000);
   };
+
 
   // Derive dynamic overall message based on summary data
   const getOverallMessage = (summary) => {
@@ -233,6 +238,33 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
               <div className="skeleton-line title select"></div>
               <div className="skeleton-card"></div>
               <div className="skeleton-card"></div>
+            </div>
+          </div>
+        </div>
+      ) : error ? (
+        <div className="safety-error-container">
+          <div className="safety-empty-content">
+            <div className="safety-error-icon-warning">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
+            <h2 className="safety-error-title">Unable to complete safety check</h2>
+            <p className="safety-error-subtitle">
+              Something went wrong while checking your medicines. Please try again.
+            </p>
+            <div className="safety-error-actions" style={{ marginTop: '0.5rem' }}>
+              <Button
+                type="button"
+                variant="primary"
+                size="medium"
+                className="retry-check-btn"
+                onClick={handleCheckMedicines}
+              >
+                Try Again
+              </Button>
             </div>
           </div>
         </div>

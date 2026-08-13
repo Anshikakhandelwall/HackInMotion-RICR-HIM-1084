@@ -550,10 +550,11 @@
 }
 
 /* ==================================================
-   EMPTY STATE STYLES
+   EMPTY & ERROR STATE STYLES
    ================================================== */
 
-.safety-empty-container {
+.safety-empty-container,
+.safety-error-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -574,19 +575,29 @@
   gap: 0.875rem;
 }
 
-.safety-empty-icon-shield {
+.safety-empty-icon-shield,
+.safety-error-icon-warning {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background-color: var(--color-success-bg);
-  color: var(--color-success);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 0.5rem;
 }
 
-.safety-empty-title {
+.safety-empty-icon-shield {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.safety-error-icon-warning {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.safety-empty-title,
+.safety-error-title {
   font-size: 1.35rem;
   font-weight: 700;
   color: var(--color-text-primary);
@@ -594,14 +605,15 @@
   letter-spacing: -0.01em;
 }
 
-.safety-empty-subtitle {
+.safety-empty-subtitle,
+.safety-error-subtitle {
   font-size: 0.9375rem;
   color: var(--color-text-secondary);
   line-height: 1.5;
   margin: 0;
 }
 
-/* Responsive adjustments for skeletons and empty page */
+/* Responsive adjustments for skeletons, empty & error page */
 @media (max-width: 680px) {
   .skeleton-summary-card {
     padding: 1.25rem 1.5rem;
@@ -616,18 +628,23 @@
   .skeleton-card {
     height: 120px;
   }
-  .safety-empty-container {
+  .safety-empty-container,
+  .safety-error-container {
     padding: 2.5rem 1.5rem;
   }
-  .safety-empty-icon-shield {
+  .safety-empty-icon-shield,
+  .safety-error-icon-warning {
     width: 52px;
     height: 52px;
   }
-  .safety-empty-title {
+  .safety-empty-title,
+  .safety-error-title {
     font-size: 1.2rem;
   }
-  .safety-empty-subtitle {
+  .safety-empty-subtitle,
+  .safety-error-subtitle {
     font-size: 0.875rem;
   }
 }
+
 
