@@ -1,27 +1,32 @@
 import React, { useState } from 'react';
 import Button from '../../components/common/Button';
+import { saveHealthProfile, getCurrentUser } from '../../services/auth/authService';
 import './Profile.css';
 
 /**
  * Profile Page Component (Route: /profile)
- * COMMIT 12 — Adds Profile Validation for editable fields (Medical History & Regular Medicines).
- * Name, Email, and Age remain STRICTLY LOCKED as read-only.
+ * COMMIT 13 — Adds Profile Save States (Saving/loading state, Save button disable,
+ * success notice, failure banner, data preservation, and retry capability).
  */
-export const Profile = ({ currentUser }) => {
-  // Defensive extraction of user fields from existing session data
-  const userName = currentUser?.fullName || currentUser?.full_name || currentUser?.name || 'Not available';
-  const userEmail = currentUser?.email || 'Not available';
+export const Profile = ({ currentUser: initialUser, onUpdateUser }) => {
+  const [currentUserState, setCurrentUserState] = useState(() => initialUser || getCurrentUser());
 
-  const age = currentUser?.age !== undefined && currentUser?.age !== null && currentUser?.age !== ''
-    ? currentUser.age
+  const activeUser = currentUserState || initialUser || {};
+
+  // Defensive extraction of user fields from existing session data
+  const userName = activeUser?.fullName || activeUser?.full_name || activeUser?.name || 'Not available';
+  const userEmail = activeUser?.email || 'Not available';
+
+  const age = activeUser?.age !== undefined && activeUser?.age !== null && activeUser?.age !== ''
+    ? activeUser.age
     : 'Not available';
 
-  const rawConditions = currentUser?.medicalConditions || currentUser?.medical_conditions;
+  const rawConditions = activeUser?.medicalConditions || activeUser?.medical_conditions;
   const medicalHistory = (rawConditions && String(rawConditions).trim().toUpperCase() !== 'NONE' && String(rawConditions).trim().length > 0)
     ? String(rawConditions).trim()
     : 'None';
 
-  const rawMeds = currentUser?.regularMedicines || currentUser?.regular_medicines;
+  const rawMeds = activeUser?.regularMedicines || activeUser?.regular_medicines;
   let regularMedicinesList = [];
   if (Array.isArray(rawMeds)) {
     regularMedicinesList = rawMeds.filter((m) => Boolean(m && String(m).trim().length > 0 && String(m).trim().toUpperCase() !== 'NONE'));
@@ -31,9 +36,13 @@ export const Profile = ({ currentUser }) => {
 
   const hasMedicines = regularMedicinesList.length > 0;
 
-  // --- COMMIT 11 & 12: EDIT MODE & VALIDATION STATE ---
+  // --- EDIT MODE, VALIDATION & SAVE STATES ---
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const [errors, setErrors] = useState({});
+
   const [formData, setFormData] = useState({
     medicalHistory: medicalHistory !== 'None' ? medicalHistory : '',
     regularMedicines: hasMedicines ? regularMedicinesList.join(', ') : '',
@@ -46,6 +55,8 @@ export const Profile = ({ currentUser }) => {
       regularMedicines: hasMedicines ? regularMedicinesList.join(', ') : '',
     });
     setErrors({});
+    setSaveError(null);
+    setSaveSuccess(false);
     setIsEditing(true);
   };
 
@@ -56,6 +67,7 @@ export const Profile = ({ currentUser }) => {
       regularMedicines: hasMedicines ? regularMedicinesList.join(', ') : '',
     });
     setErrors({});
+    setSaveError(null);
     setIsEditing(false);
   };
 
@@ -65,7 +77,6 @@ export const Profile = ({ currentUser }) => {
       [field]: value,
     }));
 
-    // Clear error for field once user starts modifying
     if (errors[field]) {
       setErrors((prev) => ({
         ...prev,
@@ -74,11 +85,10 @@ export const Profile = ({ currentUser }) => {
     }
   };
 
-  // COMMIT 12: Form Validation Logic
+  // Form Validation Logic
   const validateForm = () => {
     const newErrors = {};
 
-    // Medical History Validation: Required (rejects empty / whitespace-only string)
     const trimmedConditions = (formData.medicalHistory || '').trim();
     if (!trimmedConditions) {
       newErrors.medicalHistory = 'Medical history is required. If you have no major medical history, type NONE.';
@@ -88,19 +98,58 @@ export const Profile = ({ currentUser }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSaveChanges = (e) => {
+  // COMMIT 13: Handle Save Operation with Loading, Success, Failure & Retry Logic
+  const handleSaveChanges = async (e) => {
     if (e) e.preventDefault();
 
-    // Run validation first
+    // 1. Run validation FIRST
     const isValid = validateForm();
     if (!isValid) {
-      // Prevent save & keep user in edit mode with errors and preserved inputs
+      // Validation failed -> Keep user in Edit mode, display errors, preserve input
       return;
     }
 
-    // Save succeeded locally -> exit edit mode
-    setErrors({});
-    setIsEditing(false);
+    // 2. Prevent duplicate submission if already saving
+    if (isSaving) return;
+
+    // 3. Begin Saving State
+    setIsSaving(true);
+    setSaveError(null);
+
+    try {
+      // Parse regular medicines array
+      const parsedMedicines = formData.regularMedicines
+        ? formData.regularMedicines.split(',').map((s) => s.trim()).filter(Boolean)
+        : [];
+
+      // Execute existing updateProfile / saveHealthProfile service architecture
+      const updatedUser = await saveHealthProfile({
+        age: age !== 'Not available' ? age : '',
+        medicalConditions: formData.medicalHistory,
+        regularMedicines: parsedMedicines,
+      });
+
+      // 4. Success State
+      setIsSaving(false);
+      setSaveSuccess(true);
+      setCurrentUserState(updatedUser);
+
+      if (onUpdateUser) {
+        onUpdateUser(updatedUser);
+      }
+
+      // Exit edit mode on successful save
+      setIsEditing(false);
+
+      // Auto-dismiss success notification after 4 seconds
+      setTimeout(() => {
+        setSaveSuccess(false);
+      }, 4000);
+    } catch (err) {
+      // 5. Save Failure State: preserve input, keep in edit mode, enable retry
+      setIsSaving(false);
+      setSaveError(err?.message || 'Unable to save your profile. Please try again.');
+    }
   };
 
   // Extract initials for header avatar
@@ -115,6 +164,13 @@ export const Profile = ({ currentUser }) => {
 
   return (
     <div className="profile-page-container">
+      {/* Success Notification Banner */}
+      {saveSuccess && (
+        <div className="profile-success-banner">
+          <span>✓ Profile updated successfully.</span>
+        </div>
+      )}
+
       {/* Page Header */}
       <div className="profile-page-header">
         <div className="header-titles">
@@ -153,6 +209,13 @@ export const Profile = ({ currentUser }) => {
         {isEditing ? (
           /* EDIT MODE FORM */
           <form className="profile-edit-form" onSubmit={handleSaveChanges} noValidate>
+            {/* Save Failure Error Banner */}
+            {saveError && (
+              <div className="save-failure-banner">
+                <span>⚠️ {saveError}</span>
+              </div>
+            )}
+
             <div className="profile-info-grid">
               {/* Field: Name (LOCKED - Read Only) */}
               <div className="profile-field-box locked-box">
@@ -190,6 +253,7 @@ export const Profile = ({ currentUser }) => {
                   id="profileConditions"
                   className={`profile-edit-textarea ${errors.medicalHistory ? 'input-error' : ''}`}
                   rows={2}
+                  disabled={isSaving}
                   value={formData.medicalHistory}
                   onChange={(e) => handleInputChange('medicalHistory', e.target.value)}
                   placeholder="e.g. Diabetes, Thyroid or NONE"
@@ -210,6 +274,7 @@ export const Profile = ({ currentUser }) => {
                   id="profileMeds"
                   type="text"
                   className={`profile-edit-input ${errors.regularMedicines ? 'input-error' : ''}`}
+                  disabled={isSaving}
                   placeholder="e.g. Paracetamol, Metformin"
                   value={formData.regularMedicines}
                   onChange={(e) => handleInputChange('regularMedicines', e.target.value)}
@@ -227,6 +292,7 @@ export const Profile = ({ currentUser }) => {
               <button
                 type="button"
                 className="cancel-edit-btn"
+                disabled={isSaving}
                 onClick={handleCancelEdit}
               >
                 Cancel
@@ -235,8 +301,9 @@ export const Profile = ({ currentUser }) => {
                 type="submit"
                 variant="primary"
                 size="medium"
+                disabled={isSaving}
               >
-                Save Changes
+                {isSaving ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>
           </form>

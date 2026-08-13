@@ -147,7 +147,7 @@ function App() {
               )}
 
               {dashboardRoute === '/profile' && (
-                <Profile currentUser={currentUser} />
+                <Profile currentUser={currentUser} onUpdateUser={setCurrentUser} />
               )}
 
               {dashboardRoute === '/settings' && (
