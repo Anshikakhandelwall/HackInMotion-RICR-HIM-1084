@@ -4,7 +4,8 @@ import './Sidebar.css';
 
 /**
  * Sidebar Component
- * Persistent navigation sidebar for the MediGuard Dashboard application shell.
+ * Navigation sidebar and mobile drawer panel for the MediGuard application shell.
+ * Connects existing navigation items to React Router sub-routes and closes mobile menu on selection.
  */
 export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOpen, onClose }) => {
   const mainNavItems = [
@@ -84,6 +85,15 @@ export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOp
     }
   };
 
+  const handleLogoutClick = () => {
+    if (onLogout) {
+      onLogout();
+    }
+    if (onClose) {
+      onClose();
+    }
+  };
+
   return (
     <>
       {/* Mobile Backdrop Overlay */}
@@ -144,7 +154,7 @@ export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOp
 
             {/* Logout Button */}
             <li>
-              <button type="button" className="nav-item nav-logout" onClick={onLogout}>
+              <button type="button" className="nav-item nav-logout" onClick={handleLogoutClick}>
                 <span className="nav-icon">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
