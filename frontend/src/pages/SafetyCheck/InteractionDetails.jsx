@@ -114,8 +114,43 @@ export const InteractionDetails = ({ interaction, onBack }) => {
           </div>
         </div>
       </div>
+
+      {/* Evidence & Sources section */}
+      <div className="evidence-sources-section">
+        <h2 className="evidence-sources-title">Evidence & Sources</h2>
+        <div className="sources-container">
+          {MOCK_SOURCES.map((source, index) => (
+            <div key={index} className="source-card">
+              <h4 className="source-name">{source.name}</h4>
+              <p className="source-reference">{source.reference}</p>
+              <div className="source-indicator-wrapper">
+                <span className="source-indicator">[ {source.indicator} ]</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
 
+const MOCK_SOURCES = [
+  {
+    name: 'National Institutes of Health (NIH) Drug Database',
+    reference: 'Supporting clinical reference and documentation regarding concomitant administration risks.',
+    indicator: 'Source'
+  },
+  {
+    name: 'FDA Drug Safety Communication',
+    reference: 'Post-marketing surveillance and active safety communications database.',
+    indicator: 'Source'
+  },
+  {
+    name: 'Prescribers\' Digital Reference (PDR)',
+    reference: 'Official guidelines on drug-to-drug interactions classifications and outcomes.',
+    indicator: 'Source'
+  }
+];
+
 export default InteractionDetails;
+
