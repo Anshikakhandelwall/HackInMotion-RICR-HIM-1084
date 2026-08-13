@@ -102,6 +102,137 @@
   font-weight: 600;
 }
 
+/* 5. Safety Status Summary Section (Commit 3) */
+.safety-check-summary-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  padding: 1.75rem 2rem;
+}
+
+.safety-summary-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.safety-summary-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.safety-summary-cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+/* Individual Status Card */
+.status-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-default);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.status-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(166, 61, 53, 0.04);
+}
+
+.status-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-card-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.status-card-label {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.status-card-count {
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Severity-specific theme styles (Only used to distinguish categories) */
+.status-card-severe {
+  background-color: var(--color-error-bg);
+  border-color: rgba(217, 56, 58, 0.15);
+  color: var(--color-error);
+}
+.status-card-severe .status-card-label, 
+.status-card-severe .status-card-count {
+  color: var(--color-error);
+}
+
+.status-card-moderate {
+  background-color: #FFF9F3;
+  border-color: rgba(226, 126, 54, 0.15);
+  color: #E27E36;
+}
+.status-card-moderate .status-card-label, 
+.status-card-moderate .status-card-count {
+  color: #E27E36;
+}
+
+.status-card-safe {
+  background-color: var(--color-success-bg);
+  border-color: rgba(45, 138, 86, 0.15);
+  color: var(--color-success);
+}
+.status-card-safe .status-card-label, 
+.status-card-safe .status-card-count {
+  color: var(--color-success);
+}
+
+/* Overall safety message area */
+.safety-message-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.safety-message-icon {
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.safety-message-text {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
 /* Mobile responsive alignment */
 @media (max-width: 680px) {
   .safety-check-page-container {
@@ -112,11 +243,13 @@
     margin-bottom: 0.5rem;
   }
 
-  .safety-check-card {
+  .safety-check-card,
+  .safety-check-summary-section {
     padding: 1.25rem 1.5rem;
   }
 
-  .safety-check-card-header {
+  .safety-check-card-header,
+  .safety-summary-header {
     flex-direction: row;
     align-items: flex-start;
   }
@@ -129,5 +262,14 @@
     width: 100%;
     text-align: center;
     display: block;
+  }
+
+  .safety-summary-cards-container {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .status-card {
+    padding: 1rem 1.25rem;
   }
 }

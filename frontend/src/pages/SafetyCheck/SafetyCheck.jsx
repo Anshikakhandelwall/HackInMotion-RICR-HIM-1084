@@ -4,15 +4,23 @@ import MedicineListItem from '../../components/medicines/MedicineListItem';
 import mockMedicines from '../../data/mockMedicines';
 import './SafetyCheck.css';
 
+// Centralised mock data for summary counts
+// Easy to replace with API payloads in future commits
+const mockSummaryData = {
+  severe: 1,
+  moderate: 1,
+  safe: 1,
+};
+
 /**
  * SafetyCheck Page Component (Route: /safety-check)
- * Implements the base UI/layout for drug-drug interaction safety checking.
- * - Displays active medicines that are currently in the medication cabinet (consumes existing frontend state).
- * - Implements a clear central screen and a primary CTA "Check My Medicines" button.
- * - Restricts interaction processing to mock visual click logging for this commit.
+ * Implements base Safety Check page and the Safety Status Summary.
+ * - Displays active daily medicines of the user.
+ * - Renders a Safety Status Summary box (Severe, Moderate, Safe categories).
+ * - Dynamically states an overall warning message based on mock counts.
  */
 export const SafetyCheck = ({ currentUser, onNavigate }) => {
-  // Extract user's active medicines or fall back to mockMedicines if empty/missing
+  // Extract user's active medicines or fall back to mockMedicines
   const activeMedicines = (currentUser?.regularMedicines && currentUser.regularMedicines.length > 0)
     ? currentUser.regularMedicines
     : (currentUser?.regular_medicines && currentUser.regular_medicines.length > 0)
@@ -21,6 +29,17 @@ export const SafetyCheck = ({ currentUser, onNavigate }) => {
 
   const handleCheckMedicines = () => {
     console.log('[SafetyCheck] Check My Medicines action triggered');
+  };
+
+  // Derive dynamic overall message based on summary data
+  const getOverallMessage = (summary) => {
+    if (summary.severe > 0) {
+      return `${summary.severe} severe interaction${summary.severe === 1 ? '' : 's'} require${summary.severe === 1 ? 's' : ''} your attention. Please review your safety results.`;
+    } else if (summary.moderate > 0) {
+      return `${summary.moderate} moderate interaction${summary.moderate === 1 ? '' : 's'} identified. Review details for safety advice.`;
+    } else {
+      return `All checked medicines are safe. No interactions found.`;
+    }
   };
 
   return (
@@ -79,6 +98,60 @@ export const SafetyCheck = ({ currentUser, onNavigate }) => {
           >
             Check My Medicines
           </Button>
+        </div>
+      </div>
+
+      {/* 5. Safety Status Summary Section */}
+      <div className="safety-check-summary-section">
+        <div className="safety-summary-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--color-primary)' }}>
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="16" x2="12" y2="12" />
+            <line x1="12" y1="8" x2="12.01" y2="8" />
+          </svg>
+          <h2 className="safety-summary-title">Safety Status Summary</h2>
+        </div>
+
+        {/* Three Grid Categories */}
+        <div className="safety-summary-cards-container">
+          {/* Card A: Severe */}
+          <div className="status-card status-card-severe">
+            <div className="status-card-header">
+              <span className="status-card-icon" aria-hidden="true" style={{ fontSize: '1.1rem' }}>🔴</span>
+              <span className="status-card-label">Severe</span>
+            </div>
+            <span className="status-card-count">{mockSummaryData.severe}</span>
+          </div>
+
+          {/* Card B: Moderate */}
+          <div className="status-card status-card-moderate">
+            <div className="status-card-header">
+              <span className="status-card-icon" aria-hidden="true" style={{ fontSize: '1.1rem' }}>🟠</span>
+              <span className="status-card-label">Moderate</span>
+            </div>
+            <span className="status-card-count">{mockSummaryData.moderate}</span>
+          </div>
+
+          {/* Card C: Safe */}
+          <div className="status-card status-card-safe">
+            <div className="status-card-header">
+              <span className="status-card-icon" aria-hidden="true" style={{ fontSize: '1.1rem' }}>🟢</span>
+              <span className="status-card-label">Safe</span>
+            </div>
+            <span className="status-card-count">{mockSummaryData.safe}</span>
+          </div>
+        </div>
+
+        {/* Overall dynamic status notice box */}
+        <div className="safety-message-container">
+          <div className="safety-message-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          </div>
+          <span className="safety-message-text">{getOverallMessage(mockSummaryData)}</span>
         </div>
       </div>
     </div>
