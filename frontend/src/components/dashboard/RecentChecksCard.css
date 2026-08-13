@@ -1,0 +1,103 @@
+.recent-checks-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
+
+.view-all-link-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
+}
+
+.view-all-link-btn:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+.history-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.1rem;
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-subtle);
+  transition: border-color var(--transition-fast);
+}
+
+.history-item:hover {
+  border-color: var(--color-border-default);
+}
+
+.history-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.history-date {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.history-details {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-severe {
+  background-color: var(--color-error-bg);
+  border: 1px solid rgba(217, 56, 58, 0.2);
+  color: var(--color-error);
+}
+
+.status-moderate {
+  background-color: #FFF8F0;
+  border: 1px solid rgba(217, 119, 6, 0.2);
+  color: #D97706;
+}
+
+.status-safe {
+  background-color: var(--color-success-bg);
+  border: 1px solid rgba(45, 138, 86, 0.2);
+  color: var(--color-success);
+}
+
+@media (max-width: 640px) {
+  .history-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}

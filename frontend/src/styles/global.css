@@ -1,28 +1,30 @@
 :root {
   --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   
-  /* Color Palette - Pure Light Theme with Subtle Warm Red/Rose Accent */
+  /* Color Palette - Warm Ivory & Brick Red Theme (Strictly NO BLUE/DARK THEME) */
   --color-bg-main: #FFFDFC;
   --color-bg-surface: #FFFFFF;
-  --color-bg-subtle: #FFF8F7;
+  --color-bg-subtle: #FCF5F3;
   --color-bg-card: #FFFFFF;
   --color-bg-input: #FFFFFF;
   --color-bg-input-focus: #FFFFFF;
+  --color-bg-decorative: #FBEDEA;
   
-  --color-text-primary: #2B2524;
-  --color-text-secondary: #756866;
-  --color-text-muted: #9E908E;
+  --color-text-primary: #24201F;
+  --color-text-secondary: #6E6462;
+  --color-text-muted: #998D8B;
   
-  /* Warm Red-Brown Accents (NO BLUE/DARK THEME) */
-  --color-accent-rose: #B8665E;
-  --color-accent-warm: #A6534B;
-  --color-primary: #A6534B;
-  --color-primary-hover: #8F453F;
-  --color-primary-light: #FFF5F3;
+  /* Muted Reddish-Brown & Peach Accents */
+  --color-primary: #A63D35;
+  --color-primary-hover: #8F332C;
+  --color-primary-light: #FDF3F2;
+  --color-accent-rose: #B54A40;
+  --color-accent-dusty: #D98278;
+  --color-accent-peach: #E8A49B;
   
-  --color-border-subtle: #F5EAE8;
-  --color-border-default: #E8D6D2;
-  --color-border-focus: #B8665E;
+  --color-border-subtle: #F6ECE9;
+  --color-border-default: #E9DDD9;
+  --color-border-focus: #B54A40;
   
   --color-error: #D9383A;
   --color-error-bg: #FDF2F2;
@@ -30,14 +32,14 @@
   --color-success-bg: #F0FDF4;
   
   /* Radius & Shadows */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
   --radius-xl: 24px;
   
-  --shadow-sm: 0 1px 3px rgba(43, 37, 36, 0.05);
-  --shadow-card: 0 12px 32px -8px rgba(166, 83, 75, 0.08), 0 0 0 1px var(--color-border-default);
-  --shadow-focus: 0 0 0 3px rgba(184, 102, 94, 0.18);
+  --shadow-sm: 0 1px 3px rgba(36, 32, 31, 0.04);
+  --shadow-card: 0 12px 36px -8px rgba(166, 61, 53, 0.08), 0 0 0 1px var(--color-border-default);
+  --shadow-focus: 0 0 0 3px rgba(181, 74, 64, 0.16);
   
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s ease;

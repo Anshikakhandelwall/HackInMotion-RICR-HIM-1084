@@ -1,0 +1,212 @@
+.medicine-search-container {
+  position: relative;
+  flex: 1;
+  max-width: 460px;
+  width: 100%;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.search-input-icon {
+  position: absolute;
+  left: 0.85rem;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.search-input-field {
+  width: 100%;
+  height: 44px;
+  padding: 0 2.25rem 0 2.6rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-default);
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-size: 0.9125rem;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.search-input-field:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(166, 61, 53, 0.12);
+  background-color: #FFFFFF;
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 50%;
+}
+
+.search-clear-btn:hover {
+  color: var(--color-text-primary);
+}
+
+/* Toast Notification for Duplicates */
+.duplicate-notice-toast {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  background-color: #FFF8F0;
+  border: 1px solid rgba(217, 119, 6, 0.25);
+  color: #D97706;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  z-index: 101;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Search Dropdown Overlay */
+.search-results-dropdown {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  z-index: 100;
+  max-height: 280px;
+  overflow-y: auto;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.search-state-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.25rem 1rem;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.search-spinner {
+  animation: spin 0.8s linear infinite;
+  color: var(--color-primary);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Placeholder Box Notice */
+.search-placeholder-box {
+  padding: 1.25rem 1rem;
+  background-color: var(--color-bg-subtle);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  border-radius: var(--radius-lg);
+}
+
+.placeholder-icon {
+  font-size: 1rem;
+}
+
+.placeholder-text {
+  font-size: 0.84rem;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+/* Results List */
+.search-results-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: background-color var(--transition-fast);
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover {
+  background-color: var(--color-bg-subtle);
+}
+
+.result-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.result-name {
+  font-size: 0.9125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.result-subtext {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+.result-add-btn {
+  padding: 0.35rem 0.85rem;
+  border-radius: 16px;
+  border: 1px solid var(--color-primary);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.result-add-btn:hover:not(:disabled) {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.result-add-btn.added {
+  background-color: var(--color-bg-subtle);
+  border-color: var(--color-border-default);
+  color: var(--color-text-muted);
+  cursor: default;
+}
+
+.no-results-title {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.no-results-subtitle {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.2rem;
+}

@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
+from .models import UserProfile
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 
 
@@ -124,6 +125,49 @@ class UserProfileView(APIView):
             {
                 "success": True,
                 "user": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class OnboardingProfileView(APIView):
+    """
+    API view to save/update user's initial onboarding health profile in the backend database.
+    Endpoint: POST /api/auth/profile/onboarding/
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        profile, _ = UserProfile.objects.get_or_create(user=user)
+
+        age = request.data.get('age')
+        medical_conditions = request.data.get('medicalConditions') or request.data.get('medical_conditions', '')
+        regular_medicines = request.data.get('regularMedicines') or request.data.get('regular_medicines', [])
+
+        if age is not None:
+            try:
+                profile.age = int(age)
+            except (ValueError, TypeError):
+                return Response(
+                    {"success": False, "message": "Age must be a valid whole number."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        profile.medical_conditions = str(medical_conditions).strip()
+        if isinstance(regular_medicines, list):
+            profile.regular_medicines = regular_medicines
+        
+        # Mark onboarding health profile as completed persistently in database
+        profile.profile_completed = True
+        profile.save()
+
+        user_data = UserSerializer(user).data
+        return Response(
+            {
+                "success": True,
+                "message": "Health profile onboarding saved successfully.",
+                "user": user_data,
             },
             status=status.HTTP_200_OK,
         )
