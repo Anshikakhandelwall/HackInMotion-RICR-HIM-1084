@@ -140,7 +140,7 @@ function App() {
               )}
 
               {dashboardRoute === '/safety-check' && (
-                <SafetyCheck onNavigate={handleDashboardNavigate} />
+                <SafetyCheck currentUser={currentUser} onNavigate={handleDashboardNavigate} />
               )}
 
               {dashboardRoute === '/history' && (

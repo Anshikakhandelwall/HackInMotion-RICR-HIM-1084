@@ -1,0 +1,133 @@
+.safety-check-page-container {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.safety-check-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.safety-check-page-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.safety-check-page-subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.safety-check-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  padding: 1.75rem 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.safety-check-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  margin-bottom: 1.25rem;
+}
+
+.safety-check-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.safety-check-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.safety-check-card-subtitle {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.safety-check-preview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.safety-check-preview-hint {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.safety-check-preview-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.safety-check-preview-item {
+  width: 100%;
+}
+
+.safety-check-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid var(--color-border-subtle);
+  padding-top: 1.25rem;
+}
+
+.check-medicines-btn {
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+/* Mobile responsive alignment */
+@media (max-width: 680px) {
+  .safety-check-page-container {
+    gap: 1.25rem;
+  }
+
+  .safety-check-page-header {
+    margin-bottom: 0.5rem;
+  }
+
+  .safety-check-card {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .safety-check-card-header {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .safety-check-card-footer {
+    justify-content: stretch;
+  }
+
+  .check-medicines-btn {
+    width: 100%;
+    text-align: center;
+    display: block;
+  }
+}
