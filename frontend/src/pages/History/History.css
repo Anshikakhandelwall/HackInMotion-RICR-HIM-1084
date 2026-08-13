@@ -459,3 +459,11 @@
     font-size: 0.875rem;
   }
 }
+
+/* Accessibility & Focus Polish */
+.history-view-details-btn:focus-visible,
+.back-to-history-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+

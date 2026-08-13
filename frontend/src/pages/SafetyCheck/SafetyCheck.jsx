@@ -349,9 +349,19 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
                     key={interaction.id}
                     className={`interaction-result-card interaction-severity-${config.colorClass}`}
                     style={{ '--severity-accent-color': config.colorHex }}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => {
                       if (onViewDetails) {
                         onViewDetails(interaction);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        if (onViewDetails) {
+                          onViewDetails(interaction);
+                        }
                       }
                     }}
                   >
