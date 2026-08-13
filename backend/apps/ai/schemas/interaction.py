@@ -11,12 +11,12 @@ from enum import Enum
 
 
 class Severity(str, Enum):
-    """The DDInter severity categories named in AGENTS.md section 10.
+    """The four severity categories DDInter uses.
 
     Mapping source data onto these values is deterministic and belongs to the
     interactions app. The AI layer reads severity; it never assigns or revises
     it. Keeping this a closed enum is what makes that rule enforceable rather
-    than merely documented.
+    than merely a convention.
     """
 
     MAJOR = "Major"
@@ -45,7 +45,8 @@ class InteractionFact:
         if not self.source.strip():
             raise ValueError(
                 "InteractionFact.source is required. An interaction with no "
-                "attribution must not reach the AI layer (AGENTS.md section 13)."
+                "attribution must not reach the AI layer: every claim shown to "
+                "a user has to be traceable to the data it came from."
             )
 
     @property
@@ -59,8 +60,8 @@ class ExplanationRequest:
     """A request to explain a set of verified interactions in plain language.
 
     `audience` exists because the product serves patients, caregivers, and
-    pharmacists (AGENTS.md, Project Overview). The same facts warrant different
-    wording for each, but never different facts.
+    pharmacists. The same facts warrant different wording for each, but never
+    different facts.
     """
 
     facts: tuple[InteractionFact, ...]

@@ -38,8 +38,8 @@ def no_interaction_found(
     """The result when the reference data holds no relevant interaction.
 
     Routed through this app so the wording stays in one place, but note that no
-    model is called: AGENTS.md section 11 forbids implying that "nothing found"
-    means "safe", and fixed wording is the only way to guarantee that.
+    model is called. "Nothing found" must never be presented as "safe", and
+    fixed wording is the only way to guarantee that.
     """
     return NoInteractionResult(
         checked_medicines=checked_medicines,

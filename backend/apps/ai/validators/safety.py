@@ -1,7 +1,7 @@
 """Post-generation safety checks on model output.
 
-Each check corresponds to a rule in AGENTS.md section 11. The checks are
-deliberately literal and pattern-based rather than clever: a validator that
+Each check corresponds to one of the product's medical-safety rules. The checks
+are deliberately literal and pattern-based rather than clever: a validator that
 itself needs a language model to decide what is safe would reintroduce exactly
 the problem it exists to solve.
 
@@ -16,13 +16,13 @@ from dataclasses import dataclass
 
 from ..schemas.interaction import InteractionFact, Severity
 
-# Reference sources the product knows about (AGENTS.md section 9). If output
-# names one of these and the supplying facts did not, the model has invented an
-# attribution.
+# Reference sources the product draws on. If output names one of these and the
+# supplying facts did not, the model has invented an attribution.
 KNOWN_SOURCE_NAMES = ("DDInter", "openFDA", "DailyMed", "RxNorm", "RxNav")
 
-# Instructions to change medication, which this product never issues itself
-# (AGENTS.md section 11, "No unsafe medication instructions").
+# Instructions to change medication, which this product never issues itself.
+# Recommending the reader speak to a doctor or pharmacist is correct; telling
+# them to alter a prescription is not.
 UNSAFE_INSTRUCTION_PATTERNS = (
     (r"\bstop (?:taking|using)\b", "tells the reader to stop a medicine"),
     (r"\bdiscontinue\b", "tells the reader to discontinue a medicine"),
@@ -38,8 +38,8 @@ UNSAFE_INSTRUCTION_PATTERNS = (
     (r"\bskip (?:a |your )?dose\b", "tells the reader to skip a dose"),
 )
 
-# Claims of absolute safety, which the product must never make
-# (AGENTS.md section 11, "No absolute safety claims").
+# Claims of absolute safety, which the product must never make. Absence of a
+# recorded interaction is not evidence that a combination is safe.
 ABSOLUTE_SAFETY_PATTERNS = (
     (r"\b(?:completely|totally|perfectly|entirely) safe\b", "claims absolute safety"),
     (r"\bno risk\b", "claims absence of risk"),

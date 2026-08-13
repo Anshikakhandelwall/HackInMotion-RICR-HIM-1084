@@ -1,8 +1,8 @@
 """What comes *out* of the AI layer.
 
-The rule this module exists to enforce is AGENTS.md section 11: anyone consuming
-an explanation must be able to tell the verified data apart from the generated
-text. So both travel together in one object, labelled.
+The rule this module exists to enforce: anyone consuming an explanation must be
+able to tell the verified data apart from the generated text. So both travel
+together in one object, labelled.
 """
 
 from __future__ import annotations
@@ -43,9 +43,8 @@ class Explanation:
 class NoInteractionResult:
     """The answer when the reference data contains no relevant interaction.
 
-    Deliberately not an Explanation: AGENTS.md section 11 forbids implying that
-    "nothing found" means "safe", so this carries fixed wording rather than
-    anything a model wrote.
+    Deliberately not an Explanation. "Nothing found" must never be presented as
+    "safe", so this carries fixed wording rather than anything a model wrote.
     """
 
     checked_medicines: tuple[str, ...]

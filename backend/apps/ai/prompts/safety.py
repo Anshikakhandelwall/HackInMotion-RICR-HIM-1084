@@ -1,9 +1,9 @@
 """The safety rules attached to every prompt this app sends.
 
-These are the AGENTS.md section 11 principles restated as model instructions.
-They are a first line of defence only — the model is asked not to produce unsafe
-output, and `validators.safety` then checks whether it complied. Neither half is
-sufficient alone.
+These are the product's medical-safety principles restated as model
+instructions. They are a first line of defence only — the model is asked not to
+produce unsafe output, and `validators.safety` then checks whether it complied.
+Neither half is sufficient alone.
 """
 
 SAFETY_RULES = """\

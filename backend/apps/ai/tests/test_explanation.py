@@ -1,8 +1,7 @@
 """Tests for the AI layer's safety guarantees.
 
-These are the safety-critical tests AGENTS.md section 19 asks for. Every one
-drives real text through the real validator using StubProvider, so no API key
-and no network are needed.
+Every one drives real text through the real validator using StubProvider, so no
+API key and no network are needed.
 """
 
 from django.test import SimpleTestCase
@@ -77,7 +76,7 @@ class PromptTests(SimpleTestCase):
 
 
 class SafetyValidatorTests(SimpleTestCase):
-    """One test per rule in AGENTS.md section 11."""
+    """One test per medical-safety rule the validator enforces."""
 
     def test_accepts_a_faithful_explanation(self):
         text = (
