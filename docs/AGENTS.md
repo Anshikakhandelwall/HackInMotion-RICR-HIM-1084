@@ -10,8 +10,14 @@ This file serves as persistent working memory for AI coding agents working on th
 * **What has been completed:**
   * Scaffolded React 19 + Vite 8 frontend in `frontend/` directory with scalable directory structure (`components/`, `pages/`, `services/`, `layouts/`, `routes/`, `styles/`, `assets/`).
   * **Git Branch Pushed to Remote:** Successfully committed all staged changes on `feature/frontend-ui` and pushed branch to remote origin (`https://github.com/Anshikakhandelwall/HackInMotion-RICR-HIM-1084/tree/feature/frontend-ui`).
+  * **Commit 6 — Risk Severity Indicators (`feat: add risk severity indicators`):**
+    * Implemented visual risk severity indicators on the Safety Check page ([SafetyCheck.jsx](file:///c:/Users/HP/OneDrive/Desktop/hackathon/HackInMotion-RICR-HIM-1084/frontend/src/pages/SafetyCheck/SafetyCheck.jsx) & [SafetyCheck.css](file:///c:/Users/HP/OneDrive/Desktop/hackathon/HackInMotion-RICR-HIM-1084/frontend/src/pages/SafetyCheck/SafetyCheck.css)).
+    * Created centralized configuration `SEVERITY_CONFIG` mapping Severe, Moderate, Safe, and default Unknown fallbacks to emojis/dots and theme colors.
+    * Refactored card left-borders to dynamically render via `--severity-accent-color` CSS properties.
   * **Commit 4 — Interaction Result Cards (`feat: build interaction result cards`):**
     * Implemented the Interactions Found section and individual cards display on the Safety Check page ([SafetyCheck.jsx](file:///c:/Users/HP/OneDrive/Desktop/hackathon/HackInMotion-RICR-HIM-1084/frontend/src/pages/SafetyCheck/SafetyCheck.jsx) & [SafetyCheck.css](file:///c:/Users/HP/OneDrive/Desktop/hackathon/HackInMotion-RICR-HIM-1084/frontend/src/pages/SafetyCheck/SafetyCheck.css)).
+    * Added the instruction label "Click to interact" directly above the drug interaction cards.
+    * Added clickable hover visual affordances (`cursor: pointer` and subtle transform transitions) to the cards without any active onClick handlers.
     * Rendered cards showing medication names, severity badges, and short description text based on centralized mock data arrays.
     * Ensured responsive grid layout wrapping and 0 outbound network requests.
   * **Commit 3 — Safety Status Summary (`feat: build safety status summary`):**
@@ -29,6 +35,8 @@ This file serves as persistent working memory for AI coding agents working on th
 
 ### Work History
 
+* **2026-08-13 - Commit 6 — Risk Severity Indicators:**
+  * Created dynamic reusable severity visual indicators with dynamic accent variables for Severe, Moderate, Safe, and default Unknown fallbacks.
 * **2026-08-13 - Commit 4 — Interaction Result Cards:**
   * Implemented High-Level Interactions Found layout containing individual mock severity cards showing Warfarin-Aspirin and Amlodipine-Simvastatin interactions.
 * **2026-08-13 - Commit 3 — Safety Status Summary:**
