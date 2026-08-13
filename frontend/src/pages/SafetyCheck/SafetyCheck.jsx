@@ -12,11 +12,30 @@ const mockSummaryData = {
   safe: 1,
 };
 
+// Centralised mock data for interaction cards
+const mockInteractions = [
+  {
+    id: 1,
+    drugA: 'Warfarin',
+    drugB: 'Aspirin',
+    severity: 'Severe',
+    description: 'Increased risk of bleeding.',
+  },
+  {
+    id: 2,
+    drugA: 'Amlodipine',
+    drugB: 'Simvastatin',
+    severity: 'Moderate',
+    description: 'Simvastatin may increase the blood levels of Amlodipine.',
+  },
+];
+
 /**
  * SafetyCheck Page Component (Route: /safety-check)
- * Implements base Safety Check page and the Safety Status Summary.
+ * Implements base Safety Check page, Safety Status Summary, and Interaction Result Cards.
  * - Displays active daily medicines of the user.
  * - Renders a Safety Status Summary box (Severe, Moderate, Safe categories).
+ * - Displays individual medication interaction cards under the section "Interactions Found".
  * - Dynamically states an overall warning message based on mock counts.
  */
 export const SafetyCheck = ({ currentUser, onNavigate }) => {
@@ -152,6 +171,41 @@ export const SafetyCheck = ({ currentUser, onNavigate }) => {
             </svg>
           </div>
           <span className="safety-message-text">{getOverallMessage(mockSummaryData)}</span>
+        </div>
+      </div>
+
+      {/* 6. Interactions Found Cards List (New Commit 4 Feature) */}
+      <div className="safety-interactions-section">
+        <h2 className="safety-interactions-title">Interactions Found</h2>
+        
+        <div className="safety-interactions-list">
+          {mockInteractions.map((interaction) => (
+            <div
+              key={interaction.id}
+              className={`interaction-result-card interaction-severity-${interaction.severity.toLowerCase()}`}
+            >
+              <div className="interaction-card-info-row">
+                <span className={`interaction-severity-badge severity-${interaction.severity.toLowerCase()}`}>
+                  <span className="severity-dot" aria-hidden="true" />
+                  {interaction.severity}
+                </span>
+              </div>
+
+              <div className="interaction-drugs-row">
+                <span className="drug-name-a">{interaction.drugA}</span>
+                <span className="interaction-arrow-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="m17 8 4 4-4 4" />
+                    <path d="M3 12h18" />
+                    <path d="m7 16-4-4 4-4" />
+                  </svg>
+                </span>
+                <span className="drug-name-b">{interaction.drugB}</span>
+              </div>
+
+              <p className="interaction-card-description">{interaction.description}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
