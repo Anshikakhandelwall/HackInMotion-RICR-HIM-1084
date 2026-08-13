@@ -1,0 +1,1407 @@
+ddinter_drug_name,rxcui,rxnorm_name,tty,mapping_method,mapping_status
+Abametapir (topical),2618846,abametapir Topical Product,SCDG,approximate,matched
+Abarelix,301739,abarelix,IN,exact_or_normalized,matched
+Abatacept,614391,abatacept,IN,exact_or_normalized,matched
+Abciximab,83929,abciximab,IN,exact_or_normalized,matched
+Abemaciclib,1946825,abemaciclib,IN,exact_or_normalized,matched
+Abiraterone,1100072,abiraterone,IN,exact_or_normalized,matched
+Acalabrutinib,1986808,acalabrutinib,IN,exact_or_normalized,matched
+Acarbose,16681,acarbose,IN,exact_or_normalized,matched
+Acebutolol,149,acebutolol,IN,exact_or_normalized,matched
+Acetaminophen,161,acetaminophen,IN,exact_or_normalized,matched
+Acetazolamide,167,acetazolamide,IN,exact_or_normalized,matched
+Acetohexamide,173,acetohexamide,IN,exact_or_normalized,matched
+Acetylsalicylic acid,1191,aspirin,IN,exact_or_normalized,matched
+Acrivastine,19959,acrivastine,IN,exact_or_normalized,matched
+Activated charcoal,272,activated charcoal,IN,exact_or_normalized,matched
+Adalimumab,327361,adalimumab,IN,exact_or_normalized,matched
+Adenosine,296,adenosine,IN,exact_or_normalized,matched
+Afatinib,1430438,afatinib,IN,exact_or_normalized,matched
+Albendazole,430,albendazole,IN,exact_or_normalized,matched
+Albiglutide,1534763,albiglutide,IN,exact_or_normalized,matched
+Aldesleukin,70223,aldesleukin,IN,exact_or_normalized,matched
+Alefacept,299635,alefacept,IN,exact_or_normalized,matched
+Alemtuzumab,117055,alemtuzumab,IN,exact_or_normalized,matched
+Alendronic acid,236083,alendronic acid,PIN,exact_or_normalized,matched
+Alfentanil,480,alfentanil,IN,exact_or_normalized,matched
+Alfuzosin,17300,alfuzosin,IN,exact_or_normalized,matched
+Alimemazine,10825,trimeprazine,IN,exact_or_normalized,matched
+Aliskiren,325646,aliskiren,IN,exact_or_normalized,matched
+Allopurinol,519,allopurinol,IN,exact_or_normalized,matched
+Almotriptan,279645,almotriptan,IN,exact_or_normalized,matched
+Alogliptin,1368001,alogliptin,IN,exact_or_normalized,matched
+Alosetron,85248,alosetron,IN,exact_or_normalized,matched
+Alpelisib,2169285,alpelisib,IN,exact_or_normalized,matched
+Alprazolam,596,alprazolam,IN,exact_or_normalized,matched
+Alprostadil,598,alprostadil,IN,exact_or_normalized,matched
+Alteplase,8410,alteplase,IN,exact_or_normalized,matched
+Aluminum hydroxide,612,aluminum hydroxide,IN,exact_or_normalized,matched
+Alvimopan,480639,alvimopan,IN,exact_or_normalized,matched
+Ambrisentan,358274,ambrisentan,IN,exact_or_normalized,matched
+Amifostine,4126,amifostine,IN,exact_or_normalized,matched
+Amikacin,641,amikacin,IN,exact_or_normalized,matched
+Amikacin (liposome),2059179,"amikacin sulfate, liposomal",PIN,exact_or_normalized,matched
+Amiloride,644,amiloride,IN,exact_or_normalized,matched
+Aminobenzoic acid,74,4-aminobenzoic acid,IN,exact_or_normalized,matched
+Aminocaproic acid,99,6-aminocaproic acid,IN,exact_or_normalized,matched
+Aminoglutethimide,677,aminoglutethimide,IN,exact_or_normalized,matched
+Aminolevulinic acid (topical),1151949,aminolevulinic acid Topical Product,SCDG,exact_or_normalized,matched
+Aminophylline,689,aminophylline,IN,exact_or_normalized,matched
+Aminosalicylic acid,7833,aminosalicylic acid,IN,exact_or_normalized,matched
+Amiodarone,703,amiodarone,IN,exact_or_normalized,matched
+Amisulpride,46303,amisulpride,IN,exact_or_normalized,matched
+Amitriptyline,704,amitriptyline,IN,exact_or_normalized,matched
+Amlodipine,17767,amlodipine,IN,exact_or_normalized,matched
+Ammonium chloride,712,ammonium chloride,IN,exact_or_normalized,matched
+Amobarbital,719,amobarbital,IN,exact_or_normalized,matched
+Amoxapine,722,amoxapine,IN,exact_or_normalized,matched
+Amoxicillin,723,amoxicillin,IN,exact_or_normalized,matched
+Amphetamine,725,amphetamine,IN,exact_or_normalized,matched
+Amphotericin B,732,amphotericin B,IN,exact_or_normalized,matched
+Amphotericin B (cholesteryl sulfate),101299,amphotericin B colloidal dispersion,PIN,exact_or_normalized,matched
+Amphotericin B (lipid complex),2001759,amphotericin B lipid complex,PIN,exact_or_normalized,matched
+Amphotericin B (liposomal),236594,amphotericin B liposomal,PIN,exact_or_normalized,matched
+Ampicillin,733,ampicillin,IN,exact_or_normalized,matched
+Amprenavir,228656,amprenavir,IN,exact_or_normalized,matched
+Amyl Nitrite,742,amyl nitrite,IN,exact_or_normalized,matched
+Anagrelide,596724,anagrelide,IN,exact_or_normalized,matched
+Anakinra,72435,anakinra,IN,exact_or_normalized,matched
+Anastrozole,84857,anastrozole,IN,exact_or_normalized,matched
+Anisindione,17941,anisindione,IN,exact_or_normalized,matched
+Anistreplase,40028,anistreplase,IN,exact_or_normalized,matched
+Anti-inhibitor coagulant complex,314504,anti-inhibitor coagulant complex,IN,exact_or_normalized,matched
+"Antihemophilic factor, human recombinant",1300486,"antihemophilic factor, human recombinant",PIN,exact_or_normalized,matched
+Antilymphocyte immunoglobulin (horse),91601,"lymphocyte immune globulin, anti-thymocyte globulin, equine",PIN,exact_or_normalized,matched
+Antithrombin Alfa,1427179,antithrombin alfa,PIN,exact_or_normalized,matched
+Antithrombin III human,221062,"antithrombin III, human",PIN,exact_or_normalized,matched
+Antithymocyte immunoglobulin (rabbit),107044,rabbit anti-human T-lymphocyte globulin,PIN,exact_or_normalized,matched
+Apalutamide,1999574,apalutamide,IN,exact_or_normalized,matched
+Apixaban,1364430,apixaban,IN,exact_or_normalized,matched
+Apomorphine,1043,apomorphine,IN,exact_or_normalized,matched
+Apraclonidine,14845,apraclonidine,IN,exact_or_normalized,matched
+Apremilast,1492727,apremilast,IN,exact_or_normalized,matched
+Aprepitant,358255,aprepitant,IN,exact_or_normalized,matched
+Aprotinin,1056,aprotinin,IN,exact_or_normalized,matched
+Ardeparin,87866,ardeparin,IN,exact_or_normalized,matched
+Arformoterol,304962,arformoterol,IN,exact_or_normalized,matched
+Argatroban,15202,argatroban,IN,exact_or_normalized,matched
+Aripiprazole,89013,aripiprazole,IN,exact_or_normalized,matched
+Armodafinil,641465,armodafinil,IN,exact_or_normalized,matched
+Arsenic trioxide,18330,arsenic trioxide,IN,exact_or_normalized,matched
+Artemether,18343,artemether,IN,exact_or_normalized,matched
+Artesunate,18346,artesunate,IN,exact_or_normalized,matched
+Articaine,592464,articaine,IN,exact_or_normalized,matched
+Ascorbic acid,1151,ascorbic acid,IN,exact_or_normalized,matched
+Asenapine,784649,asenapine,IN,exact_or_normalized,matched
+Asparaginase Erwinia chrysanthemi,1431738,asparaginase Erwinia chrysanthemi,PIN,exact_or_normalized,matched
+Asparaginase Escherichia coli,350202,Escherichia coli,IN,approximate,matched
+Astemizole,42328,astemizole,IN,exact_or_normalized,matched
+Atazanavir,343047,atazanavir,IN,exact_or_normalized,matched
+Atenolol,1202,atenolol,IN,exact_or_normalized,matched
+Atomoxetine,38400,atomoxetine,IN,exact_or_normalized,matched
+Atorvastatin,83367,atorvastatin,IN,exact_or_normalized,matched
+Atracurium,1218,atracurium,IN,exact_or_normalized,matched
+Atropine,1223,atropine,IN,exact_or_normalized,matched
+Attapulgite,18516,attapulgite,IN,exact_or_normalized,matched
+Avanafil,1291301,avanafil,IN,exact_or_normalized,matched
+Avapritinib,2272107,avapritinib,IN,exact_or_normalized,matched
+Avatrombopag,2045726,avatrombopag,IN,exact_or_normalized,matched
+Axitinib,1242999,axitinib,IN,exact_or_normalized,matched
+Azatadine,18600,azatadine,IN,exact_or_normalized,matched
+Azathioprine,1256,azathioprine,IN,exact_or_normalized,matched
+Azilsartan medoxomil,1091642,azilsartan medoxomil,PIN,exact_or_normalized,matched
+Azithromycin,18631,azithromycin,IN,exact_or_normalized,matched
+Aztreonam,1272,aztreonam,IN,exact_or_normalized,matched
+Bacampicillin,18687,bacampicillin,IN,exact_or_normalized,matched
+Bacitracin,1291,bacitracin,IN,exact_or_normalized,matched
+Baloxavir marboxil,2099995,baloxavir marboxil,IN,exact_or_normalized,matched
+Balsalazide,18747,balsalazide,IN,exact_or_normalized,matched
+Baricitinib,2047232,baricitinib,IN,exact_or_normalized,matched
+Basiliximab,196102,basiliximab,IN,exact_or_normalized,matched
+Bedaquiline,1364504,bedaquiline,IN,exact_or_normalized,matched
+Belatacept,1112973,belatacept,IN,exact_or_normalized,matched
+Belimumab,1092437,belimumab,IN,exact_or_normalized,matched
+Belinostat,1543543,belinostat,IN,exact_or_normalized,matched
+Belladonna,89781,"belladonna extract, USP",IN,exact_or_normalized,matched
+Bempedoic acid,2282403,bempedoic acid,IN,exact_or_normalized,matched
+Benazepril,18867,benazepril,IN,exact_or_normalized,matched
+Bendamustine,134547,bendamustine,IN,exact_or_normalized,matched
+Bendroflumethiazide,1369,bendroflumethiazide,IN,exact_or_normalized,matched
+Benzatropine,1424,benztropine,IN,exact_or_normalized,matched
+Benzhydrocodone,2001352,benzhydrocodone,IN,exact_or_normalized,matched
+Benzocaine (topical),1152975,benzocaine Topical Product,SCDG,exact_or_normalized,matched
+Benzphetamine,1422,benzphetamine,IN,exact_or_normalized,matched
+Benzthiazide,19008,benzthiazide,IN,exact_or_normalized,matched
+Benzylpenicillin,7980,penicillin G,IN,exact_or_normalized,matched
+Benzylpenicillin (potassium),203133,penicillin G potassium,PIN,exact_or_normalized,matched
+Benzylpenicillin (sodium),9900,penicillin G sodium,PIN,exact_or_normalized,matched
+Bepridil,1436,bepridil,IN,exact_or_normalized,matched
+Berotralstat,2467540,berotralstat,IN,exact_or_normalized,matched
+Betamethasone,1514,betamethasone,IN,exact_or_normalized,matched
+Betaxolol,1520,betaxolol,IN,exact_or_normalized,matched
+Betaxolol (ophthalmic),1153806,betaxolol Ophthalmic Product,SCDG,exact_or_normalized,matched
+Betrixaban,1927851,betrixaban,IN,exact_or_normalized,matched
+Bexarotene,233272,bexarotene,IN,exact_or_normalized,matched
+Bicalutamide,83008,bicalutamide,IN,exact_or_normalized,matched
+Bictegravir,1999660,bictegravir,IN,exact_or_normalized,matched
+Binimetinib,2049122,binimetinib,IN,exact_or_normalized,matched
+Biperiden,1589,biperiden,IN,exact_or_normalized,matched
+Bisacodyl,1596,bisacodyl,IN,exact_or_normalized,matched
+Bismuth subsalicylate,19478,bismuth subsalicylate,IN,exact_or_normalized,matched
+Bisoprolol,19484,bisoprolol,IN,exact_or_normalized,matched
+Bivalirudin,60819,bivalirudin,IN,exact_or_normalized,matched
+Blinatumomab,1597258,blinatumomab,IN,exact_or_normalized,matched
+Boceprevir,1102129,boceprevir,IN,exact_or_normalized,matched
+Bortezomib,358258,bortezomib,IN,exact_or_normalized,matched
+Bosentan,75207,bosentan,IN,exact_or_normalized,matched
+Bosutinib,1307619,bosutinib,IN,exact_or_normalized,matched
+Botulinum Toxin Type B,2167673,botulinum toxin type B,IN,exact_or_normalized,matched
+Botulinum toxin type A,1712,botulinum toxin type A,IN,exact_or_normalized,matched
+Brentuximab vedotin,1147320,brentuximab vedotin,IN,exact_or_normalized,matched
+Brexpiprazole,1658314,brexpiprazole,IN,exact_or_normalized,matched
+Brigatinib,1921217,brigatinib,IN,exact_or_normalized,matched
+Brimonidine (ophthalmic),1163094,brimonidine Ophthalmic Product,SCDG,exact_or_normalized,matched
+Brimonidine (topical),1436951,brimonidine Topical Product,SCDG,exact_or_normalized,matched
+Brinzolamide (ophthalmic),1163095,brinzolamide Ophthalmic Product,SCDG,exact_or_normalized,matched
+Brivaracetam,1739745,brivaracetam,IN,exact_or_normalized,matched
+Brodalumab,1872251,brodalumab,IN,exact_or_normalized,matched
+Bromfenac,19737,bromfenac,IN,exact_or_normalized,matched
+Bromfenac (ophthalmic),1163102,bromfenac Ophthalmic Product,SCDG,exact_or_normalized,matched
+Bromocriptine,1760,,,exact_or_normalized,matched
+Bromotheophylline,1546386,bromotheophylline,IN,exact_or_normalized,matched
+Brompheniramine,1767,brompheniramine,IN,exact_or_normalized,matched
+Budesonide,19831,budesonide,IN,exact_or_normalized,matched
+Budesonide (nasal),1156071,budesonide Nasal Product,SCDG,exact_or_normalized,matched
+Bumetanide,1808,bumetanide,IN,exact_or_normalized,matched
+Bupivacaine,1815,bupivacaine,IN,exact_or_normalized,matched
+Buprenorphine,1819,buprenorphine,IN,exact_or_normalized,matched
+Bupropion,42347,bupropion,IN,exact_or_normalized,matched
+Buspirone,1827,buspirone,IN,exact_or_normalized,matched
+Butabarbital,477631,butabarbital,IN,exact_or_normalized,matched
+Butalbital,19860,butalbital,IN,exact_or_normalized,matched
+Butorphanol,1841,butorphanol,IN,exact_or_normalized,matched
+Cabazitaxel,996051,cabazitaxel,IN,exact_or_normalized,matched
+Cabotegravir,2475077,cabotegravir,IN,exact_or_normalized,matched
+Cabozantinib,1363268,cabozantinib,IN,exact_or_normalized,matched
+Caffeine,1886,caffeine,IN,exact_or_normalized,matched
+Calaspargase pegol,2121416,calaspargase pegol,IN,exact_or_normalized,matched
+Calcifediol,1889,calcifediol,IN,exact_or_normalized,matched
+Calcipotriol (topical),29365,calcipotriene,IN,approximate,matched
+Calcitriol,1894,calcitriol,IN,exact_or_normalized,matched
+Calcitriol (topical),1153001,calcitriol Topical Product,SCDG,exact_or_normalized,matched
+Calcium Phosphate,1919,calcium phosphate,IN,exact_or_normalized,matched
+Calcium acetate,214342,calcium acetate,IN,exact_or_normalized,matched
+Calcium carbonate,1897,calcium carbonate,IN,exact_or_normalized,matched
+Calcium chloride,1901,calcium chloride,IN,exact_or_normalized,matched
+Calcium citrate,47613,calcium citrate,IN,exact_or_normalized,matched
+Calcium glubionate anhydrous,25806,calcium glubionate,IN,approximate,matched
+Calcium gluconate,1908,calcium gluconate,IN,exact_or_normalized,matched
+Calcium glycerophosphate,1909,calcium glycerophosphate,IN,exact_or_normalized,matched
+Calcium lactate,47622,calcium lactate,IN,exact_or_normalized,matched
+Canagliflozin,1373458,canagliflozin,IN,exact_or_normalized,matched
+Canakinumab,853491,canakinumab,IN,exact_or_normalized,matched
+Cangrelor,1656052,cangrelor,IN,exact_or_normalized,matched
+Cannabidiol,2045371,cannabidiol,IN,exact_or_normalized,matched
+Capecitabine,194000,capecitabine,IN,exact_or_normalized,matched
+Caplacizumab,2110605,caplacizumab,IN,exact_or_normalized,matched
+Capmatinib,2362165,capmatinib,IN,exact_or_normalized,matched
+Capreomycin,78903,capreomycin,IN,exact_or_normalized,matched
+Capsicum,319780,Capsicum extract,IN,exact_or_normalized,matched
+Captopril,1998,captopril,IN,exact_or_normalized,matched
+Carbamazepine,2002,carbamazepine,IN,exact_or_normalized,matched
+Carbenicillin,2015,carbenicillin,IN,exact_or_normalized,matched
+Carbinoxamine,20220,carbinoxamine,IN,exact_or_normalized,matched
+Carboplatin,40048,carboplatin,IN,exact_or_normalized,matched
+Carfilzomib,1302966,carfilzomib,IN,exact_or_normalized,matched
+Cariprazine,1667655,cariprazine,IN,exact_or_normalized,matched
+Carteolol,2116,carteolol,IN,exact_or_normalized,matched
+Carteolol (ophthalmic),1151732,carteolol Ophthalmic Product,SCDG,exact_or_normalized,matched
+Carvedilol,20352,carvedilol,IN,exact_or_normalized,matched
+Castor oil,2129,castor oil,IN,exact_or_normalized,matched
+Cefaclor,2176,cefaclor,IN,exact_or_normalized,matched
+Cefadroxil,2177,cefadroxil,IN,exact_or_normalized,matched
+Cefalotin,2236,cephalothin,IN,exact_or_normalized,matched
+Cefamandole,2178,cefamandole,IN,exact_or_normalized,matched
+Cefapirin,2238,cephapirin,IN,exact_or_normalized,matched
+Cefazolin,2180,cefazolin,IN,exact_or_normalized,matched
+Cefdinir,25037,cefdinir,IN,exact_or_normalized,matched
+Cefditoren,83682,cefditoren,IN,exact_or_normalized,matched
+Cefepime,20481,cefepime,IN,exact_or_normalized,matched
+Cefiderocol,2265702,cefiderocol,IN,exact_or_normalized,matched
+Cefixime,25033,cefixime,IN,exact_or_normalized,matched
+Cefmetazole,2182,cefmetazole,IN,exact_or_normalized,matched
+Cefonicid,2183,cefonicid,IN,exact_or_normalized,matched
+Cefoperazone,2184,cefoperazone,IN,exact_or_normalized,matched
+Cefotaxime,2186,cefotaxime,IN,exact_or_normalized,matched
+Cefotetan,2187,cefotetan,IN,exact_or_normalized,matched
+Cefoxitin,2189,cefoxitin,IN,exact_or_normalized,matched
+Cefpodoxime,20489,cefpodoxime,IN,exact_or_normalized,matched
+Cefprozil,19552,cefprozil,IN,exact_or_normalized,matched
+Cefradine,2239,cephradine,IN,exact_or_normalized,matched
+Ceftaroline fosamil,1040004,ceftaroline fosamil,IN,exact_or_normalized,matched
+Ceftazidime,2191,ceftazidime,IN,exact_or_normalized,matched
+Ceftibuten,20492,ceftibuten,IN,exact_or_normalized,matched
+Ceftizoxime,2192,ceftizoxime,IN,exact_or_normalized,matched
+Ceftolozane,1597609,ceftolozane,IN,exact_or_normalized,matched
+Ceftriaxone,2193,ceftriaxone,IN,exact_or_normalized,matched
+Cefuroxime,2194,cefuroxime,IN,exact_or_normalized,matched
+Celecoxib,140587,celecoxib,IN,exact_or_normalized,matched
+Cenobamate,2265690,cenobamate,IN,exact_or_normalized,matched
+Cephalexin,2231,cephalexin,IN,exact_or_normalized,matched
+Ceritinib,1535457,ceritinib,IN,exact_or_normalized,matched
+Cerivastatin,596723,cerivastatin,IN,exact_or_normalized,matched
+Certolizumab pegol,709271,certolizumab pegol,IN,exact_or_normalized,matched
+Cetirizine,20610,cetirizine,IN,exact_or_normalized,matched
+Cetylpyridinium (topical),1152735,cetylpyridinium Topical Product,SCDG,exact_or_normalized,matched
+Cevimeline,44281,cevimeline,IN,exact_or_normalized,matched
+Chamomile,1309226,chamomile extract,IN,exact_or_normalized,matched
+Chenodeoxycholic acid,2323,chenodeoxycholic acid,PIN,exact_or_normalized,matched
+Chloral hydrate,2344,chloral hydrate,PIN,exact_or_normalized,matched
+Chloramphenicol,2348,chloramphenicol,IN,exact_or_normalized,matched
+Chlorcyclizine,2354,chlorcyclizine,IN,exact_or_normalized,matched
+Chlordiazepoxide,2356,chlordiazepoxide,IN,exact_or_normalized,matched
+Chloroprocaine,20859,chloroprocaine,IN,exact_or_normalized,matched
+Chloroquine,2393,chloroquine,IN,exact_or_normalized,matched
+Chlorothiazide,2396,chlorothiazide,IN,exact_or_normalized,matched
+Chlorpheniramine,2400,chlorpheniramine,IN,exact_or_normalized,matched
+Chlorpromazine,2403,chlorpromazine,IN,exact_or_normalized,matched
+Chlorpropamide,2404,chlorpropamide,IN,exact_or_normalized,matched
+Chlorthalidone,2409,chlorthalidone,IN,exact_or_normalized,matched
+Cholecalciferol,2418,cholecalciferol,IN,exact_or_normalized,matched
+Cholestyramine,2447,cholestyramine resin,IN,exact_or_normalized,matched
+Choline salicylate,20974,choline salicylate,PIN,exact_or_normalized,matched
+Chondroitin sulfate,2473,chondroitin sulfates,IN,exact_or_normalized,matched
+Chromium picolinate,59308,chromium picolinate,IN,exact_or_normalized,matched
+Ciclesonide,274964,ciclesonide,IN,exact_or_normalized,matched
+Cidofovir,83171,cidofovir,IN,exact_or_normalized,matched
+Cilostazol,21107,cilostazol,IN,exact_or_normalized,matched
+Cimetidine,2541,cimetidine,IN,exact_or_normalized,matched
+Cinacalcet,407990,cinacalcet,IN,exact_or_normalized,matched
+Cinchocaine (topical),3339,dibucaine,IN,approximate,matched
+Cinoxacin,2550,cinoxacin,IN,exact_or_normalized,matched
+Ciprofloxacin,2551,ciprofloxacin,IN,exact_or_normalized,matched
+Cisapride,35255,cisapride,IN,exact_or_normalized,matched
+Cisatracurium,319864,cisatracurium,IN,exact_or_normalized,matched
+Cisplatin,2555,cisplatin,IN,exact_or_normalized,matched
+Citalopram,2556,citalopram,IN,exact_or_normalized,matched
+Citrus bioflavonoids,581398,citrus pectin,IN,approximate,matched
+Cladribine,44157,cladribine,IN,exact_or_normalized,matched
+Clarithromycin,21212,clarithromycin,IN,exact_or_normalized,matched
+Clemastine,2578,clemastine,IN,exact_or_normalized,matched
+Clevidipine,233603,clevidipine,IN,exact_or_normalized,matched
+Clidinium,21232,clidinium,IN,exact_or_normalized,matched
+Clobazam,21241,clobazam,IN,exact_or_normalized,matched
+Clofarabine,44151,clofarabine,IN,exact_or_normalized,matched
+Clofazimine,2592,clofazimine,IN,exact_or_normalized,matched
+Clofibrate,2594,clofibrate,IN,exact_or_normalized,matched
+Clomipramine,2597,clomipramine,IN,exact_or_normalized,matched
+Clonazepam,2598,clonazepam,IN,exact_or_normalized,matched
+Clonidine,2599,clonidine,IN,exact_or_normalized,matched
+Clopidogrel,32968,clopidogrel,IN,exact_or_normalized,matched
+Clorazepic acid,235408,clorazepic acid,PIN,exact_or_normalized,matched
+Clotrimazole,2623,clotrimazole,IN,exact_or_normalized,matched
+Clove,1364295,clove preparation,IN,exact_or_normalized,matched
+Cloxacillin,2625,cloxacillin,IN,exact_or_normalized,matched
+Clozapine,2626,clozapine,IN,exact_or_normalized,matched
+Coagulation factor VIIa Recombinant Human,253149,eptacog alfa activated,PIN,exact_or_normalized,matched
+Coagulation factor X human,1426166,"coagulation factor X, human",PIN,exact_or_normalized,matched
+Cobicistat,1306284,cobicistat,IN,exact_or_normalized,matched
+Cobimetinib,1722365,cobimetinib,IN,exact_or_normalized,matched
+Cocaine (nasal),1154211,cocaine Nasal Product,SCDG,exact_or_normalized,matched
+Cocaine (topical),1154217,cocaine Topical Product,SCDG,exact_or_normalized,matched
+Codeine,2670,codeine,IN,exact_or_normalized,matched
+Coenzyme M,1546354,2-mercaptoethanesulfonic acid,IN,exact_or_normalized,matched
+Colchicine,2683,colchicine,IN,exact_or_normalized,matched
+Colesevelam,141626,colesevelam,IN,exact_or_normalized,matched
+Colestipol,2685,colestipol,IN,exact_or_normalized,matched
+Colistimethate,2708,colistimethate,PIN,exact_or_normalized,matched
+Collagenase clostridium histolyticum,898492,collagenase Clostridium histolyticum,IN,exact_or_normalized,matched
+Conestat alfa,1599831,C1 esterase inhibitor (recombinant),PIN,exact_or_normalized,matched
+Conivaptan,302285,conivaptan,IN,exact_or_normalized,matched
+Conjugated estrogens,4099,"estrogens, conjugated (USP)",IN,exact_or_normalized,matched
+Conjugated estrogens (topical),4099,"estrogens, conjugated (USP)",IN,approximate,matched
+Copanlisib,1945077,copanlisib,IN,exact_or_normalized,matched
+Copper gluconate,2839,copper gluconate,IN,exact_or_normalized,matched
+Corticotropin,376,corticotropin,IN,exact_or_normalized,matched
+Cranberry,125933,cranberry preparation,IN,exact_or_normalized,matched
+Crizotinib,1148495,crizotinib,IN,exact_or_normalized,matched
+Cyanocobalamin,11248,vitamin B12,IN,exact_or_normalized,matched
+Cyclandelate,2970,cyclandelate,IN,exact_or_normalized,matched
+Cyclizine,2977,cyclizine,IN,exact_or_normalized,matched
+Cyclobenzaprine,21949,cyclobenzaprine,IN,exact_or_normalized,matched
+Cyclophosphamide,3002,cyclophosphamide,IN,exact_or_normalized,matched
+Cycloserine,3007,cycloserine,IN,exact_or_normalized,matched
+Cyclosporine,3008,cyclosporine,IN,exact_or_normalized,matched
+Cyproheptadine,3013,cyproheptadine,IN,exact_or_normalized,matched
+Dabrafenib,1424911,dabrafenib,IN,exact_or_normalized,matched
+Daclatasvir,1606218,daclatasvir,IN,exact_or_normalized,matched
+Dactinomycin,3100,dactinomycin,IN,exact_or_normalized,matched
+Dalfopristin,229369,dalfopristin,IN,exact_or_normalized,matched
+Dalteparin,67109,dalteparin,IN,exact_or_normalized,matched
+Danaparoid,78484,danaparoid,IN,exact_or_normalized,matched
+Danazol,3102,danazol,IN,exact_or_normalized,matched
+Dapagliflozin,1488564,dapagliflozin,IN,exact_or_normalized,matched
+Dapsone,3108,dapsone,IN,exact_or_normalized,matched
+Dapsone (topical),1152142,dapsone Topical Product,SCDG,exact_or_normalized,matched
+Daptomycin,22299,daptomycin,IN,exact_or_normalized,matched
+Darbepoetin alfa,283838,darbepoetin alfa,IN,exact_or_normalized,matched
+Darifenacin,136198,darifenacin,IN,exact_or_normalized,matched
+Darolutamide,2180325,darolutamide,IN,exact_or_normalized,matched
+Darunavir,460132,darunavir,IN,exact_or_normalized,matched
+Dasatinib,475342,dasatinib,IN,exact_or_normalized,matched
+Daunorubicin,3109,daunorubicin,IN,exact_or_normalized,matched
+Daunorubicin (liposomal),214468,daunorubicin liposomal,PIN,exact_or_normalized,matched
+Deferasirox,614373,deferasirox,IN,exact_or_normalized,matched
+Deferiprone,11645,deferiprone,IN,exact_or_normalized,matched
+Defibrotide,1311089,defibrotide,IN,exact_or_normalized,matched
+Deflazacort,22396,deflazacort,IN,exact_or_normalized,matched
+Degarelix,475230,degarelix,IN,exact_or_normalized,matched
+Delafloxacin,1927663,delafloxacin,IN,exact_or_normalized,matched
+Delavirdine,83816,delavirdine,IN,exact_or_normalized,matched
+Demeclocycline,3154,demeclocycline,IN,exact_or_normalized,matched
+Deoxycholic acid,3194,,,exact_or_normalized,matched
+Deserpidine,62174,deserpidine,IN,approximate,matched
+Desflurane,27340,desflurane,IN,exact_or_normalized,matched
+Desipramine,3247,desipramine,IN,exact_or_normalized,matched
+Desirudin,114934,desirudin,IN,exact_or_normalized,matched
+Desloratadine,275635,desloratadine,IN,exact_or_normalized,matched
+Desmopressin,3251,desmopressin,IN,exact_or_normalized,matched
+Desvenlafaxine,734064,desvenlafaxine,IN,exact_or_normalized,matched
+Deutetrabenazine,1876905,deutetrabenazine,IN,exact_or_normalized,matched
+Dexamethasone,3264,dexamethasone,IN,exact_or_normalized,matched
+Dexbrompheniramine,22696,dexbrompheniramine,IN,exact_or_normalized,matched
+Dexfenfluramine,3268,dexfenfluramine,IN,exact_or_normalized,matched
+Dexlansoprazole,816346,dexlansoprazole,IN,exact_or_normalized,matched
+Dexmethylphenidate,352372,dexmethylphenidate,IN,exact_or_normalized,matched
+Dextran (-1),214485,dextran 1,IN,exact_or_normalized,matched
+Dextran (high molecular weight),309715,dextran 70 320 MG/ML Injectable Solution,SCD,approximate,matched
+Dextran (low molecular weight),3272,dextran 40,IN,exact_or_normalized,matched
+Dextroamphetamine,3288,dextroamphetamine,IN,exact_or_normalized,matched
+Dextromethorphan,3289,dextromethorphan,IN,exact_or_normalized,matched
+Dextropropoxyphene,8785,propoxyphene,IN,exact_or_normalized,matched
+Dextrothyroxine,3292,dextrothyroxine,IN,exact_or_normalized,matched
+Dezocine,22713,dezocine,IN,exact_or_normalized,matched
+Diatrizoate,3319,diatrizoate,IN,exact_or_normalized,matched
+Diazepam,3322,diazepam,IN,exact_or_normalized,matched
+Diazoxide,3327,diazoxide,IN,exact_or_normalized,matched
+Diclofenac,3355,diclofenac,IN,exact_or_normalized,matched
+Diclofenac (ophthalmic),1151150,diclofenac Ophthalmic Product,SCDG,exact_or_normalized,matched
+Diclofenac (topical),1151155,diclofenac Topical Product,SCDG,exact_or_normalized,matched
+Diclofenamide,3353,dichlorphenamide,IN,exact_or_normalized,matched
+Dicloxacillin,3356,dicloxacillin,IN,exact_or_normalized,matched
+Dicoumarol,1598,dicumarol,IN,exact_or_normalized,matched
+Dicyclomine,3361,dicyclomine,IN,exact_or_normalized,matched
+Didanosine,3364,didanosine,IN,exact_or_normalized,matched
+Dienestrol (topical),1151173,dienestrol Topical Product,SCDG,exact_or_normalized,matched
+Diethylpropion,3389,diethylpropion,IN,exact_or_normalized,matched
+Diethylstilbestrol,3390,diethylstilbestrol,IN,exact_or_normalized,matched
+Diflunisal,3393,diflunisal,IN,exact_or_normalized,matched
+Digitoxin,3403,digitoxin,IN,exact_or_normalized,matched
+Digoxin,3407,digoxin,IN,exact_or_normalized,matched
+Dihydrocodeine,23088,dihydrocodeine,IN,exact_or_normalized,matched
+Dihydroergotamine,3418,dihydroergotamine,IN,exact_or_normalized,matched
+Dihydrotachysterol,3429,dihydrotachysterol,IN,exact_or_normalized,matched
+Diltiazem,3443,diltiazem,IN,exact_or_normalized,matched
+Dimenhydrinate,3444,dimenhydrinate,IN,exact_or_normalized,matched
+Dimercaprol,3445,dimercaprol,IN,exact_or_normalized,matched
+Dinoprostone (topical),3478,dinoprostone,IN,approximate,matched
+Diphenhydramine,3498,diphenhydramine,IN,exact_or_normalized,matched
+Dipyridamole,3521,dipyridamole,IN,exact_or_normalized,matched
+Disopyramide,3541,disopyramide,IN,exact_or_normalized,matched
+Disulfiram,3554,disulfiram,IN,exact_or_normalized,matched
+Docetaxel,72962,docetaxel,IN,exact_or_normalized,matched
+Dofetilide,49247,dofetilide,IN,exact_or_normalized,matched
+Dolasetron,68091,dolasetron,IN,exact_or_normalized,matched
+Dolutegravir,1433868,dolutegravir,IN,exact_or_normalized,matched
+Donepezil,135447,donepezil,IN,exact_or_normalized,matched
+Doravirine,2055755,doravirine,IN,exact_or_normalized,matched
+Dorzolamide (ophthalmic),1160644,dorzolamide Ophthalmic Product,SCDG,exact_or_normalized,matched
+Doxacurium,23651,doxacurium,IN,exact_or_normalized,matched
+Doxapram,3637,doxapram,IN,exact_or_normalized,matched
+Doxazosin,49276,doxazosin,IN,exact_or_normalized,matched
+Doxepin,3638,doxepin,IN,exact_or_normalized,matched
+Doxepin (topical),1160770,doxepin Topical Product,SCDG,exact_or_normalized,matched
+Doxercalciferol,11516,doxercalciferol,IN,exact_or_normalized,matched
+Doxorubicin,3639,doxorubicin,IN,exact_or_normalized,matched
+Doxorubicin (liposomal),214525,doxorubicin liposome,PIN,exact_or_normalized,matched
+Doxycycline,3640,doxycycline,IN,exact_or_normalized,matched
+Doxylamine,3642,doxylamine,IN,exact_or_normalized,matched
+Dronabinol,10402,dronabinol,IN,exact_or_normalized,matched
+Dronedarone,233698,dronedarone,IN,exact_or_normalized,matched
+Droperidol,3648,droperidol,IN,exact_or_normalized,matched
+Drospirenone,11636,drospirenone,IN,exact_or_normalized,matched
+Drotrecogin alfa,352374,drotrecogin alfa,IN,exact_or_normalized,matched
+Droxidopa,1489913,droxidopa,IN,exact_or_normalized,matched
+Dulaglutide,1551291,dulaglutide,IN,exact_or_normalized,matched
+Duloxetine,72625,duloxetine,IN,exact_or_normalized,matched
+Dupilumab,1876376,dupilumab,IN,exact_or_normalized,matched
+Durvalumab,1919503,durvalumab,IN,exact_or_normalized,matched
+Dutasteride,228790,dutasteride,IN,exact_or_normalized,matched
+Duvelisib,2058509,duvelisib,IN,exact_or_normalized,matched
+Dyphylline,3714,dyphylline,IN,exact_or_normalized,matched
+Echinacea,228041,Echinacea preparation,IN,exact_or_normalized,matched
+Econazole (topical),1162623,econazole Topical Product,SCDG,exact_or_normalized,matched
+Edoxaban,1599538,edoxaban,IN,exact_or_normalized,matched
+Efalizumab,356988,efalizumab,IN,exact_or_normalized,matched
+Efavirenz,195085,efavirenz,IN,exact_or_normalized,matched
+Elagolix,2049846,elagolix,IN,exact_or_normalized,matched
+Elbasvir,1734628,elbasvir,IN,exact_or_normalized,matched
+Eletriptan,231049,eletriptan,IN,exact_or_normalized,matched
+Elexacaftor,2256951,elexacaftor,IN,exact_or_normalized,matched
+Eliglustat,1547220,eliglustat,IN,exact_or_normalized,matched
+Eltrombopag,711942,eltrombopag,IN,exact_or_normalized,matched
+Eluxadoline,1653781,eluxadoline,IN,exact_or_normalized,matched
+Elvitegravir,1306286,elvitegravir,IN,exact_or_normalized,matched
+Emapalumab,2104604,emapalumab,IN,exact_or_normalized,matched
+Emicizumab,1989794,emicizumab,IN,exact_or_normalized,matched
+Empagliflozin,1545653,empagliflozin,IN,exact_or_normalized,matched
+Enalapril,3827,enalapril,IN,exact_or_normalized,matched
+Enasidenib,1940332,enasidenib,IN,exact_or_normalized,matched
+Encorafenib,2049106,encorafenib,IN,exact_or_normalized,matched
+Enflurane,3920,enflurane,IN,exact_or_normalized,matched
+Enoxacin,3925,enoxacin,IN,exact_or_normalized,matched
+Enoxaparin,67108,enoxaparin,IN,exact_or_normalized,matched
+Entacapone,60307,entacapone,IN,exact_or_normalized,matched
+Entecavir,306266,entecavir,IN,exact_or_normalized,matched
+Entrectinib,2197862,entrectinib,IN,exact_or_normalized,matched
+Enzalutamide,1307298,enzalutamide,IN,exact_or_normalized,matched
+Ephedrine,3966,ephedrine,IN,exact_or_normalized,matched
+Ephedrine (nasal),1163313,ephedrine Nasal Product,SCDG,exact_or_normalized,matched
+Epinephrine,3992,epinephrine,IN,exact_or_normalized,matched
+Epinephrine (ophthalmic),1163889,epinephrine Ophthalmic Product,SCDG,exact_or_normalized,matched
+Epinephrine (topical),1163892,epinephrine Topical Product,SCDG,exact_or_normalized,matched
+Epirubicin,3995,epirubicin,IN,exact_or_normalized,matched
+Eplerenone,298869,eplerenone,IN,exact_or_normalized,matched
+Epoprostenol,8814,epoprostenol,IN,exact_or_normalized,matched
+Eprosartan,83515,eprosartan,IN,exact_or_normalized,matched
+Eptifibatide,75635,eptifibatide,IN,exact_or_normalized,matched
+Eravacycline,2055906,eravacycline,IN,exact_or_normalized,matched
+Erdafitinib,2123125,erdafitinib,IN,exact_or_normalized,matched
+Ergocalciferol,4018,ergocalciferol,IN,exact_or_normalized,matched
+Ergometrine,4021,ergonovine,IN,exact_or_normalized,matched
+Ergotamine,4025,ergotamine,IN,exact_or_normalized,matched
+Eribulin,1045453,eribulin,IN,exact_or_normalized,matched
+Erlotinib,337525,erlotinib,IN,exact_or_normalized,matched
+Ertugliflozin,1992672,ertugliflozin,IN,exact_or_normalized,matched
+Erythromycin,4053,erythromycin,IN,exact_or_normalized,matched
+Erythropoietin,105694,epoetin alfa,IN,exact_or_normalized,matched
+Escitalopram,321988,escitalopram,IN,exact_or_normalized,matched
+Eslicarbazepine,1482502,eslicarbazepine,IN,exact_or_normalized,matched
+Esmolol,49737,esmolol,IN,exact_or_normalized,matched
+Esomeprazole,283742,esomeprazole,IN,exact_or_normalized,matched
+Estazolam,4077,estazolam,IN,exact_or_normalized,matched
+Esterified estrogens,214549,"estrogens, esterified (USP)",IN,exact_or_normalized,matched
+Estradiol,4083,estradiol,IN,exact_or_normalized,matched
+Estradiol (topical),1165762,estradiol Topical Product,SCDG,exact_or_normalized,matched
+Estramustine,4089,estramustine,IN,exact_or_normalized,matched
+Estrone,4103,estrone,IN,exact_or_normalized,matched
+Estrone sulfate,4103,estrone,IN,exact_or_normalized,matched
+Estrone sulfate (topical),91428,sodium estrone sulfate,PIN,approximate,matched
+Eszopiclone,461016,eszopiclone,IN,exact_or_normalized,matched
+Etacrynic acid,4109,ethacrynic acid,PIN,exact_or_normalized,matched
+Etanercept,214555,etanercept,IN,exact_or_normalized,matched
+Ethanol,448,ethanol,IN,exact_or_normalized,matched
+Ethchlorvynol,4118,ethchlorvynol,IN,exact_or_normalized,matched
+Ethinylestradiol,4124,ethinyl estradiol,IN,exact_or_normalized,matched
+Ethosuximide,4135,ethosuximide,IN,exact_or_normalized,matched
+Ethotoin,4136,ethotoin,IN,exact_or_normalized,matched
+Etidocaine,4171,etidocaine,IN,exact_or_normalized,matched
+Etidronic acid,1356715,etidronic acid,PIN,exact_or_normalized,matched
+Etodolac,24605,etodolac,IN,exact_or_normalized,matched
+Etonogestrel,14584,etonogestrel,IN,exact_or_normalized,matched
+Etoposide,4179,etoposide,IN,exact_or_normalized,matched
+Etravirine,475969,etravirine,IN,exact_or_normalized,matched
+Everolimus,141704,everolimus,IN,exact_or_normalized,matched
+Exemestane,258494,exemestane,IN,exact_or_normalized,matched
+Exenatide,60548,exenatide,IN,exact_or_normalized,matched
+Ezetimibe,341248,ezetimibe,IN,exact_or_normalized,matched
+Ezogabine,1112990,ezogabine,IN,exact_or_normalized,matched
+Factor IX Complex (Human),1670383,factor IX complex,IN,exact_or_normalized,matched
+Famotidine,4278,famotidine,IN,exact_or_normalized,matched
+Fedratinib,2197490,fedratinib,IN,exact_or_normalized,matched
+Felbamate,24812,felbamate,IN,exact_or_normalized,matched
+Felodipine,4316,felodipine,IN,exact_or_normalized,matched
+Fenfluramine,4328,fenfluramine,IN,exact_or_normalized,matched
+Fenofibrate,8703,fenofibrate,IN,exact_or_normalized,matched
+Fenofibric acid,24852,fenofibric acid,PIN,exact_or_normalized,matched
+Fenoldopam,24853,fenoldopam,IN,exact_or_normalized,matched
+Fenoprofen,4331,fenoprofen,IN,exact_or_normalized,matched
+Fentanyl,4337,fentanyl,IN,exact_or_normalized,matched
+Ferric carboxymaltose,1433693,ferric carboxymaltose,IN,exact_or_normalized,matched
+Ferric derisomaltose,2274394,ferric derisomaltose,IN,exact_or_normalized,matched
+Ferrous fumarate,24941,ferrous fumarate,IN,exact_or_normalized,matched
+Ferrous gluconate,24942,ferrous gluconate,IN,exact_or_normalized,matched
+Ferrous sulfate anhydrous,259346,"ferrous sulfate,dried",PIN,exact_or_normalized,matched
+Ferumoxytol,473387,ferumoxytol,IN,exact_or_normalized,matched
+Fesoterodine,797195,fesoterodine,IN,exact_or_normalized,matched
+Fexofenadine,87636,fexofenadine,IN,exact_or_normalized,matched
+Fibrinogen human,2264108,"fibrinogen, human",PIN,exact_or_normalized,matched
+Fidaxomicin,1111103,fidaxomicin,IN,exact_or_normalized,matched
+Finasteride,25025,finasteride,IN,exact_or_normalized,matched
+Fingolimod,1012892,fingolimod,IN,exact_or_normalized,matched
+Flavoxate,4440,flavoxate,IN,exact_or_normalized,matched
+Flecainide,4441,flecainide,IN,exact_or_normalized,matched
+Flibanserin,1665509,flibanserin,IN,exact_or_normalized,matched
+Fluconazole,4450,fluconazole,IN,exact_or_normalized,matched
+Flucytosine,4451,flucytosine,IN,exact_or_normalized,matched
+Fludarabine,24698,fludarabine,IN,exact_or_normalized,matched
+Fludeoxyglucose (18F),1362737,fluorodeoxyglucose F18,IN,exact_or_normalized,matched
+Fludrocortisone,4452,fludrocortisone,IN,exact_or_normalized,matched
+Fluorouracil,4492,fluorouracil,IN,exact_or_normalized,matched
+Fluoxetine,4493,fluoxetine,IN,exact_or_normalized,matched
+Fluoxymesterone,4494,fluoxymesterone,IN,exact_or_normalized,matched
+Fluphenazine,4496,fluphenazine,IN,exact_or_normalized,matched
+Flurazepam,4501,flurazepam,IN,exact_or_normalized,matched
+Flurbiprofen,4502,flurbiprofen,IN,exact_or_normalized,matched
+Flurbiprofen (ophthalmic),1161452,flurbiprofen Ophthalmic Product,SCDG,exact_or_normalized,matched
+Flutamide,4508,flutamide,IN,exact_or_normalized,matched
+Fluticasone,41126,fluticasone,IN,exact_or_normalized,matched
+Fluvastatin,41127,fluvastatin,IN,exact_or_normalized,matched
+Fluvoxamine,42355,fluvoxamine,IN,exact_or_normalized,matched
+Folic acid,4511,folic acid,IN,exact_or_normalized,matched
+Fondaparinux,321208,fondaparinux,IN,exact_or_normalized,matched
+Formoterol,25255,formoterol,IN,exact_or_normalized,matched
+Fosamprenavir,358262,fosamprenavir,IN,exact_or_normalized,matched
+Fosaprepitant,1731071,fosaprepitant,IN,exact_or_normalized,matched
+Foscarnet,33562,foscarnet,IN,exact_or_normalized,matched
+Fosinopril,50166,fosinopril,IN,exact_or_normalized,matched
+Fosnetupitant,2044417,fosnetupitant,PIN,exact_or_normalized,matched
+Fosphenytoin,72236,fosphenytoin,IN,exact_or_normalized,matched
+Fostamatinib,2044896,fostamatinib,IN,exact_or_normalized,matched
+Fostemsavir,2380373,fostemsavir,IN,exact_or_normalized,matched
+Frangula purshiana bark,1350209,Frangula purshiana bark extract,IN,exact_or_normalized,matched
+Furosemide,4603,furosemide,IN,exact_or_normalized,matched
+Galantamine,4637,galantamine,IN,exact_or_normalized,matched
+Gallium chloride Ga-67,314639,"gallium chloride,Ga-67",PIN,exact_or_normalized,matched
+Gallium nitrate,25544,gallium nitrate,PIN,exact_or_normalized,matched
+Garlic,265647,garlic preparation,IN,exact_or_normalized,matched
+Gatifloxacin,228476,gatifloxacin,IN,exact_or_normalized,matched
+Gefitinib,328134,gefitinib,IN,exact_or_normalized,matched
+Gemcitabine,12574,gemcitabine,IN,exact_or_normalized,matched
+Gemfibrozil,4719,gemfibrozil,IN,exact_or_normalized,matched
+Gemifloxacin,138099,gemifloxacin,IN,exact_or_normalized,matched
+Gentamicin,1596450,gentamicin,IN,exact_or_normalized,matched
+Gentamicin (topical),1870263,gentamicin Topical Product,SCDG,exact_or_normalized,matched
+Gilteritinib,2105806,gilteritinib,IN,exact_or_normalized,matched
+Ginger,285241,ginger extract,IN,exact_or_normalized,matched
+Ginkgo biloba,236809,Ginkgo biloba extract,IN,exact_or_normalized,matched
+Ginseng,325526,ginseng preparation,IN,exact_or_normalized,matched
+Givosiran,2265712,givosiran,IN,exact_or_normalized,matched
+Glasdegib,2105845,glasdegib,IN,exact_or_normalized,matched
+Glecaprevir,1940635,glecaprevir,IN,exact_or_normalized,matched
+Glimepiride,25789,glimepiride,IN,exact_or_normalized,matched
+Glipizide,4821,glipizide,IN,exact_or_normalized,matched
+Glucagon,4832,glucagon,IN,exact_or_normalized,matched
+Glucosamine,4845,glucosamine,IN,exact_or_normalized,matched
+Glyburide,4815,glyburide,IN,exact_or_normalized,matched
+Glycerin,4910,glycerin,IN,exact_or_normalized,matched
+Glycerol phenylbutyrate,1368451,glycerol phenylbutyrate,IN,exact_or_normalized,matched
+Glycopyrronium,1546438,glycopyrronium,IN,exact_or_normalized,matched
+Goldenseal,1372255,goldenseal extract,IN,exact_or_normalized,matched
+Golimumab,819300,golimumab,IN,exact_or_normalized,matched
+Goserelin,50610,goserelin,IN,exact_or_normalized,matched
+Granisetron,26237,granisetron,IN,exact_or_normalized,matched
+Grazoprevir,1734630,grazoprevir,IN,exact_or_normalized,matched
+Grepafloxacin,83719,grepafloxacin,IN,exact_or_normalized,matched
+Griseofulvin,5021,griseofulvin,IN,exact_or_normalized,matched
+Guanabenz,5033,guanabenz,IN,exact_or_normalized,matched
+Guanadrel,26296,guanadrel,IN,exact_or_normalized,matched
+Guanethidine,5036,guanethidine,IN,exact_or_normalized,matched
+Guanfacine,40114,guanfacine,IN,exact_or_normalized,matched
+Guselkumab,1928588,guselkumab,IN,exact_or_normalized,matched
+Halazepam,26412,halazepam,IN,exact_or_normalized,matched
+Halofantrine,50749,halofantrine,IN,exact_or_normalized,matched
+Haloperidol,5093,haloperidol,IN,exact_or_normalized,matched
+Halothane,5095,halothane,IN,exact_or_normalized,matched
+Hemin,5175,hemin,IN,exact_or_normalized,matched
+Heparin,235473,"heparin, porcine",PIN,exact_or_normalized,matched
+Heparin (flush),5224,heparin,IN,approximate,matched
+Histrelin,50975,histrelin,IN,exact_or_normalized,matched
+Homatropine,27084,homatropine,IN,exact_or_normalized,matched
+Human C1-esterase inhibitor,809864,C1 esterase inhibitor (human),PIN,exact_or_normalized,matched
+Human Rho(D) immune globulin,1789837,"Rho(D) immune globulin, human",PIN,exact_or_normalized,matched
+Human botulinum neurotoxin A/B immune globulin,544488,botulism immune globulin IV human,IN,exact_or_normalized,matched
+Human cytomegalovirus immune globulin,1997443,"cytomegalovirus immune globulin, human",PIN,exact_or_normalized,matched
+Human immunoglobulin G (intravenous and subcutaneous),1426680,"immunoglobulin G, human",PIN,approximate,matched
+Human immunoglobulin G (intravenous),1426680,"immunoglobulin G, human",PIN,approximate,matched
+Hyaluronic acid,5463,hyaluronic acid,PIN,exact_or_normalized,matched
+Hyaluronidase,5464,hyaluronidase,IN,exact_or_normalized,matched
+Hydralazine,5470,hydralazine,IN,exact_or_normalized,matched
+Hydrochlorothiazide,5487,hydrochlorothiazide,IN,exact_or_normalized,matched
+Hydrocodone,5489,hydrocodone,IN,exact_or_normalized,matched
+Hydrocortisone,5492,hydrocortisone,IN,exact_or_normalized,matched
+Hydroflumethiazide,5495,hydroflumethiazide,IN,exact_or_normalized,matched
+Hydromorphone,3423,hydromorphone,IN,exact_or_normalized,matched
+Hydroxocobalamin,5514,hydroxocobalamin,IN,exact_or_normalized,matched
+Hydroxychloroquine,5521,hydroxychloroquine,IN,exact_or_normalized,matched
+Hydroxyzine,5553,hydroxyzine,IN,exact_or_normalized,matched
+Hyoscyamine,153970,hyoscyamine,IN,exact_or_normalized,matched
+Ibandronate,115264,ibandronate,IN,exact_or_normalized,matched
+Ibritumomab tiuxetan,262323,ibritumomab tiuxetan,IN,exact_or_normalized,matched
+Ibrutinib,1442981,ibrutinib,IN,exact_or_normalized,matched
+Ibuprofen,5640,ibuprofen,IN,exact_or_normalized,matched
+Ibutilide,41289,ibutilide,IN,exact_or_normalized,matched
+Icatibant,1148138,icatibant,IN,exact_or_normalized,matched
+Icosapent,90,eicosapentaenoic acid,PIN,exact_or_normalized,matched
+Idarubicin,5650,idarubicin,IN,exact_or_normalized,matched
+Idelalisib,1544460,idelalisib,IN,exact_or_normalized,matched
+Ifosfamide,5657,ifosfamide,IN,exact_or_normalized,matched
+Iloperidone,73178,,,exact_or_normalized,matched
+Iloprost,40138,iloprost,IN,exact_or_normalized,matched
+Imatinib,282388,imatinib,IN,exact_or_normalized,matched
+Imipenem,5690,imipenem,IN,exact_or_normalized,matched
+Imipramine,5691,imipramine,IN,exact_or_normalized,matched
+Indacaterol,1114326,indacaterol,IN,exact_or_normalized,matched
+Indapamide,5764,indapamide,IN,exact_or_normalized,matched
+Indinavir,114289,indinavir,IN,exact_or_normalized,matched
+Indium In-111 oxyquinoline,1314372,indium In-111 oxyquinoline,PIN,exact_or_normalized,matched
+Indomethacin,5781,indomethacin,IN,exact_or_normalized,matched
+Inebilizumab,2373951,inebilizumab,IN,exact_or_normalized,matched
+Infliximab,191831,infliximab,IN,exact_or_normalized,matched
+Inotersen,2099289,inotersen,IN,exact_or_normalized,matched
+Inotuzumab ozogamicin,1942950,inotuzumab ozogamicin,IN,exact_or_normalized,matched
+Insulin aspart (aspart protamine),352385,"insulin aspart protamine, human",IN,approximate,matched
+Insulin aspart (aspart),51428,"insulin aspart, human",IN,approximate,matched
+Insulin degludec,1670007,insulin degludec,IN,exact_or_normalized,matched
+Insulin detemir,139825,insulin detemir,IN,exact_or_normalized,matched
+Insulin glargine,274783,insulin glargine,IN,exact_or_normalized,matched
+Insulin glulisine,400008,"insulin glulisine, human",IN,exact_or_normalized,matched
+Insulin human,253182,"insulin, regular, human",IN,exact_or_normalized,matched
+"Insulin human (inhalation, rapid acting)",1543202,"insulin, regular, human 4 UNT Inhalation Powder",SCD,approximate,matched
+Insulin human (isophane),253181,"insulin isophane, human",PIN,exact_or_normalized,matched
+Insulin human (regular),253182,"insulin, regular, human",IN,exact_or_normalized,matched
+Insulin human (zinc extended),221110,"ultralente insulin, human",IN,approximate,matched
+Insulin human (zinc),236646,"insulin, protamine zinc, human",IN,approximate,matched
+Insulin lispro,86009,insulin lispro,IN,exact_or_normalized,matched
+Insulin lispro (protamine),314684,"insulin lispro protamine, human",IN,exact_or_normalized,matched
+"Interferon alfa-2a, Recombinant",5879,interferon alfa-2a,IN,exact_or_normalized,matched
+Interferon alfa-2b,5880,interferon alfa-2b,IN,exact_or_normalized,matched
+Interferon alfa-n1,202912,interferon alfa-n1,IN,exact_or_normalized,matched
+Interferon alfa-n3,612937,interferon alfa-n3,IN,exact_or_normalized,matched
+Interferon alfacon-1,59744,interferon alfacon-1,IN,exact_or_normalized,matched
+Interferon beta-1a,75917,interferon beta-1a,IN,exact_or_normalized,matched
+Interferon beta-1b,72257,interferon beta-1b,IN,exact_or_normalized,matched
+Interferon gamma-1b,5882,interferon gamma-1b,IN,exact_or_normalized,matched
+Iodide I-123,1361657,iodide ion I-123,PIN,exact_or_normalized,matched
+Iodide I-131,1546394,iodine I-131,PIN,exact_or_normalized,matched
+Iodipamide,5936,iodipamide,IN,exact_or_normalized,matched
+Iodixanol,27729,iodixanol,IN,exact_or_normalized,matched
+Iohexol,5956,iohexol,IN,exact_or_normalized,matched
+Iopamidol,5966,iopamidol,IN,exact_or_normalized,matched
+Iopromide,27781,iopromide,IN,exact_or_normalized,matched
+Iothalamic acid,1546451,iothalamic acid,IN,exact_or_normalized,matched
+Ioversol,27792,ioversol,IN,exact_or_normalized,matched
+Ioxilan,27793,ioxilan,IN,exact_or_normalized,matched
+Ipilimumab,1094833,ipilimumab,IN,exact_or_normalized,matched
+Irbesartan,83818,irbesartan,IN,exact_or_normalized,matched
+Irinotecan,51499,irinotecan,IN,exact_or_normalized,matched
+Irinotecan (liposomal),1719767,irinotecan hydrochloride liposome,PIN,exact_or_normalized,matched
+Iron,90176,iron,IN,exact_or_normalized,matched
+Iron Dextran,5992,iron-dextran complex,IN,exact_or_normalized,matched
+Iron protein succinylate,27823,iron protein succinylate,IN,exact_or_normalized,matched
+Iron sucrose,24909,iron sucrose,IN,exact_or_normalized,matched
+Isavuconazonium,1608322,isavuconazonium,IN,exact_or_normalized,matched
+Isocarboxazid,6011,isocarboxazid,IN,exact_or_normalized,matched
+Isoetharine,6023,isoetharine,IN,exact_or_normalized,matched
+Isoflurane,6026,isoflurane,IN,exact_or_normalized,matched
+Isoniazid,6038,isoniazid,IN,exact_or_normalized,matched
+Isoprenaline,6054,isoproterenol,IN,exact_or_normalized,matched
+Isosorbide,6057,isosorbide,IN,exact_or_normalized,matched
+Isosorbide dinitrate,6058,isosorbide dinitrate,IN,exact_or_normalized,matched
+Isosorbide mononitrate,28004,isosorbide mononitrate,PIN,exact_or_normalized,matched
+Isotretinoin,6064,isotretinoin,IN,exact_or_normalized,matched
+Isoxsuprine,6066,isoxsuprine,IN,exact_or_normalized,matched
+Isradipine,33910,isradipine,IN,exact_or_normalized,matched
+Istradefylline,2199015,istradefylline,IN,exact_or_normalized,matched
+Itraconazole,28031,itraconazole,IN,exact_or_normalized,matched
+Ivabradine,1649480,ivabradine,IN,exact_or_normalized,matched
+Ivacaftor,1243041,ivacaftor,IN,exact_or_normalized,matched
+Ivermectin,6069,ivermectin,IN,exact_or_normalized,matched
+Ivosidenib,2049873,ivosidenib,IN,exact_or_normalized,matched
+Ixabepilone,337523,ixabepilone,IN,exact_or_normalized,matched
+Ixazomib,1723735,ixazomib,IN,exact_or_normalized,matched
+Ixekizumab,1745099,ixekizumab,IN,exact_or_normalized,matched
+Kanamycin,6099,kanamycin,IN,exact_or_normalized,matched
+Kaolin,6102,kaolin,IN,exact_or_normalized,matched
+Ketamine,6130,ketamine,IN,exact_or_normalized,matched
+Ketoconazole,6135,ketoconazole,IN,exact_or_normalized,matched
+Ketoprofen,6142,ketoprofen,IN,exact_or_normalized,matched
+Ketorolac,35827,ketorolac,IN,exact_or_normalized,matched
+Ketorolac (ophthalmic),1160968,ketorolac Ophthalmic Product,SCDG,exact_or_normalized,matched
+Labetalol,6185,labetalol,IN,exact_or_normalized,matched
+Lactic acid,28393,lactic acid,PIN,exact_or_normalized,matched
+Lactitol,28395,lactitol,IN,approximate,matched
+Lactobacillus acidophilus,6205,Lactobacillus acidophilus,IN,exact_or_normalized,matched
+Lactulose,6218,lactulose,IN,exact_or_normalized,matched
+Lamivudine,68244,lamivudine,IN,exact_or_normalized,matched
+Lamotrigine,28439,lamotrigine,IN,exact_or_normalized,matched
+Lansoprazole,17128,lansoprazole,IN,exact_or_normalized,matched
+Lanthanum carbonate,234416,lanthanum carbonate,IN,exact_or_normalized,matched
+Lapatinib,480167,lapatinib,IN,exact_or_normalized,matched
+Larotrectinib,2105628,larotrectinib,IN,exact_or_normalized,matched
+Lasmiditan,2256930,lasmiditan,IN,exact_or_normalized,matched
+Ledipasvir,1591922,ledipasvir,IN,exact_or_normalized,matched
+Lefamulin,2198944,lefamulin,IN,exact_or_normalized,matched
+Leflunomide,27169,leflunomide,IN,exact_or_normalized,matched
+Lemborexant,2272403,lemborexant,IN,exact_or_normalized,matched
+Lenalidomide,342369,lenalidomide,IN,exact_or_normalized,matched
+Lenvatinib,1603296,lenvatinib,IN,exact_or_normalized,matched
+Lepirudin,237057,lepirudin,IN,exact_or_normalized,matched
+Lesinurad,1731031,lesinurad,IN,exact_or_normalized,matched
+Letermovir,1988648,letermovir,IN,exact_or_normalized,matched
+Letrozole,72965,letrozole,IN,exact_or_normalized,matched
+Leuprolide,42375,leuprolide,IN,exact_or_normalized,matched
+Levacetylmethadol,6814,methadyl acetate,IN,approximate,matched
+Levamisole,6371,levamisole,IN,exact_or_normalized,matched
+Levamlodipine,2376944,levamlodipine,IN,exact_or_normalized,matched
+Levobetaxolol (ophthalmic),1163453,levobetaxolol Ophthalmic Product,SCDG,exact_or_normalized,matched
+Levobunolol (ophthalmic),1163454,levobunolol Ophthalmic Product,SCDG,exact_or_normalized,matched
+Levobupivacaine,259453,levobupivacaine,IN,exact_or_normalized,matched
+Levocarnitine,42955,levocarnitine,IN,exact_or_normalized,matched
+Levocetirizine,356887,levocetirizine,IN,exact_or_normalized,matched
+Levodopa,6375,levodopa,IN,exact_or_normalized,matched
+Levofloxacin,82122,levofloxacin,IN,exact_or_normalized,matched
+Levomilnacipran,1433212,levomilnacipran,IN,exact_or_normalized,matched
+Levonorgestrel,6373,levonorgestrel,IN,exact_or_normalized,matched
+Levorphanol,6378,levorphanol,IN,exact_or_normalized,matched
+Levosalbutamol,237159,levalbuterol,IN,exact_or_normalized,matched
+Levothyroxine,10582,levothyroxine,IN,exact_or_normalized,matched
+Licorice,1010954,licorice allergenic extract,IN,exact_or_normalized,matched
+Lidocaine,6387,lidocaine,IN,exact_or_normalized,matched
+Lidocaine (ophthalmic),1164661,lidocaine Ophthalmic Product,SCDG,exact_or_normalized,matched
+Lidocaine (topical),1164666,lidocaine Topical Product,SCDG,exact_or_normalized,matched
+Linaclotide,1307404,linaclotide,IN,exact_or_normalized,matched
+Linagliptin,1100699,linagliptin,IN,exact_or_normalized,matched
+Linezolid,190376,linezolid,IN,exact_or_normalized,matched
+Liothyronine,10814,liothyronine,IN,exact_or_normalized,matched
+Liotrix,372596,levothyroxine / liothyronine Oral Tablet,SCDF,approximate,matched
+Liraglutide,475968,liraglutide,IN,exact_or_normalized,matched
+Lisdexamfetamine,700810,lisdexamfetamine,IN,exact_or_normalized,matched
+Lisinopril,29046,lisinopril,IN,exact_or_normalized,matched
+Lithium carbonate,42351,lithium carbonate,IN,exact_or_normalized,matched
+Lixisenatide,1440051,lixisenatide,IN,exact_or_normalized,matched
+Lofexidine,28863,lofexidine,IN,exact_or_normalized,matched
+Lomefloxacin,28872,lomefloxacin,IN,exact_or_normalized,matched
+Lomitapide,1364479,lomitapide,IN,exact_or_normalized,matched
+Lonafarnib,2467553,lonafarnib,IN,exact_or_normalized,matched
+Loperamide,6468,loperamide,IN,exact_or_normalized,matched
+Lopinavir,195088,lopinavir,IN,exact_or_normalized,matched
+Loracarbef,28981,loracarbef,IN,exact_or_normalized,matched
+Loratadine,28889,loratadine,IN,exact_or_normalized,matched
+Lorazepam,6470,lorazepam,IN,exact_or_normalized,matched
+Lorlatinib,2103164,lorlatinib,IN,exact_or_normalized,matched
+Losartan,52175,losartan,IN,exact_or_normalized,matched
+Lovastatin,6472,lovastatin,IN,exact_or_normalized,matched
+Loxapine,6475,loxapine,IN,exact_or_normalized,matched
+Lumacaftor,1655922,lumacaftor,IN,exact_or_normalized,matched
+Lumateperone,2275602,lumateperone,IN,exact_or_normalized,matched
+Lumefantrine,847728,lumefantrine,IN,exact_or_normalized,matched
+Lurasidone,1040028,lurasidone,IN,exact_or_normalized,matched
+Lurbinectedin,2374729,lurbinectedin,IN,exact_or_normalized,matched
+Lusutrombopag,2054984,lusutrombopag,IN,exact_or_normalized,matched
+Macimorelin,1999420,macimorelin,IN,exact_or_normalized,matched
+Macitentan,1442132,macitentan,IN,exact_or_normalized,matched
+Magaldrate,29151,magaldrate,IN,exact_or_normalized,matched
+Magnesium carbonate,29155,magnesium carbonate,IN,exact_or_normalized,matched
+Magnesium chloride,6579,magnesium chloride,IN,exact_or_normalized,matched
+Magnesium citrate,52356,magnesium citrate,IN,exact_or_normalized,matched
+Magnesium gluconate,52358,magnesium gluconate,IN,exact_or_normalized,matched
+Magnesium glycinate,476818,magnesium glycinate,IN,exact_or_normalized,matched
+Magnesium hydroxide,6581,magnesium hydroxide,IN,exact_or_normalized,matched
+Magnesium oxide,6582,magnesium oxide,IN,exact_or_normalized,matched
+Magnesium sulfate,6585,magnesium sulfate,IN,exact_or_normalized,matched
+Mannitol,6628,mannitol,IN,exact_or_normalized,matched
+Maprotiline,6646,maprotiline,IN,exact_or_normalized,matched
+Maraviroc,620216,maraviroc,IN,exact_or_normalized,matched
+Mazindol,6664,mazindol,IN,exact_or_normalized,matched
+Mecamylamine,6673,mecamylamine,IN,exact_or_normalized,matched
+Mechlorethamine,6674,mechlorethamine,IN,exact_or_normalized,matched
+Meclizine,6676,meclizine,IN,exact_or_normalized,matched
+Meclofenamic acid,6678,meclofenamic acid,IN,exact_or_normalized,matched
+Mecobalamin,29421,mecobalamin,IN,exact_or_normalized,matched
+Medroxyprogesterone acetate,1000112,medroxyprogesterone acetate,PIN,exact_or_normalized,matched
+Mefenamic acid,6693,mefenamic acid,PIN,exact_or_normalized,matched
+Mefloquine,6694,mefloquine,IN,exact_or_normalized,matched
+Megestrol acetate,29451,megestrol acetate,PIN,exact_or_normalized,matched
+Melatonin,6711,melatonin,IN,exact_or_normalized,matched
+Meloxicam,41493,meloxicam,IN,exact_or_normalized,matched
+Melphalan,6718,melphalan,IN,exact_or_normalized,matched
+Melphalan flufenamide,2531369,melphalan flufenamide,IN,exact_or_normalized,matched
+Memantine,6719,memantine,IN,exact_or_normalized,matched
+Mepenzolate,107770,mepenzolate,IN,exact_or_normalized,matched
+Meperidine,6754,meperidine,IN,exact_or_normalized,matched
+Mephenytoin,6757,mephenytoin,IN,exact_or_normalized,matched
+Mepivacaine,6759,mepivacaine,IN,exact_or_normalized,matched
+Mepyramine,9009,pyrilamine,IN,exact_or_normalized,matched
+Mercaptopurine,103,mercaptopurine,IN,exact_or_normalized,matched
+Mesalazine,52582,mesalamine,IN,exact_or_normalized,matched
+Mesoridazine,6779,mesoridazine,IN,exact_or_normalized,matched
+Mestranol,6782,mestranol,IN,exact_or_normalized,matched
+Metamfetamine,6816,methamphetamine,IN,exact_or_normalized,matched
+Metformin,6809,metformin,IN,exact_or_normalized,matched
+Methadone,6813,methadone,IN,exact_or_normalized,matched
+Methazolamide,6826,methazolamide,IN,exact_or_normalized,matched
+Methdilazine,29648,methdilazine,IN,exact_or_normalized,matched
+Methenamine,6832,methenamine,IN,exact_or_normalized,matched
+Methimazole,6835,methimazole,IN,exact_or_normalized,matched
+Methohexital,6847,methohexital,IN,exact_or_normalized,matched
+Methotrexate,6851,methotrexate,IN,exact_or_normalized,matched
+Methotrimeprazine,6852,methotrimeprazine,IN,exact_or_normalized,matched
+Methoxsalen,6854,methoxsalen,IN,exact_or_normalized,matched
+Methoxyflurane,6857,methoxyflurane,IN,exact_or_normalized,matched
+Methscopolamine,89785,methscopolamine,IN,exact_or_normalized,matched
+Methsuximide,47858,methsuximide,IN,exact_or_normalized,matched
+Methyl aminolevulinate (topical),1156728,methyl 5-aminolevulinate Topical Product,SCDG,exact_or_normalized,matched
+Methyl salicylate (topical),1156734,methyl salicylate Topical Product,SCDG,exact_or_normalized,matched
+Methyldopa,6876,methyldopa,IN,exact_or_normalized,matched
+Methylene blue,6878,methylene blue,IN,exact_or_normalized,matched
+Methylergometrine,6883,methylergonovine,IN,exact_or_normalized,matched
+Methylphenidate,6901,methylphenidate,IN,exact_or_normalized,matched
+Methylphenobarbital,6758,mephobarbital,IN,exact_or_normalized,matched
+Methylprednisolone,6902,methylprednisolone,IN,exact_or_normalized,matched
+Methyltestosterone,6904,methyltestosterone,IN,exact_or_normalized,matched
+Methysergide,6911,methysergide,IN,exact_or_normalized,matched
+Meticillin,2181306,methicillin,IN,exact_or_normalized,matched
+Metipranolol (ophthalmic),1163500,metipranolol Ophthalmic Product,SCDG,exact_or_normalized,matched
+Metoclopramide,6915,metoclopramide,IN,exact_or_normalized,matched
+Metocurine,29950,metocurine,IN,exact_or_normalized,matched
+Metolazone,6916,metolazone,IN,exact_or_normalized,matched
+Metoprolol,6918,metoprolol,IN,exact_or_normalized,matched
+Metreleptin,1491625,metreleptin,IN,exact_or_normalized,matched
+Metronidazole,6922,metronidazole,IN,exact_or_normalized,matched
+Metronidazole (topical),1164086,metronidazole Topical Product,SCDG,exact_or_normalized,matched
+Mexiletine,6926,mexiletine,IN,exact_or_normalized,matched
+Mezlocillin,6927,mezlocillin,IN,exact_or_normalized,matched
+Miconazole,6932,miconazole,IN,exact_or_normalized,matched
+Miconazole (topical),1164112,miconazole Topical Product,SCDG,exact_or_normalized,matched
+Midazolam,,,,,not_found
+Midodrine,,,,,not_found
+Midostaurin,1919083,midostaurin,IN,exact_or_normalized,matched
+Mifepristone,6964,mifepristone,IN,exact_or_normalized,matched
+Miglitol,30009,miglitol,IN,exact_or_normalized,matched
+Milnacipran,588250,milnacipran,IN,exact_or_normalized,matched
+Mineral oil,6972,mineral oil,IN,exact_or_normalized,matched
+Minocycline,6980,minocycline,IN,exact_or_normalized,matched
+Minoxidil,6984,minoxidil,IN,exact_or_normalized,matched
+Minoxidil (topical),1165359,minoxidil Topical Product,SCDG,exact_or_normalized,matched
+Mipomersen,1367839,mipomersen,IN,exact_or_normalized,matched
+Mirabegron,1300786,mirabegron,IN,exact_or_normalized,matched
+Mirtazapine,15996,mirtazapine,IN,exact_or_normalized,matched
+Misoprostol,42331,misoprostol,IN,exact_or_normalized,matched
+Mitomycin,632,mitomycin,IN,exact_or_normalized,matched
+Mitotane,7004,mitotane,IN,exact_or_normalized,matched
+Mitoxantrone,7005,mitoxantrone,IN,exact_or_normalized,matched
+Mivacurium,30077,mivacurium,IN,exact_or_normalized,matched
+Modafinil,30125,modafinil,IN,exact_or_normalized,matched
+Moexipril,30131,moexipril,IN,exact_or_normalized,matched
+Mogamulizumab,2054068,mogamulizumab,IN,exact_or_normalized,matched
+Molindone,7019,molindone,IN,exact_or_normalized,matched
+Montelukast,88249,montelukast,IN,exact_or_normalized,matched
+Moricizine,40169,moricizine,IN,exact_or_normalized,matched
+Morphine,7052,morphine,IN,exact_or_normalized,matched
+Moxifloxacin,139462,moxifloxacin,IN,exact_or_normalized,matched
+Muromonab,42405,muromonab-CD3,IN,exact_or_normalized,matched
+Mycophenolate mofetil,68149,mycophenolate mofetil,IN,exact_or_normalized,matched
+Mycophenolic acid,7145,mycophenolic acid,IN,exact_or_normalized,matched
+Nabumetone,31448,nabumetone,IN,exact_or_normalized,matched
+Nadolol,7226,nadolol,IN,exact_or_normalized,matched
+Nafcillin,7233,nafcillin,IN,exact_or_normalized,matched
+Nalbuphine,7238,nalbuphine,IN,exact_or_normalized,matched
+Naldemedine,1876597,naldemedine,IN,exact_or_normalized,matched
+Nalidixic acid,7240,nalidixic acid,PIN,exact_or_normalized,matched
+Naloxegol,1551777,naloxegol,IN,exact_or_normalized,matched
+Naltrexone,7243,naltrexone,IN,exact_or_normalized,matched
+Naproxen,7258,naproxen,IN,exact_or_normalized,matched
+Natalizumab,354770,natalizumab,IN,exact_or_normalized,matched
+Nateglinide,274332,nateglinide,IN,exact_or_normalized,matched
+Naxitamab,2474039,naxitamab,IN,exact_or_normalized,matched
+Nebivolol,31555,nebivolol,IN,exact_or_normalized,matched
+Nefazodone,31565,nefazodone,IN,exact_or_normalized,matched
+Nelfinavir,134527,nelfinavir,IN,exact_or_normalized,matched
+Neomycin,7299,neomycin,IN,exact_or_normalized,matched
+Neomycin (topical),373017,neomycin Topical Ointment,SCDF,approximate,matched
+Neostigmine,7315,neostigmine,IN,exact_or_normalized,matched
+Nepafenac (ophthalmic),1158407,nepafenac Ophthalmic Product,SCDG,exact_or_normalized,matched
+Neratinib,1940643,neratinib,IN,exact_or_normalized,matched
+Nesiritide,19666,nesiritide,IN,exact_or_normalized,matched
+Netilmicin,7337,netilmicin,IN,exact_or_normalized,matched
+Netupitant,1552337,netupitant,IN,exact_or_normalized,matched
+Nevirapine,53654,nevirapine,IN,exact_or_normalized,matched
+Niacin,7393,niacin,IN,exact_or_normalized,matched
+Nicardipine,7396,nicardipine,IN,exact_or_normalized,matched
+Nifedipine,7417,nifedipine,IN,exact_or_normalized,matched
+Nilotinib,662281,nilotinib,IN,exact_or_normalized,matched
+Nilutamide,31805,nilutamide,IN,exact_or_normalized,matched
+Nimodipine,7426,nimodipine,IN,exact_or_normalized,matched
+Nintedanib,1592737,nintedanib,IN,exact_or_normalized,matched
+Niraparib,1918231,niraparib,IN,exact_or_normalized,matched
+Nisoldipine,7435,nisoldipine,IN,exact_or_normalized,matched
+Nitazoxanide,31819,nitazoxanide,IN,exact_or_normalized,matched
+Nitisinone,61805,nitisinone,IN,exact_or_normalized,matched
+Nitroglycerin,4917,nitroglycerin,IN,exact_or_normalized,matched
+Nitroprusside,7476,nitroprusside,IN,exact_or_normalized,matched
+Nitrous acid,7486,nitrous oxide,IN,approximate,matched
+Nizatidine,42319,nizatidine,IN,exact_or_normalized,matched
+Norethisterone,7514,norethindrone,IN,exact_or_normalized,matched
+Norfloxacin,7517,norfloxacin,IN,exact_or_normalized,matched
+Norgestrel,7518,norgestrel,IN,exact_or_normalized,matched
+Nortriptyline,7531,nortriptyline,IN,exact_or_normalized,matched
+Obeticholic acid,1798288,obeticholic acid,IN,exact_or_normalized,matched
+Ocrelizumab,1876366,ocrelizumab,IN,exact_or_normalized,matched
+Ofloxacin,7623,ofloxacin,IN,exact_or_normalized,matched
+Olanzapine,61381,olanzapine,IN,exact_or_normalized,matched
+Olaparib,1597582,olaparib,IN,exact_or_normalized,matched
+Oliceridine,2392230,oliceridine,IN,exact_or_normalized,matched
+Olmesartan,321064,olmesartan,IN,exact_or_normalized,matched
+Olodaterol,1546059,olodaterol,IN,exact_or_normalized,matched
+Olsalazine,32385,olsalazine,IN,exact_or_normalized,matched
+Omacetaxine mepesuccinate,27100,omacetaxine mepesuccinate,IN,exact_or_normalized,matched
+Omadacycline,2059269,omadacycline,IN,exact_or_normalized,matched
+Omalizumab,302379,omalizumab,IN,exact_or_normalized,matched
+Omega-3 fatty acids,4301,omega-3 fatty acids,IN,exact_or_normalized,matched
+Omeprazole,7646,omeprazole,IN,exact_or_normalized,matched
+Ondansetron,26225,ondansetron,IN,exact_or_normalized,matched
+Opicapone,2362167,opicapone,IN,exact_or_normalized,matched
+Opium,7676,opium,IN,exact_or_normalized,matched
+Orciprenaline,7688,metaproterenol,IN,exact_or_normalized,matched
+Oritavancin,1547611,oritavancin,IN,exact_or_normalized,matched
+Orlistat,37925,orlistat,IN,exact_or_normalized,matched
+Orphenadrine,7715,orphenadrine,IN,exact_or_normalized,matched
+Oseltamivir,260101,oseltamivir,IN,exact_or_normalized,matched
+Osilodrostat,2286252,osilodrostat,IN,exact_or_normalized,matched
+Osimertinib,1721560,osimertinib,IN,exact_or_normalized,matched
+Ospemifene,1370971,ospemifene,IN,exact_or_normalized,matched
+Oxacillin,7773,oxacillin,IN,exact_or_normalized,matched
+Oxaliplatin,32592,oxaliplatin,IN,exact_or_normalized,matched
+Oxandrolone,7779,oxandrolone,IN,exact_or_normalized,matched
+Oxaprozin,32613,oxaprozin,IN,exact_or_normalized,matched
+Oxazepam,7781,oxazepam,IN,exact_or_normalized,matched
+Oxcarbazepine,32624,oxcarbazepine,IN,exact_or_normalized,matched
+Oxtriphylline,20976,oxtriphylline,IN,exact_or_normalized,matched
+Oxybuprocaine (ophthalmic),18889,benoxinate,IN,approximate,matched
+Oxybutynin,32675,oxybutynin,IN,exact_or_normalized,matched
+Oxycodone,7804,oxycodone,IN,exact_or_normalized,matched
+Oxymetholone,7813,oxymetholone,IN,exact_or_normalized,matched
+Oxymorphone,7814,oxymorphone,IN,exact_or_normalized,matched
+Oxytetracycline,7821,oxytetracycline,IN,exact_or_normalized,matched
+Oxytocin,7824,oxytocin,IN,exact_or_normalized,matched
+Ozanimod,2288236,ozanimod,IN,exact_or_normalized,matched
+Paclitaxel,56946,paclitaxel,IN,exact_or_normalized,matched
+Paclitaxel (protein-bound),486610,paclitaxel protein-bound,PIN,exact_or_normalized,matched
+Palbociclib,1601374,palbociclib,IN,exact_or_normalized,matched
+Palifermin,196319,palifermin,IN,exact_or_normalized,matched
+Paliperidone,679314,paliperidone,IN,exact_or_normalized,matched
+Palonosetron,70561,palonosetron,IN,exact_or_normalized,matched
+Pamidronic acid,1546406,pamidronic acid,PIN,exact_or_normalized,matched
+Pancrelipase,392491,amylase / lipase / protease,MIN,exact_or_normalized,matched
+Pancuronium,7883,pancuronium,IN,exact_or_normalized,matched
+Panobinostat,1603350,panobinostat,IN,exact_or_normalized,matched
+Pantoprazole,40790,pantoprazole,IN,exact_or_normalized,matched
+Papaverine,7895,papaverine,IN,exact_or_normalized,matched
+Papaya,1011426,papaya allergenic extract,IN,exact_or_normalized,matched
+Paraldehyde,7909,paraldehyde,IN,exact_or_normalized,matched
+Paricalcitol,73710,paricalcitol,IN,exact_or_normalized,matched
+Paroxetine,32937,paroxetine,IN,exact_or_normalized,matched
+Pasireotide,1364105,pasireotide,IN,exact_or_normalized,matched
+Patiromer,1716203,patiromer,IN,exact_or_normalized,matched
+Pazopanib,714438,pazopanib,IN,exact_or_normalized,matched
+Pegaspargase,34132,pegaspargase,IN,exact_or_normalized,matched
+Peginesatide,1248798,peginesatide,IN,exact_or_normalized,matched
+Peginterferon alfa-2a,120608,peginterferon alfa-2a,IN,exact_or_normalized,matched
+Peginterferon alfa-2b,253453,peginterferon alfa-2b,IN,exact_or_normalized,matched
+Peginterferon beta-1a,1546168,peginterferon beta-1a,IN,exact_or_normalized,matched
+Pegvaliase,2046360,pegvaliase,IN,exact_or_normalized,matched
+Pemetrexed,68446,pemetrexed,IN,exact_or_normalized,matched
+Penbutolol,7973,penbutolol,IN,exact_or_normalized,matched
+Penicillamine,7975,penicillamine,IN,exact_or_normalized,matched
+Pentamidine,7994,pentamidine,IN,exact_or_normalized,matched
+Pentazocine,8001,pentazocine,IN,exact_or_normalized,matched
+Pentobarbital,8004,pentobarbital,IN,exact_or_normalized,matched
+Pentosan polysulfate,155046,pentosan polysulfate,IN,exact_or_normalized,matched
+Pentoxifylline,8013,pentoxifylline,IN,exact_or_normalized,matched
+Perflutren,283753,perflutren,IN,exact_or_normalized,matched
+Perindopril,54552,perindopril,IN,exact_or_normalized,matched
+Perphenazine,8076,perphenazine,IN,exact_or_normalized,matched
+Pexidartinib,2183102,pexidartinib,IN,exact_or_normalized,matched
+Phendimetrazine,33272,phendimetrazine,IN,exact_or_normalized,matched
+Phenelzine,8123,phenelzine,IN,exact_or_normalized,matched
+Phenindamine,33283,phenindamine,IN,exact_or_normalized,matched
+Phenobarbital,8134,phenobarbital,IN,exact_or_normalized,matched
+Phenolphthalein,155122,phenolphthalein,IN,exact_or_normalized,matched
+Phenoxybenzamine,8149,phenoxybenzamine,IN,exact_or_normalized,matched
+Phenoxymethylpenicillin,7984,penicillin V,IN,exact_or_normalized,matched
+Phensuximide,33309,phensuximide,IN,exact_or_normalized,matched
+Phentermine,8152,phentermine,IN,exact_or_normalized,matched
+Phentolamine,8153,phentolamine,IN,exact_or_normalized,matched
+Phenyl salicylate,36122,phenyl salicylate,IN,exact_or_normalized,matched
+Phenylbutazone,8160,phenylbutazone,IN,exact_or_normalized,matched
+Phenylephrine,8163,phenylephrine,IN,exact_or_normalized,matched
+Phenylpropanolamine,8175,phenylpropanolamine,IN,exact_or_normalized,matched
+Phenyltoloxamine,33408,phenyltoloxamine,IN,exact_or_normalized,matched
+Phenytoin,8183,phenytoin,IN,exact_or_normalized,matched
+Phylloquinone,8308,vitamin K1,IN,exact_or_normalized,matched
+Picosulfuric acid,1546457,picosulfuric acid,PIN,exact_or_normalized,matched
+Pimavanserin,1791685,pimavanserin,IN,exact_or_normalized,matched
+Pimecrolimus (topical),1158739,pimecrolimus Topical Product,SCDG,exact_or_normalized,matched
+Pimozide,8331,pimozide,IN,exact_or_normalized,matched
+Pindolol,8332,pindolol,IN,exact_or_normalized,matched
+Pioglitazone,33738,pioglitazone,IN,exact_or_normalized,matched
+Pipecuronium,33742,pipecuronium,IN,exact_or_normalized,matched
+Piperacillin,8339,piperacillin,IN,exact_or_normalized,matched
+Pirbuterol,33767,pirbuterol,IN,exact_or_normalized,matched
+Pirfenidone,1592254,pirfenidone,IN,exact_or_normalized,matched
+Piroxicam,8356,piroxicam,IN,exact_or_normalized,matched
+Pitavastatin,861634,pitavastatin,IN,exact_or_normalized,matched
+Pitolisant,2197878,pitolisant,IN,exact_or_normalized,matched
+Plazomicin,2049549,plazomicin,IN,exact_or_normalized,matched
+Plicamycin,6995,plicamycin,IN,exact_or_normalized,matched
+Polatuzumab vedotin,2174090,polatuzumab vedotin,IN,exact_or_normalized,matched
+Polyethylene glycol (3350 with electrolytes),876193,polyethylene glycol 3350 17000 MG Powder for Oral Solution,SCD,approximate,matched
+Polyethylene glycol (3350),221147,polyethylene glycol 3350,IN,exact_or_normalized,matched
+Polymyxin B,8536,polymyxin B,IN,exact_or_normalized,matched
+Polythiazide,8565,polythiazide,IN,exact_or_normalized,matched
+Pomalidomide,1369713,pomalidomide,IN,exact_or_normalized,matched
+Ponatinib,1364347,ponatinib,IN,exact_or_normalized,matched
+Porfimer sodium,333848,porfimer sodium,PIN,exact_or_normalized,matched
+Posaconazole,282446,posaconazole,IN,exact_or_normalized,matched
+Potassium acetate,54987,potassium acetate,IN,exact_or_normalized,matched
+Potassium chloride,8591,potassium chloride,IN,exact_or_normalized,matched
+Potassium citrate,54993,potassium citrate,IN,exact_or_normalized,matched
+Pralatrexate,662019,pralatrexate,IN,exact_or_normalized,matched
+Pralsetinib,2394936,pralsetinib,IN,exact_or_normalized,matched
+Pramlintide,139953,pramlintide,IN,exact_or_normalized,matched
+Prasterone enantate,3143,prasterone,IN,approximate,matched
+Prasugrel,613391,prasugrel,IN,exact_or_normalized,matched
+Pravastatin,42463,pravastatin,IN,exact_or_normalized,matched
+Praziquantel,8628,praziquantel,IN,exact_or_normalized,matched
+Prazosin,8629,prazosin,IN,exact_or_normalized,matched
+Prednisolone,8638,prednisolone,IN,exact_or_normalized,matched
+Prednisone,8640,prednisone,IN,exact_or_normalized,matched
+Prilocaine,8686,prilocaine,IN,exact_or_normalized,matched
+Prilocaine (topiclal),8686,prilocaine,IN,approximate,matched
+Primaquine,8687,primaquine,IN,exact_or_normalized,matched
+Primidone,8691,primidone,IN,exact_or_normalized,matched
+Probenecid,8698,probenecid,IN,exact_or_normalized,matched
+Probucol,8699,probucol,IN,exact_or_normalized,matched
+Procainamide,8700,procainamide,IN,exact_or_normalized,matched
+Procaine,8701,procaine,IN,exact_or_normalized,matched
+Procarbazine,8702,procarbazine,IN,exact_or_normalized,matched
+Prochlorperazine,8704,prochlorperazine,IN,exact_or_normalized,matched
+Procyclidine,8718,procyclidine,IN,exact_or_normalized,matched
+Progesterone,8727,progesterone,IN,exact_or_normalized,matched
+Progesterone (topical),1162292,progesterone Topical Product,SCDG,exact_or_normalized,matched
+Proguanil,2382,proguanil,IN,exact_or_normalized,matched
+Promazine,8742,promazine,IN,exact_or_normalized,matched
+Promethazine,8745,promethazine,IN,exact_or_normalized,matched
+Propafenone,8754,propafenone,IN,exact_or_normalized,matched
+Propantheline,8761,propantheline,IN,exact_or_normalized,matched
+Proparacaine (ophthalmic),1156791,proparacaine Ophthalmic Product,SCDG,exact_or_normalized,matched
+Propiomazine,8770,propiomazine,IN,exact_or_normalized,matched
+Propofol,8782,propofol,IN,approximate,matched
+Propranolol,8787,propranolol,IN,exact_or_normalized,matched
+Propylthiouracil,8794,propylthiouracil,IN,exact_or_normalized,matched
+Protein C,723868,"protein C, human",PIN,exact_or_normalized,matched
+Protriptyline,8886,protriptyline,IN,exact_or_normalized,matched
+Prucalopride,2107310,prucalopride,IN,exact_or_normalized,matched
+Pseudoephedrine,8896,pseudoephedrine,IN,exact_or_normalized,matched
+Pyridostigmine,9000,pyridostigmine,IN,exact_or_normalized,matched
+Pyrimethamine,9010,pyrimethamine,IN,exact_or_normalized,matched
+Pyrophosphoric acid,1546425,pyrophosphoric acid,PIN,exact_or_normalized,matched
+Quazepam,35185,quazepam,IN,exact_or_normalized,matched
+Quetiapine,51272,quetiapine,IN,exact_or_normalized,matched
+Quinapril,35208,quinapril,IN,exact_or_normalized,matched
+Quinestrol,9066,quinestrol,IN,exact_or_normalized,matched
+Quinidine,9068,quinidine,IN,exact_or_normalized,matched
+Quinine,9071,quinine,IN,exact_or_normalized,matched
+Rabeprazole,114979,rabeprazole,IN,exact_or_normalized,matched
+Racepinephrine,66887,racepinephrine,IN,exact_or_normalized,matched
+Raloxifene,72143,raloxifene,IN,exact_or_normalized,matched
+Raltegravir,719872,raltegravir,IN,exact_or_normalized,matched
+Ramelteon,596205,ramelteon,IN,exact_or_normalized,matched
+Ramipril,35296,ramipril,IN,exact_or_normalized,matched
+Ramucirumab,1535922,ramucirumab,IN,exact_or_normalized,matched
+Ranitidine,9143,ranitidine,IN,exact_or_normalized,matched
+Ranitidine (bismuth citrate),55471,ranitidine bismuth citrate,PIN,exact_or_normalized,matched
+Ranolazine,35829,ranolazine,IN,exact_or_normalized,matched
+Rapacuronium,262100,rapacuronium,IN,exact_or_normalized,matched
+Rasagiline,134748,rasagiline,IN,exact_or_normalized,matched
+Regadenoson,640062,regadenoson,IN,exact_or_normalized,matched
+Regorafenib,1312397,regorafenib,IN,exact_or_normalized,matched
+Relugolix,2472778,relugolix,IN,exact_or_normalized,matched
+Remdesivir,2284718,remdesivir,IN,exact_or_normalized,matched
+Remifentanil,73032,remifentanil,IN,exact_or_normalized,matched
+Repaglinide,73044,repaglinide,IN,exact_or_normalized,matched
+Reserpine,9260,reserpine,IN,exact_or_normalized,matched
+Retapamulin (topical),1157425,retapamulin Topical Product,SCDG,exact_or_normalized,matched
+Reteplase,76895,reteplase,IN,exact_or_normalized,matched
+Revefenacin,2102775,revefenacin,IN,exact_or_normalized,matched
+Ribavirin,9344,ribavirin,IN,exact_or_normalized,matched
+Ribociclib,1873916,ribociclib,IN,exact_or_normalized,matched
+Rifabutin,55672,rifabutin,IN,exact_or_normalized,matched
+Rifampicin,9384,rifampin,IN,exact_or_normalized,matched
+Rifapentine,35617,rifapentine,IN,exact_or_normalized,matched
+Rifaximin,35619,rifaximin,IN,exact_or_normalized,matched
+Rilonacept,763450,rilonacept,IN,exact_or_normalized,matched
+Rilpivirine,1102270,rilpivirine,IN,exact_or_normalized,matched
+Rimegepant,2282307,rimegepant,IN,exact_or_normalized,matched
+Riociguat,1439816,riociguat,IN,exact_or_normalized,matched
+Ripretinib,2369389,ripretinib,IN,exact_or_normalized,matched
+Risankizumab,2166040,risankizumab,IN,exact_or_normalized,matched
+Risedronic acid,55685,risedronic acid,IN,exact_or_normalized,matched
+Risperidone,35636,risperidone,IN,exact_or_normalized,matched
+Ritodrine,9392,ritodrine,IN,exact_or_normalized,matched
+Ritonavir,85762,ritonavir,IN,exact_or_normalized,matched
+Rituximab,121191,rituximab,IN,exact_or_normalized,matched
+Rivaroxaban,1114195,rivaroxaban,IN,exact_or_normalized,matched
+Rivastigmine,183379,rivastigmine,IN,exact_or_normalized,matched
+Rocuronium,68139,rocuronium,IN,exact_or_normalized,matched
+Rofecoxib,232158,rofecoxib,IN,exact_or_normalized,matched
+Roflumilast,1091836,roflumilast,IN,exact_or_normalized,matched
+Rolapitant,1665496,rolapitant,IN,exact_or_normalized,matched
+Romidepsin,877510,romidepsin,IN,exact_or_normalized,matched
+Romiplostim,805452,romiplostim,IN,exact_or_normalized,matched
+Ropinirole,72302,ropinirole,IN,exact_or_normalized,matched
+Ropivacaine,35780,ropivacaine,IN,exact_or_normalized,matched
+Rosiglitazone,84108,rosiglitazone,IN,exact_or_normalized,matched
+Rosuvastatin,301542,rosuvastatin,IN,exact_or_normalized,matched
+Rucaparib,1862579,rucaparib,IN,exact_or_normalized,matched
+Rufinamide,69036,rufinamide,IN,exact_or_normalized,matched
+Ruxolitinib,1193326,ruxolitinib,IN,exact_or_normalized,matched
+Sacituzumab govitecan,2360232,sacituzumab govitecan,PIN,exact_or_normalized,matched
+Safinamide,1922448,safinamide,IN,exact_or_normalized,matched
+Salbutamol,435,albuterol,IN,exact_or_normalized,matched
+Salicylic acid (sodium),9525,salicylic acid,IN,approximate,matched
+Salmeterol,36117,salmeterol,IN,exact_or_normalized,matched
+Salsalate,36108,salsalate,IN,exact_or_normalized,matched
+Saquinavir,83395,saquinavir,IN,exact_or_normalized,matched
+Sarecycline,2059018,sarecycline,IN,exact_or_normalized,matched
+Sarilumab,1923319,sarilumab,IN,exact_or_normalized,matched
+Satralizumab,2391541,satralizumab,IN,exact_or_normalized,matched
+Saw palmetto,236344,saw palmetto extract,IN,exact_or_normalized,matched
+Saxagliptin,857974,saxagliptin,IN,exact_or_normalized,matched
+Scopolamine,9601,scopolamine,IN,exact_or_normalized,matched
+Secobarbital,9624,secobarbital,IN,exact_or_normalized,matched
+Secukinumab,1599788,secukinumab,IN,exact_or_normalized,matched
+Selegiline,9639,selegiline,IN,exact_or_normalized,matched
+Selenium,9641,selenium,IN,exact_or_normalized,matched
+Selexipag,1729002,selexipag,IN,exact_or_normalized,matched
+Selpercatinib,2370147,selpercatinib,IN,exact_or_normalized,matched
+Selumetinib,2289380,selumetinib,IN,exact_or_normalized,matched
+Semaglutide,1991302,semaglutide,IN,exact_or_normalized,matched
+Sertraline,36437,sertraline,IN,exact_or_normalized,matched
+Sevelamer,214824,sevelamer,IN,exact_or_normalized,matched
+Sevoflurane,36453,sevoflurane,IN,exact_or_normalized,matched
+Sibutramine,36514,sibutramine,IN,exact_or_normalized,matched
+Sildenafil,136411,sildenafil,IN,exact_or_normalized,matched
+Silodosin,720825,silodosin,IN,exact_or_normalized,matched
+Siltuximab,1535218,siltuximab,IN,exact_or_normalized,matched
+Simeprevir,1482790,simeprevir,IN,exact_or_normalized,matched
+Simvastatin,36567,simvastatin,IN,exact_or_normalized,matched
+Siponimod,2121085,siponimod,IN,exact_or_normalized,matched
+Sirolimus,35302,sirolimus,IN,exact_or_normalized,matched
+Sitagliptin,593411,sitagliptin,IN,exact_or_normalized,matched
+Sodium acetate,56443,sodium acetate,IN,exact_or_normalized,matched
+Sodium bicarbonate,36676,sodium bicarbonate,IN,exact_or_normalized,matched
+Sodium chloride,9863,sodium chloride,IN,exact_or_normalized,matched
+Sodium citrate,56466,sodium citrate,IN,exact_or_normalized,matched
+Sodium ferric gluconate complex,261435,sodium ferric gluconate complex,IN,exact_or_normalized,matched
+Sodium glycerophosphate,1595589,sodium glycerophosphate,PIN,exact_or_normalized,matched
+Sodium sulfate,36721,sodium sulfate,IN,exact_or_normalized,matched
+Sofosbuvir,1484911,sofosbuvir,IN,exact_or_normalized,matched
+Solifenacin,322167,solifenacin,IN,exact_or_normalized,matched
+Solriamfetol,2121751,solriamfetol,IN,exact_or_normalized,matched
+Somapacitan,2557373,somapacitan,IN,exact_or_normalized,matched
+Somatotropin,61148,somatropin,IN,exact_or_normalized,matched
+Somatrem,56570,somatrem,IN,exact_or_normalized,matched
+Sonidegib,1659191,sonidegib,IN,exact_or_normalized,matched
+Sorafenib,495881,sorafenib,IN,exact_or_normalized,matched
+Sorbitol,9945,sorbitol,IN,exact_or_normalized,matched
+Sotalol,9947,sotalol,IN,exact_or_normalized,matched
+Sparfloxacin,,,,,not_found
+Spironolactone,,,,,not_found
+St. John's Wort,258326,St. John's wort extract,IN,exact_or_normalized,matched
+Stanozolol,10032,stanozolol,IN,exact_or_normalized,matched
+Stiripentol,2054968,stiripentol,IN,exact_or_normalized,matched
+Streptokinase,10106,streptokinase,IN,exact_or_normalized,matched
+Streptomycin,10109,streptomycin,IN,exact_or_normalized,matched
+Strontium chloride Sr-89,281890,strontium-89 chloride,PIN,exact_or_normalized,matched
+Succinylcholine,10154,succinylcholine,IN,exact_or_normalized,matched
+Sucralfate,10156,sucralfate,IN,exact_or_normalized,matched
+Sufentanil,56795,sufentanil,IN,exact_or_normalized,matched
+Sugammadex,1726988,sugammadex,IN,exact_or_normalized,matched
+Sulfadiazine,10171,sulfadiazine,IN,exact_or_normalized,matched
+Sulfadoxine,10173,sulfadoxine,IN,exact_or_normalized,matched
+Sulfamethizole,10179,sulfamethizole,IN,exact_or_normalized,matched
+Sulfamethoxazole,10180,sulfamethoxazole,IN,exact_or_normalized,matched
+Sulfasalazine,9524,sulfasalazine,IN,exact_or_normalized,matched
+Sulfinpyrazone,10205,sulfinpyrazone,IN,exact_or_normalized,matched
+Sulfisoxazole,10207,sulfisoxazole,IN,exact_or_normalized,matched
+Sulindac,10237,sulindac,IN,exact_or_normalized,matched
+Sunitinib,357977,sunitinib,IN,exact_or_normalized,matched
+Suprofen (ophthalmic),1163617,suprofen Ophthalmic Product,SCDG,exact_or_normalized,matched
+Suvorexant,1547099,suvorexant,IN,exact_or_normalized,matched
+Tacrine,10318,tacrine,IN,exact_or_normalized,matched
+Tacrolimus,42316,tacrolimus,IN,exact_or_normalized,matched
+Tadalafil,358263,tadalafil,IN,exact_or_normalized,matched
+Tafamidis,1545063,tafamidis,IN,exact_or_normalized,matched
+Talazoparib,2099704,talazoparib,IN,exact_or_normalized,matched
+Tamoxifen,10324,tamoxifen,IN,exact_or_normalized,matched
+Tamsulosin,77492,tamsulosin,IN,exact_or_normalized,matched
+Tapentadol,787390,tapentadol,IN,exact_or_normalized,matched
+Tasimelteon,1490468,tasimelteon,IN,exact_or_normalized,matched
+Tazemetostat,2274378,tazemetostat,IN,exact_or_normalized,matched
+Tedizolid,1540825,tedizolid,IN,exact_or_normalized,matched
+Telaprevir,1102261,telaprevir,IN,exact_or_normalized,matched
+Telavancin,473837,telavancin,IN,exact_or_normalized,matched
+Telbivudine,474128,telbivudine,IN,exact_or_normalized,matched
+Telithromycin,274786,telithromycin,IN,exact_or_normalized,matched
+Telmisartan,73494,telmisartan,IN,exact_or_normalized,matched
+Telotristat ethyl,1872441,telotristat ethyl,IN,exact_or_normalized,matched
+Temazepam,10355,temazepam,IN,exact_or_normalized,matched
+Temsirolimus,657797,temsirolimus,IN,exact_or_normalized,matched
+Tenecteplase,259280,tenecteplase,IN,exact_or_normalized,matched
+Teniposide,10362,teniposide,IN,exact_or_normalized,matched
+Terazosin,37798,terazosin,IN,exact_or_normalized,matched
+Terbinafine,37801,terbinafine,IN,exact_or_normalized,matched
+Terbutaline,10368,terbutaline,IN,exact_or_normalized,matched
+Terfenadine,42330,terfenadine,IN,exact_or_normalized,matched
+Teriflunomide,1310520,teriflunomide,IN,exact_or_normalized,matched
+Testolactone,10378,testolactone,IN,exact_or_normalized,matched
+Testosterone,10379,testosterone,IN,exact_or_normalized,matched
+Testosterone (topical),1164845,testosterone Topical Product,SCDG,exact_or_normalized,matched
+Tetrabenazine,10390,tetrabenazine,IN,exact_or_normalized,matched
+Tetracaine,10391,tetracaine,IN,exact_or_normalized,matched
+Tetracaine (ophthalmic),1164856,tetracaine Ophthalmic Product,SCDG,exact_or_normalized,matched
+Tetracosactide,2890,cosyntropin,IN,exact_or_normalized,matched
+Tetracycline,10395,tetracycline,IN,exact_or_normalized,matched
+Tetraferric tricitrate decahydrate,1594680,ferric citrate 1000 MG Oral Tablet,SCD,approximate,matched
+Thalidomide,10432,thalidomide,IN,exact_or_normalized,matched
+Thallous Chloride,2048725,thallous acetate,PIN,exact_or_normalized,matched
+Theophylline,10438,theophylline,IN,exact_or_normalized,matched
+Thiethylperazine,10471,thiethylperazine,IN,exact_or_normalized,matched
+Thiopental,10493,thiopental,IN,exact_or_normalized,matched
+Thioridazine,10502,thioridazine,IN,exact_or_normalized,matched
+Thiotepa,10473,thiotepa,IN,exact_or_normalized,matched
+Thiothixene,10510,thiothixene,IN,exact_or_normalized,matched
+"Thyroid, porcine",235479,"thyroid, porcine",IN,exact_or_normalized,matched
+Tiagabine,31914,tiagabine,IN,exact_or_normalized,matched
+Ticagrelor,1116632,ticagrelor,IN,exact_or_normalized,matched
+Ticarcillin,10591,ticarcillin,IN,exact_or_normalized,matched
+Ticlopidine,10594,ticlopidine,IN,exact_or_normalized,matched
+Tigecycline,384455,tigecycline,IN,exact_or_normalized,matched
+Tildrakizumab,2053436,tildrakizumab,IN,exact_or_normalized,matched
+Tiludronic acid,11476,tiludronic acid,IN,exact_or_normalized,matched
+Timolol,10600,timolol,IN,exact_or_normalized,matched
+Timolol (ophthalmic),1157100,timolol Ophthalmic Product,SCDG,exact_or_normalized,matched
+Tinidazole,10612,tinidazole,IN,exact_or_normalized,matched
+Tinzaparin,69646,tinzaparin,IN,exact_or_normalized,matched
+Tioguanine,10485,thioguanine,IN,exact_or_normalized,matched
+Tipranavir,190548,tipranavir,IN,exact_or_normalized,matched
+Tirofiban,73137,tirofiban,IN,exact_or_normalized,matched
+Tizanidine,57258,tizanidine,IN,exact_or_normalized,matched
+Tobramycin,10627,tobramycin,IN,exact_or_normalized,matched
+Tocilizumab,612865,tocilizumab,IN,exact_or_normalized,matched
+Tofacitinib,1357536,tofacitinib,IN,exact_or_normalized,matched
+Tolazamide,10633,tolazamide,IN,exact_or_normalized,matched
+Tolazoline,10634,tolazoline,IN,exact_or_normalized,matched
+Tolbutamide,10635,tolbutamide,IN,exact_or_normalized,matched
+Tolcapone,72937,tolcapone,IN,exact_or_normalized,matched
+Tolevamer,,,,,not_found
+Tolmetin,10636,tolmetin,IN,exact_or_normalized,matched
+Tolterodine,119565,tolterodine,IN,exact_or_normalized,matched
+Tolvaptan,358257,tolvaptan,IN,exact_or_normalized,matched
+Topiramate,38404,topiramate,IN,exact_or_normalized,matched
+Topotecan,57308,topotecan,IN,exact_or_normalized,matched
+Torasemide,38413,torsemide,IN,exact_or_normalized,matched
+Toremifene,38409,toremifene,IN,exact_or_normalized,matched
+Tositumomab,263010,tositumomab,IN,exact_or_normalized,matched
+Tositumomab (I-131),234449,iodine-131-tositumomab,PIN,exact_or_normalized,matched
+Trabectedin,1716278,trabectedin,IN,exact_or_normalized,matched
+Tramadol,10689,tramadol,IN,exact_or_normalized,matched
+Trametinib,1425099,trametinib,IN,exact_or_normalized,matched
+Trandolapril,38454,trandolapril,IN,exact_or_normalized,matched
+Tranexamic acid,10691,tranexamic acid,IN,exact_or_normalized,matched
+Tranylcypromine,10734,tranylcypromine,IN,exact_or_normalized,matched
+Trastuzumab,224905,trastuzumab,IN,exact_or_normalized,matched
+Trastuzumab emtansine,1371041,ado-trastuzumab emtansine,PIN,exact_or_normalized,matched
+Trazodone,10737,trazodone,IN,exact_or_normalized,matched
+Treprostinil,343048,treprostinil,IN,exact_or_normalized,matched
+Tretinoin,10753,tretinoin,IN,exact_or_normalized,matched
+Triamcinolone,10759,triamcinolone,IN,exact_or_normalized,matched
+Triamcinolone (ophthalmic),1158226,triamcinolone Ophthalmic Product,SCDG,exact_or_normalized,matched
+Triamterene,10763,triamterene,IN,exact_or_normalized,matched
+Triazolam,10767,triazolam,IN,exact_or_normalized,matched
+Trichlormethiazide,10772,trichlormethiazide,IN,exact_or_normalized,matched
+Triclabendazole,2118525,triclabendazole,IN,exact_or_normalized,matched
+Triethylenetetramine,10798,trientine,IN,exact_or_normalized,matched
+Trifluoperazine,10800,trifluoperazine,IN,exact_or_normalized,matched
+Triflupromazine,10805,triflupromazine,IN,exact_or_normalized,matched
+Trihexyphenidyl,10811,trihexyphenidyl,IN,exact_or_normalized,matched
+Trimethaphan,10828,trimethaphan,IN,exact_or_normalized,matched
+Trimethoprim,10829,trimethoprim,IN,exact_or_normalized,matched
+Trimipramine,10834,trimipramine,IN,exact_or_normalized,matched
+Tripelennamine,10847,tripelennamine,IN,exact_or_normalized,matched
+Triprolidine,10849,triprolidine,IN,exact_or_normalized,matched
+Triptorelin,38782,triptorelin,IN,exact_or_normalized,matched
+Troglitazone,72610,troglitazone,IN,exact_or_normalized,matched
+Troleandomycin,10864,troleandomycin,IN,exact_or_normalized,matched
+Tromethamine,10865,tromethamine,IN,exact_or_normalized,matched
+Trospium,236778,trospium,IN,exact_or_normalized,matched
+Trovafloxacin,115552,trovafloxacin,IN,exact_or_normalized,matched
+Tubocurarine,10917,tubocurarine,IN,exact_or_normalized,matched
+Tucatinib,2361285,tucatinib,IN,exact_or_normalized,matched
+Turmeric,1114883,turmeric extract,IN,exact_or_normalized,matched
+Typhoid vaccine (live),762595,Salmonella typhi Ty21a live antigen,IN,exact_or_normalized,matched
+Ubrogepant,2268216,ubrogepant,IN,exact_or_normalized,matched
+Ulipristal,1005921,ulipristal,IN,exact_or_normalized,matched
+Upadacitinib,2196092,upadacitinib,IN,exact_or_normalized,matched
+Urea,11002,urea,IN,exact_or_normalized,matched
+Urokinase,11055,urokinase,IN,exact_or_normalized,matched
+Ustekinumab,847083,ustekinumab,IN,exact_or_normalized,matched
+Valaciclovir,73645,valacyclovir,IN,exact_or_normalized,matched
+Valbenazine,1918219,valbenazine,IN,exact_or_normalized,matched
+Valdecoxib,278567,valdecoxib,IN,exact_or_normalized,matched
+Valproic acid,11118,valproic acid,PIN,exact_or_normalized,matched
+Valsartan,69749,valsartan,IN,exact_or_normalized,matched
+Vancomycin,11124,vancomycin,IN,exact_or_normalized,matched
+Vandetanib,1098413,vandetanib,IN,exact_or_normalized,matched
+Vardenafil,306674,vardenafil,IN,exact_or_normalized,matched
+Varicella Zoster Vaccine (Recombinant),1986820,"varicella zoster virus glycoprotein E, recombinant",PIN,exact_or_normalized,matched
+Vasopressin,11149,vasopressin (USP),IN,exact_or_normalized,matched
+Vecuronium,71535,vecuronium,IN,exact_or_normalized,matched
+Vedolizumab,1538097,vedolizumab,IN,exact_or_normalized,matched
+Velpatasvir,1799206,velpatasvir,IN,exact_or_normalized,matched
+Vemurafenib,1147220,vemurafenib,IN,exact_or_normalized,matched
+Venetoclax,1747556,venetoclax,IN,exact_or_normalized,matched
+Venlafaxine,39786,venlafaxine,IN,exact_or_normalized,matched
+Verapamil,11170,verapamil,IN,exact_or_normalized,matched
+Verteporfin,118886,verteporfin,IN,exact_or_normalized,matched
+Vibrio cholerae CVD 103-HgR strain live antigen (live),1812935,Vibrio cholerae CVD 103-HGR strain live antigen,IN,approximate,matched
+Vilanterol,1424884,vilanterol,IN,exact_or_normalized,matched
+Vilazodone,1086769,vilazodone,IN,exact_or_normalized,matched
+Vinblastine,11198,vinblastine,IN,exact_or_normalized,matched
+Vincristine,11202,vincristine,IN,exact_or_normalized,matched
+Vincristine (liposome),1304990,vincristine sulfate liposome,PIN,exact_or_normalized,matched
+Vinorelbine,39541,vinorelbine,IN,exact_or_normalized,matched
+Vismodegib,1242987,vismodegib,IN,exact_or_normalized,matched
+Vitamin E,11256,vitamin E,IN,exact_or_normalized,matched
+Von Willebrand Factor Human,826072,"von Willebrand factor, human",PIN,exact_or_normalized,matched
+Vorapaxar,1537034,vorapaxar,IN,exact_or_normalized,matched
+Voriconazole,121243,voriconazole,IN,exact_or_normalized,matched
+Vorinostat,194337,vorinostat,IN,exact_or_normalized,matched
+Vortioxetine,1455099,vortioxetine,IN,exact_or_normalized,matched
+Voxelotor,2265678,voxelotor,IN,exact_or_normalized,matched
+Voxilaprevir,1939323,voxilaprevir,IN,exact_or_normalized,matched
+Warfarin,11289,warfarin,IN,exact_or_normalized,matched
+Zafirlukast,114970,zafirlukast,IN,exact_or_normalized,matched
+Zaleplon,74667,zaleplon,IN,exact_or_normalized,matched
+Zanubrutinib,2262435,zanubrutinib,IN,exact_or_normalized,matched
+Zileuton,40575,zileuton,IN,exact_or_normalized,matched
+Zinc acetate,58295,zinc acetate,IN,exact_or_normalized,matched
+Zinc chloride,39937,zinc chloride,IN,exact_or_normalized,matched
+Zinc gluconate,58300,zinc gluconate,IN,exact_or_normalized,matched
+Zinc sulfate,39954,zinc sulfate,IN,exact_or_normalized,matched
+Ziprasidone,115698,ziprasidone,IN,exact_or_normalized,matched
+Zoledronic acid,77655,zoledronic acid,IN,exact_or_normalized,matched
+Zolpidem,39993,zolpidem,IN,exact_or_normalized,matched
+Zonisamide,39998,zonisamide,IN,exact_or_normalized,matched
