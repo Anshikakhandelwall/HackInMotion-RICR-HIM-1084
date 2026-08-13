@@ -874,8 +874,8 @@ Mexiletine,6926,mexiletine,IN,exact_or_normalized,matched
 Mezlocillin,6927,mezlocillin,IN,exact_or_normalized,matched
 Miconazole,6932,miconazole,IN,exact_or_normalized,matched
 Miconazole (topical),1164112,miconazole Topical Product,SCDG,exact_or_normalized,matched
-Midazolam,,,,,not_found
-Midodrine,,,,,not_found
+Midazolam,6960,midazolam,IN,approximate_manual_verified,matched
+Midodrine,6963,midodrine,IN,approximate_manual_verified,matched
 Midostaurin,1919083,midostaurin,IN,exact_or_normalized,matched
 Mifepristone,6964,mifepristone,IN,exact_or_normalized,matched
 Miglitol,30009,miglitol,IN,exact_or_normalized,matched
@@ -1217,8 +1217,8 @@ Sonidegib,1659191,sonidegib,IN,exact_or_normalized,matched
 Sorafenib,495881,sorafenib,IN,exact_or_normalized,matched
 Sorbitol,9945,sorbitol,IN,exact_or_normalized,matched
 Sotalol,9947,sotalol,IN,exact_or_normalized,matched
-Sparfloxacin,,,,,not_found
-Spironolactone,,,,,not_found
+Sparfloxacin,18469,sparfloxacin,IN,approximate_manual_verified,matched
+Spironolactone,9997,spironolactone,IN,approximate_manual_verified,matched
 St. John's Wort,258326,St. John's wort extract,IN,exact_or_normalized,matched
 Stanozolol,10032,stanozolol,IN,exact_or_normalized,matched
 Stiripentol,2054968,stiripentol,IN,exact_or_normalized,matched
