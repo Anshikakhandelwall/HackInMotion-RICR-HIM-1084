@@ -4,7 +4,7 @@ import './Profile.css';
 
 /**
  * Profile Page Component (Route: /profile)
- * COMMIT 11 — Adds Profile Editing UI for Medical History and Regular Medicines ONLY.
+ * COMMIT 12 — Adds Profile Validation for editable fields (Medical History & Regular Medicines).
  * Name, Email, and Age remain STRICTLY LOCKED as read-only.
  */
 export const Profile = ({ currentUser }) => {
@@ -31,8 +31,9 @@ export const Profile = ({ currentUser }) => {
 
   const hasMedicines = regularMedicinesList.length > 0;
 
-  // --- COMMIT 11: EDIT MODE STATE FOR MEDICAL HISTORY & REGULAR MEDICINES ONLY ---
+  // --- COMMIT 11 & 12: EDIT MODE & VALIDATION STATE ---
   const [isEditing, setIsEditing] = useState(false);
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     medicalHistory: medicalHistory !== 'None' ? medicalHistory : '',
     regularMedicines: hasMedicines ? regularMedicinesList.join(', ') : '',
@@ -44,6 +45,7 @@ export const Profile = ({ currentUser }) => {
       medicalHistory: medicalHistory !== 'None' ? medicalHistory : '',
       regularMedicines: hasMedicines ? regularMedicinesList.join(', ') : '',
     });
+    setErrors({});
     setIsEditing(true);
   };
 
@@ -53,6 +55,7 @@ export const Profile = ({ currentUser }) => {
       medicalHistory: medicalHistory !== 'None' ? medicalHistory : '',
       regularMedicines: hasMedicines ? regularMedicinesList.join(', ') : '',
     });
+    setErrors({});
     setIsEditing(false);
   };
 
@@ -61,6 +64,43 @@ export const Profile = ({ currentUser }) => {
       ...prev,
       [field]: value,
     }));
+
+    // Clear error for field once user starts modifying
+    if (errors[field]) {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: null,
+      }));
+    }
+  };
+
+  // COMMIT 12: Form Validation Logic
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Medical History Validation: Required (rejects empty / whitespace-only string)
+    const trimmedConditions = (formData.medicalHistory || '').trim();
+    if (!trimmedConditions) {
+      newErrors.medicalHistory = 'Medical history is required. If you have no major medical history, type NONE.';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSaveChanges = (e) => {
+    if (e) e.preventDefault();
+
+    // Run validation first
+    const isValid = validateForm();
+    if (!isValid) {
+      // Prevent save & keep user in edit mode with errors and preserved inputs
+      return;
+    }
+
+    // Save succeeded locally -> exit edit mode
+    setErrors({});
+    setIsEditing(false);
   };
 
   // Extract initials for header avatar
@@ -112,7 +152,7 @@ export const Profile = ({ currentUser }) => {
         {/* Profile Information Section */}
         {isEditing ? (
           /* EDIT MODE FORM */
-          <div className="profile-edit-form">
+          <form className="profile-edit-form" onSubmit={handleSaveChanges} noValidate>
             <div className="profile-info-grid">
               {/* Field: Name (LOCKED - Read Only) */}
               <div className="profile-field-box locked-box">
@@ -141,33 +181,44 @@ export const Profile = ({ currentUser }) => {
                 <span className="profile-field-value locked-value">{age}</span>
               </div>
 
-              {/* Field: Medical History (EDITABLE) */}
-              <div className="profile-field-box edit-box">
+              {/* Field: Medical History (EDITABLE & VALIDATED) */}
+              <div className={`profile-field-box edit-box ${errors.medicalHistory ? 'has-error' : ''}`}>
                 <label htmlFor="profileConditions" className="profile-field-label">
                   Medical History
                 </label>
                 <textarea
                   id="profileConditions"
-                  className="profile-edit-textarea"
+                  className={`profile-edit-textarea ${errors.medicalHistory ? 'input-error' : ''}`}
                   rows={2}
                   value={formData.medicalHistory}
                   onChange={(e) => handleInputChange('medicalHistory', e.target.value)}
+                  placeholder="e.g. Diabetes, Thyroid or NONE"
                 />
+                {errors.medicalHistory && (
+                  <span className="field-error-message">
+                    ⚠️ {errors.medicalHistory}
+                  </span>
+                )}
               </div>
 
               {/* Field: Regular Medicines (EDITABLE) */}
-              <div className="profile-field-box edit-box full-width-field">
+              <div className={`profile-field-box edit-box full-width-field ${errors.regularMedicines ? 'has-error' : ''}`}>
                 <label htmlFor="profileMeds" className="profile-field-label">
                   Regular Medicines
                 </label>
                 <input
                   id="profileMeds"
                   type="text"
-                  className="profile-edit-input"
+                  className={`profile-edit-input ${errors.regularMedicines ? 'input-error' : ''}`}
                   placeholder="e.g. Paracetamol, Metformin"
                   value={formData.regularMedicines}
                   onChange={(e) => handleInputChange('regularMedicines', e.target.value)}
                 />
+                {errors.regularMedicines && (
+                  <span className="field-error-message">
+                    ⚠️ {errors.regularMedicines}
+                  </span>
+                )}
               </div>
             </div>
 
@@ -181,18 +232,14 @@ export const Profile = ({ currentUser }) => {
                 Cancel
               </button>
               <Button
-                type="button"
+                type="submit"
                 variant="primary"
                 size="medium"
-                onClick={() => {
-                  /* UI state only for Commit 11 - no backend API call or validation */
-                  setIsEditing(false);
-                }}
               >
                 Save Changes
               </Button>
             </div>
-          </div>
+          </form>
         ) : (
           /* READ-ONLY VIEW */
           <div className="profile-info-grid">
