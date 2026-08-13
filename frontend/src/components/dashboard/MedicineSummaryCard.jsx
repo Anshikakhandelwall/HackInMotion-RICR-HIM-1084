@@ -1,21 +1,21 @@
 import React from 'react';
+import MedicineListItem from '../medicines/MedicineListItem';
 import './MedicineSummaryCard.css';
 
 /**
  * MedicineSummaryCard Component
- * Displays user's current medicine list summary with count and Add Medicine CTA.
+ * Displays user's current medicine list summary with dynamic count, loading skeleton, error state, and empty state.
  */
-export const MedicineSummaryCard = ({ currentUser, onNavigate }) => {
-  // Use saved regular medicines if present, otherwise realistic mock entries
-  const userMeds = currentUser?.regularMedicines || currentUser?.regular_medicines;
-
-  const medicinesList = (userMeds && userMeds.length > 0)
-    ? userMeds.map((med, idx) => ({ id: idx, name: med, dosage: 'Active Prescription', schedule: 'Daily' }))
-    : [
-        { id: 1, name: 'Paracetamol', dosage: '500mg', schedule: 'As needed for fever' },
-        { id: 2, name: 'Metformin', dosage: '800mg', schedule: 'Twice daily with meals' },
-        { id: 3, name: 'Amlodipine', dosage: '5mg', schedule: 'Once daily (Morning)' },
-      ];
+export const MedicineSummaryCard = ({
+  medicines = [],
+  isLoading = false,
+  isError = false,
+  onRetry,
+  onNavigate,
+}) => {
+  // Defensive normalization of medicines array
+  const medicinesList = Array.isArray(medicines) ? medicines : [];
+  const hasMedicines = medicinesList.length > 0;
 
   return (
     <div className="dashboard-card medicine-summary-card">
@@ -33,41 +33,77 @@ export const MedicineSummaryCard = ({ currentUser, onNavigate }) => {
           </div>
         </div>
 
-        <span className="medicine-count-badge">{medicinesList.length} medicines</span>
+        {!isLoading && !isError && hasMedicines && (
+          <span className="medicine-count-badge">
+            {medicinesList.length} {medicinesList.length === 1 ? 'medicine' : 'medicines'}
+          </span>
+        )}
       </div>
 
-      {/* Medicines List */}
-      <ul className="medicine-list">
-        {medicinesList.map((med) => (
-          <li key={med.id} className="medicine-item">
-            <div className="medicine-icon-circle">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="16" />
-              </svg>
-            </div>
-            <div className="medicine-info">
-              <span className="medicine-name">{med.name}</span>
-              <span className="medicine-dosage">{med.dosage} • {med.schedule}</span>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {/* 1. Loading State */}
+      {isLoading && (
+        <div className="medicine-skeleton-list">
+          <div className="skeleton-item" />
+          <div className="skeleton-item" />
+          <div className="skeleton-item" />
+        </div>
+      )}
 
-      {/* Footer Add Medicine CTA */}
-      <div className="card-footer-action">
-        <button
-          type="button"
-          className="add-medicine-link-btn"
-          onClick={() => onNavigate && onNavigate('/medicines')}
-        >
-          <span>+ Add Medicine</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M5 12h14" />
-            <path d="m12 5 7 7-7 7" />
-          </svg>
-        </button>
-      </div>
+      {/* 2. Error State */}
+      {!isLoading && isError && (
+        <div className="medicine-error-box">
+          <p className="medicine-error-text">Unable to load your medicines.</p>
+          {onRetry && (
+            <button type="button" className="medicine-retry-btn" onClick={onRetry}>
+              Try Again
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* 3. Empty State */}
+      {!isLoading && !isError && !hasMedicines && (
+        <div className="empty-state-box">
+          <p className="empty-state-title">No medicines added yet.</p>
+          <p className="empty-state-supporting-text">
+            Add your current medicines to keep your medication profile up to date.
+          </p>
+          <button
+            type="button"
+            className="empty-state-btn"
+            onClick={() => onNavigate && onNavigate('/medicines')}
+          >
+            Add Medicine
+          </button>
+        </div>
+      )}
+
+      {/* 4. Active Medicines List */}
+      {!isLoading && !isError && hasMedicines && (
+        <ul className="medicine-list">
+          {medicinesList.map((med, index) => {
+            const medKey = (med && med.id) || `mock-${index}`;
+            return <MedicineListItem key={medKey} medicine={med} />;
+          })}
+        </ul>
+      )}
+
+      {/* Footer Add Medicine Action */}
+      {!isLoading && !isError && hasMedicines && (
+        <div className="card-footer-action">
+          <button
+            type="button"
+            className="add-medicine-link-btn"
+            onClick={() => onNavigate && onNavigate('/medicines')}
+          >
+            <span>+ Add Medicine</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

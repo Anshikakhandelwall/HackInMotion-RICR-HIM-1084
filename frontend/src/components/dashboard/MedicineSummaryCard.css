@@ -64,48 +64,99 @@
   gap: 0.65rem;
 }
 
-.medicine-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-md);
-  background-color: var(--color-bg-subtle);
-  border: 1px solid var(--color-border-subtle);
-  transition: border-color var(--transition-fast);
-}
-
-.medicine-item:hover {
-  border-color: var(--color-border-default);
-}
-
-.medicine-icon-circle {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: #FFFFFF;
-  border: 1px solid var(--color-border-default);
-  color: var(--color-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.medicine-info {
+/* Skeleton Loading State */
+.medicine-skeleton-list {
   display: flex;
   flex-direction: column;
+  gap: 0.65rem;
 }
 
-.medicine-name {
-  font-size: 0.9375rem;
+.skeleton-item {
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(90deg, #FCF5F3 25%, #F5ECE9 50%, #FCF5F3 75%);
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.5s infinite;
+}
+
+@keyframes skeleton-pulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Error State Box */
+.medicine-error-box {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  background-color: var(--color-error-bg);
+  border: 1px solid rgba(217, 56, 58, 0.2);
+  border-radius: var(--radius-md);
+}
+
+.medicine-error-text {
+  font-size: 0.9rem;
+  color: var(--color-error);
   font-weight: 600;
-  color: var(--color-text-primary);
+  margin-bottom: 0.65rem;
 }
 
-.medicine-dosage {
-  font-size: 0.8125rem;
+.medicine-retry-btn {
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-error);
+  background-color: #FFFFFF;
+  color: var(--color-error);
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.medicine-retry-btn:hover {
+  background-color: var(--color-error);
+  color: #FFFFFF;
+}
+
+/* Empty State Box */
+.empty-state-box {
+  text-align: center;
+  padding: 1.75rem 1.25rem;
+  background-color: var(--color-bg-subtle);
+  border: 1px dashed var(--color-border-default);
+  border-radius: var(--radius-md);
+}
+
+.empty-state-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.empty-state-supporting-text {
+  font-size: 0.84rem;
   color: var(--color-text-secondary);
+  line-height: 1.45;
+  margin-bottom: 1rem;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.empty-state-btn {
+  padding: 0.55rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: none;
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.empty-state-btn:hover {
+  background-color: var(--color-primary-hover);
 }
 
 .card-footer-action {

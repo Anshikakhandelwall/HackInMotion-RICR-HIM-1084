@@ -43,7 +43,7 @@ export const QuickActions = ({ onNavigate }) => {
 
   return (
     <div className="quick-actions-container">
-      <span className="quick-actions-label">Quick Actions:</span>
+      <h3 className="quick-actions-title">Quick Actions</h3>
       <div className="quick-actions-list">
         {actions.map((act) => (
           <button

@@ -8,11 +8,11 @@ import './Header.css';
 export const Header = ({ currentUser, onToggleMobileMenu }) => {
   const userName = currentUser?.fullName || currentUser?.full_name || currentUser?.email || 'User';
   
-  // Extract initials for avatar
+  // Extract initials for avatar badge
   const getInitials = (name) => {
-    if (!name) return 'MG';
+    if (!name || typeof name !== 'string') return 'MG';
     const parts = name.trim().split(' ');
-    if (parts.length >= 2) {
+    if (parts.length >= 2 && parts[0][0] && parts[1][0]) {
       return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
     }
     return name.slice(0, 2).toUpperCase();
@@ -35,13 +35,8 @@ export const Header = ({ currentUser, onToggleMobileMenu }) => {
           </svg>
         </button>
 
-        <div className="header-greeting">
-          <h1 className="greeting-title">
-            Good morning, {userName} <span className="greeting-wave">👋</span>
-          </h1>
-          <p className="greeting-subtitle">
-            Here&apos;s your medication safety overview
-          </p>
+        <div className="header-title-badge">
+          <span className="portal-tag">MediGuard Safety Network</span>
         </div>
       </div>
 

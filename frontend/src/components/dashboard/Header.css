@@ -1,6 +1,6 @@
 .app-header {
   width: 100%;
-  padding: 1.5rem 2rem;
+  padding: 1.2rem 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -24,37 +24,15 @@
   border-radius: var(--radius-sm);
 }
 
-.greeting-title {
-  font-size: 1.45rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  letter-spacing: -0.02em;
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.greeting-wave {
-  display: inline-block;
-  animation: wave 2.2s infinite;
-  transform-origin: 70% 70%;
-}
-
-@keyframes wave {
-  0% { transform: rotate(0deg); }
-  10% { transform: rotate(14deg); }
-  20% { transform: rotate(-8deg); }
-  30% { transform: rotate(14deg); }
-  40% { transform: rotate(-4deg); }
-  50% { transform: rotate(10deg); }
-  60% { transform: rotate(0deg); }
-  100% { transform: rotate(0deg); }
-}
-
-.greeting-subtitle {
-  font-size: 0.875rem;
+.portal-tag {
+  font-size: 0.8125rem;
+  font-weight: 600;
   color: var(--color-text-secondary);
-  margin-top: 0.15rem;
+  letter-spacing: 0.02em;
+  background-color: var(--color-bg-subtle);
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  border: 1px solid var(--color-border-subtle);
 }
 
 .header-right {
@@ -65,8 +43,8 @@
 
 .header-icon-btn {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background-color: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
@@ -85,8 +63,8 @@
 
 .notification-badge-dot {
   position: absolute;
-  top: 9px;
-  right: 9px;
+  top: 8px;
+  right: 8px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -98,15 +76,15 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  padding: 0.3rem 0.6rem 0.3rem 0.3rem;
+  padding: 0.25rem 0.6rem 0.25rem 0.25rem;
   border-radius: 24px;
   background-color: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
 }
 
 .user-avatar {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background-color: var(--color-primary-light);
   color: var(--color-primary);
@@ -133,11 +111,7 @@
     display: flex;
   }
 
-  .greeting-title {
-    font-size: 1.2rem;
-  }
-
-  .greeting-subtitle {
+  .portal-tag {
     display: none;
   }
 
