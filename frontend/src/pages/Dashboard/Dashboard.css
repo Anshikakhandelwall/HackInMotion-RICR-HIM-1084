@@ -29,11 +29,13 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
+  align-items: stretch;
 }
 
 .grid-card-col {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .grid-card-col > * {
@@ -42,10 +44,23 @@
 
 .dashboard-section {
   width: 100%;
+  min-width: 0;
 }
 
+/* Tablet & Mobile Responsiveness */
 @media (max-width: 900px) {
   .dashboard-grid-section {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-content-area {
+    gap: 1.25rem;
+  }
+
+  .dashboard-greeting-title {
+    font-size: 1.35rem;
   }
 }

@@ -8,8 +8,10 @@ import './Dashboard.css';
 
 /**
  * Dashboard Overview Content Component
- * Implements the dashboard overview content area consuming structured mock data
- * with graceful error resilience and strict visual hierarchy.
+ * Implements the responsive dashboard overview content area with:
+ * - LEFT position: Current Medicines Card
+ * - RIGHT position: Safety Overview Card
+ * - Responsive 1-column layout stacking on mobile/tablet (Current Medicines -> Safety Overview -> Recent Safety Checks).
  */
 export const Dashboard = ({ currentUser, onNavigate }) => {
   // Extract user first name safely without crashing
@@ -46,13 +48,13 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
         </p>
       </section>
 
-      {/* 2. Grid: Safety Overview + Current Medicines */}
+      {/* 2. Responsive Grid: Current Medicines (LEFT) + Safety Overview (RIGHT) */}
       <section className="dashboard-grid-section">
         <div className="grid-card-col">
-          <SafetyStatusCard data={mockSafetySummary} onNavigate={onNavigate} />
+          <MedicineSummaryCard medicines={activeMedicines} onNavigate={onNavigate} />
         </div>
         <div className="grid-card-col">
-          <MedicineSummaryCard medicines={activeMedicines} onNavigate={onNavigate} />
+          <SafetyStatusCard data={mockSafetySummary} onNavigate={onNavigate} />
         </div>
       </section>
 
