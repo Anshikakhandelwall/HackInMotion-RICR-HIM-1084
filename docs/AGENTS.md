@@ -10,6 +10,10 @@ This file serves as persistent working memory for AI coding agents working on th
 * **What has been completed:**
   * Scaffolded React 19 + Vite 8 frontend in `frontend/` directory with scalable directory structure (`components/`, `pages/`, `services/`, `layouts/`, `routes/`, `styles/`, `assets/`).
   * **Git Branch Pushed to Remote:** Successfully committed all staged changes on `feature/frontend-ui` and pushed branch to remote origin (`https://github.com/Anshikakhandelwall/HackInMotion-RICR-HIM-1084/tree/feature/frontend-ui`).
+  * **Commit 7 — Interaction Details Page (`feat: build interaction details page`):**
+    * Created the new Interaction Details view displaying selected interaction names, severity state, and three empty placeholders boxes for future AI contents ([InteractionDetails.jsx](file:///c:/Users/HP/OneDrive/Desktop/hackathon/HackInMotion-RICR-HIM-1084/frontend/src/pages/SafetyCheck/InteractionDetails.jsx) & [InteractionDetails.css](file:///c:/Users/HP/OneDrive/Desktop/hackathon/HackInMotion-RICR-HIM-1084/frontend/src/pages/SafetyCheck/InteractionDetails.css)).
+    * Appended "View Details" button to each card in [SafetyCheck.jsx](file:///c:/Users/HP/OneDrive/Desktop/hackathon/HackInMotion-RICR-HIM-1084/frontend/src/pages/SafetyCheck/SafetyCheck.jsx).
+    * Integrated routing state-tracking and view mapping inside [App.jsx](file:///c:/Users/HP/OneDrive/Desktop/hackathon/HackInMotion-RICR-HIM-1084/frontend/src/App.jsx).
   * **Commit 6 — Risk Severity Indicators (`feat: add risk severity indicators`):**
     * Implemented visual risk severity indicators on the Safety Check page ([SafetyCheck.jsx](file:///c:/Users/HP/OneDrive/Desktop/hackathon/HackInMotion-RICR-HIM-1084/frontend/src/pages/SafetyCheck/SafetyCheck.jsx) & [SafetyCheck.css](file:///c:/Users/HP/OneDrive/Desktop/hackathon/HackInMotion-RICR-HIM-1084/frontend/src/pages/SafetyCheck/SafetyCheck.css)).
     * Created centralized configuration `SEVERITY_CONFIG` mapping Severe, Moderate, Safe, and default Unknown fallbacks to emojis/dots and theme colors.
@@ -35,6 +39,9 @@ This file serves as persistent working memory for AI coding agents working on th
 
 ### Work History
 
+* **2026-08-13 - Commit 7 — Interaction Details Page:**
+  * Created dedicated details page displaying selected drug pairing names, severities, and three AI placeholder cards.
+  * Added View Details button to each interaction card and wired SPA React routing.
 * **2026-08-13 - Commit 6 — Risk Severity Indicators:**
   * Created dynamic reusable severity visual indicators with dynamic accent variables for Severe, Moderate, Safe, and default Unknown fallbacks.
 * **2026-08-13 - Commit 4 — Interaction Result Cards:**

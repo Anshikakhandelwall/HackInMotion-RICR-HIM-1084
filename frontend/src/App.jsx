@@ -11,6 +11,8 @@ import SettingsPage from './pages/Settings/SettingsPage';
 import Sidebar from './components/dashboard/Sidebar';
 import Header from './components/dashboard/Header';
 import { getCurrentUser, isProfileCompleted, logoutUser } from './services/auth/authService';
+import InteractionDetails from './pages/SafetyCheck/InteractionDetails';
+
 
 function App() {
   // Determine initial main view state
@@ -30,6 +32,8 @@ function App() {
   const [currentUser, setCurrentUser] = useState(getCurrentUser);
   const [dashboardRoute, setDashboardRoute] = useState('/dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [selectedInteraction, setSelectedInteraction] = useState(null);
+
 
   // Keep state synchronized with active user session
   useEffect(() => {
@@ -140,8 +144,25 @@ function App() {
               )}
 
               {dashboardRoute === '/safety-check' && (
-                <SafetyCheck currentUser={currentUser} onNavigate={handleDashboardNavigate} />
+                <SafetyCheck 
+                  currentUser={currentUser} 
+                  onNavigate={handleDashboardNavigate} 
+                  onViewDetails={(interaction) => {
+                    setSelectedInteraction(interaction);
+                    setDashboardRoute('/interaction-details');
+                  }}
+                />
               )}
+
+              {dashboardRoute === '/interaction-details' && (
+                <InteractionDetails 
+                  interaction={selectedInteraction} 
+                  onBack={() => {
+                    setDashboardRoute('/safety-check');
+                  }}
+                />
+              )}
+
 
               {dashboardRoute === '/history' && (
                 <History onNavigate={handleDashboardNavigate} />

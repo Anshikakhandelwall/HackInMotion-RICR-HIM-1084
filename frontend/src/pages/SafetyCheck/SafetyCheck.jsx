@@ -90,7 +90,7 @@ const mockInteractions = [
  * - Displays individual medication interaction cards under the section "Interactions Found".
  * - Dynamically states an overall warning message based on mock counts.
  */
-export const SafetyCheck = ({ currentUser, onNavigate }) => {
+export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
   // Extract user's active medicines or fall back to mockMedicines
   const activeMedicines = (currentUser?.regularMedicines && currentUser.regularMedicines.length > 0)
     ? currentUser.regularMedicines
@@ -239,6 +239,11 @@ export const SafetyCheck = ({ currentUser, onNavigate }) => {
                 key={interaction.id}
                 className={`interaction-result-card interaction-severity-${config.colorClass}`}
                 style={{ '--severity-accent-color': config.colorHex }}
+                onClick={() => {
+                  if (onViewDetails) {
+                    onViewDetails(interaction);
+                  }
+                }}
               >
                 <div className="interaction-card-info-row">
                   <span className={`interaction-severity-badge ${config.badgeClass}`}>
@@ -260,6 +265,23 @@ export const SafetyCheck = ({ currentUser, onNavigate }) => {
                 </div>
 
                 <p className="interaction-card-description">{interaction.description}</p>
+
+                <div className="interaction-card-actions" style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="small"
+                    className="view-details-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (onViewDetails) {
+                        onViewDetails(interaction);
+                      }
+                    }}
+                  >
+                    View Details
+                  </Button>
+                </div>
               </div>
             );
           })}
