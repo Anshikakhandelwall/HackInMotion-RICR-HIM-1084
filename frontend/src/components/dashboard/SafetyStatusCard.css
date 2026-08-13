@@ -1,0 +1,74 @@
+.safety-status-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
+
+.safety-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.safety-badge-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.safety-shield-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background-color: #FDF2F2;
+  color: #D9383A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(217, 56, 58, 0.15);
+}
+
+.last-checked-tag {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.safety-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+  margin-top: 0.1rem;
+}
+
+.warning-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  background-color: #FFF8F0;
+  border: 1px solid rgba(217, 119, 6, 0.25);
+  border-radius: 20px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #D97706;
+}
+
+.safety-description {
+  font-size: 0.9125rem;
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+  margin: 0.25rem 0;
+}
+
+.safety-action-row {
+  margin-top: 0.5rem;
+}

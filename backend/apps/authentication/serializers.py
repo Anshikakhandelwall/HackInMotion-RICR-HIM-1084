@@ -4,16 +4,69 @@ from rest_framework import serializers
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Serializer for user profile representation."""
+    """Serializer for user profile representation including health onboarding state."""
     full_name = serializers.SerializerMethodField()
+    fullName = serializers.SerializerMethodField()
+    profile_completed = serializers.SerializerMethodField()
+    profileCompleted = serializers.SerializerMethodField()
+    age = serializers.SerializerMethodField()
+    medical_conditions = serializers.SerializerMethodField()
+    medicalConditions = serializers.SerializerMethodField()
+    regular_medicines = serializers.SerializerMethodField()
+    regularMedicines = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'full_name', 'date_joined']
-        read_only_fields = ['id', 'email', 'full_name', 'date_joined']
+        fields = [
+            'id',
+            'email',
+            'full_name',
+            'fullName',
+            'profile_completed',
+            'profileCompleted',
+            'age',
+            'medical_conditions',
+            'medicalConditions',
+            'regular_medicines',
+            'regularMedicines',
+            'date_joined',
+        ]
+        read_only_fields = ['id', 'email', 'date_joined']
 
     def get_full_name(self, obj):
         return obj.first_name if obj.first_name else obj.username
+
+    def get_fullName(self, obj):
+        return self.get_full_name(obj)
+
+    def get_profile_completed(self, obj):
+        if hasattr(obj, 'profile'):
+            return obj.profile.profile_completed
+        return False
+
+    def get_profileCompleted(self, obj):
+        return self.get_profile_completed(obj)
+
+    def get_age(self, obj):
+        if hasattr(obj, 'profile'):
+            return obj.profile.age
+        return None
+
+    def get_medical_conditions(self, obj):
+        if hasattr(obj, 'profile'):
+            return obj.profile.medical_conditions
+        return ''
+
+    def get_medicalConditions(self, obj):
+        return self.get_medical_conditions(obj)
+
+    def get_regular_medicines(self, obj):
+        if hasattr(obj, 'profile'):
+            return obj.profile.regular_medicines
+        return []
+
+    def get_regularMedicines(self, obj):
+        return self.get_regular_medicines(obj)
 
 
 class RegisterSerializer(serializers.Serializer):

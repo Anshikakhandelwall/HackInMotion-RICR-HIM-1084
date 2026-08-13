@@ -2,15 +2,24 @@ import React, { useState, useEffect } from 'react';
 import Signup from './pages/Signup/Signup';
 import Login from './pages/Login/Login';
 import HealthProfilePage from './pages/HealthProfile/HealthProfilePage';
+import Dashboard from './pages/Dashboard/Dashboard';
+import Medicines from './pages/Medicines/Medicines';
+import SafetyCheck from './pages/SafetyCheck/SafetyCheck';
+import History from './pages/History/History';
+import Profile from './pages/Profile/Profile';
+import SettingsPage from './pages/Settings/SettingsPage';
+import Sidebar from './components/dashboard/Sidebar';
+import Header from './components/dashboard/Header';
 import { getCurrentUser, isProfileCompleted, logoutUser } from './services/auth/authService';
 
 function App() {
-  // Determine initial view based on current authentication & onboarding completion state
+  // Determine initial main view state
   const getInitialView = () => {
     const user = getCurrentUser();
     if (user) {
-      if (isProfileCompleted()) {
-        return 'dashboard';
+      const isDone = Boolean(user.profileCompleted || user.profile_completed || isProfileCompleted());
+      if (isDone) {
+        return 'dashboard_shell';
       }
       return 'onboarding';
     }
@@ -19,12 +28,14 @@ function App() {
 
   const [currentView, setCurrentView] = useState(getInitialView);
   const [currentUser, setCurrentUser] = useState(getCurrentUser);
+  const [dashboardRoute, setDashboardRoute] = useState('/dashboard');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Keep state in sync with local user session
+  // Keep state synchronized with active user session
   useEffect(() => {
     const user = getCurrentUser();
     setCurrentUser(user);
-  }, [currentView]);
+  }, [currentView, dashboardRoute]);
 
   const handleNavigateToLogin = () => {
     setCurrentView('login');
@@ -34,28 +45,36 @@ function App() {
     setCurrentView('signup');
   };
 
-  // Called after account registration -> navigates directly to Login page (DO NOT show Health Profile during registration)
+  // Called after account registration -> navigates to Login page
   const handleRegisterSuccess = () => {
     setCurrentView('login');
   };
 
-  // Called after successful LOGIN -> makes onboarding navigation decision
+  // Called after successful LOGIN -> checks profile completion status
   const handleLoginSuccess = (data) => {
     const user = (data && data.user) || getCurrentUser();
     setCurrentUser(user);
 
-    // Check if user has already completed the health profile
-    if (isProfileCompleted()) {
-      setCurrentView('dashboard');
+    const isDone = Boolean(user && (user.profileCompleted || user.profile_completed));
+
+    if (isDone) {
+      setDashboardRoute('/dashboard');
+      setCurrentView('dashboard_shell');
     } else {
       setCurrentView('onboarding');
     }
   };
 
-  // Called after user confirms and saves the Health Profile onboarding form
+  // Called after user confirms and saves the Health Profile onboarding form to backend DB
   const handleOnboardingSuccess = (updatedUser) => {
     setCurrentUser(updatedUser);
-    setCurrentView('dashboard');
+    setDashboardRoute('/dashboard');
+    setCurrentView('dashboard_shell');
+  };
+
+  // Internal dashboard sub-route navigation handler
+  const handleDashboardNavigate = (routePath) => {
+    setDashboardRoute(routePath);
   };
 
   // Logout handler
@@ -63,10 +82,12 @@ function App() {
     await logoutUser();
     setCurrentUser(null);
     setCurrentView('login');
+    setDashboardRoute('/dashboard');
   };
 
   return (
     <div className="app-root">
+      {/* 1. Register View */}
       {currentView === 'signup' && (
         <Signup
           onNavigateToLogin={handleNavigateToLogin}
@@ -74,6 +95,7 @@ function App() {
         />
       )}
 
+      {/* 2. Login View */}
       {currentView === 'login' && (
         <Login
           onNavigateToSignup={handleNavigateToSignup}
@@ -81,49 +103,57 @@ function App() {
         />
       )}
 
+      {/* 3. First-Login Health Profile Onboarding View */}
       {currentView === 'onboarding' && (
         <HealthProfilePage onSuccess={handleOnboardingSuccess} />
       )}
 
-      {currentView === 'dashboard' && (
-        /* Dashboard Container */
-        <div style={{ textAlign: 'center', padding: '3rem 1.5rem', color: '#2B2524', backgroundColor: '#FFFDFC', minHeight: '100vh' }}>
-          <div style={{ maxWidth: '600px', margin: '0 auto', background: '#FFFFFF', padding: '2rem', borderRadius: '16px', border: '1px solid #E8D6D2', boxShadow: '0 12px 32px -8px rgba(166, 83, 75, 0.08)' }}>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: 700, color: '#2B2524', marginBottom: '0.5rem' }}>
-              Welcome to MediGuard Dashboard
-            </h1>
-            <p style={{ color: '#756866', marginBottom: '1.5rem' }}>
-              Hello, <strong>{currentUser?.fullName || currentUser?.email || 'User'}</strong>! Your health profile is complete.
-            </p>
+      {/* 4. MediGuard Dashboard Application Shell */}
+      {currentView === 'dashboard_shell' && (
+        <div style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: '#FFFDFC' }}>
+          {/* Persistent Sidebar */}
+          <Sidebar
+            activeRoute={dashboardRoute}
+            onNavigate={handleDashboardNavigate}
+            onLogout={handleLogout}
+            isOpen={isMobileMenuOpen}
+            onClose={() => setIsMobileMenuOpen(false)}
+          />
 
-            {/* Display Saved Onboarding Profile Data */}
-            {currentUser && (currentUser.age || currentUser.medicalConditions) && (
-              <div style={{ textAlign: 'left', background: '#FFF8F7', padding: '1rem 1.25rem', borderRadius: '10px', border: '1px solid #F5EAE8', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-                <p style={{ margin: '0.3rem 0' }}><strong>Age:</strong> {currentUser.age}</p>
-                <p style={{ margin: '0.3rem 0' }}><strong>Medical History:</strong> {currentUser.medicalConditions}</p>
-                {currentUser.regularMedicines && currentUser.regularMedicines.length > 0 && (
-                  <p style={{ margin: '0.3rem 0' }}>
-                    <strong>Regular Medicines:</strong> {currentUser.regularMedicines.join(', ')}
-                  </p>
-                )}
-              </div>
-            )}
+          {/* Main Content Layout Container */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+            {/* Persistent Top Header */}
+            <Header
+              currentUser={currentUser}
+              onToggleMobileMenu={() => setIsMobileMenuOpen(true)}
+            />
 
-            <button
-              onClick={handleLogout}
-              style={{
-                padding: '0.65rem 1.5rem',
-                borderRadius: '8px',
-                border: 'none',
-                background: '#A6534B',
-                color: '#FFFFFF',
-                cursor: 'pointer',
-                fontWeight: 600,
-                fontSize: '0.95rem',
-              }}
-            >
-              Sign Out
-            </button>
+            {/* Main Sub-Page Views */}
+            <main style={{ flex: 1, padding: '1.75rem 2rem', overflowY: 'auto' }}>
+              {dashboardRoute === '/dashboard' && (
+                <Dashboard currentUser={currentUser} onNavigate={handleDashboardNavigate} />
+              )}
+
+              {dashboardRoute === '/medicines' && (
+                <Medicines onNavigate={handleDashboardNavigate} />
+              )}
+
+              {dashboardRoute === '/safety-check' && (
+                <SafetyCheck onNavigate={handleDashboardNavigate} />
+              )}
+
+              {dashboardRoute === '/history' && (
+                <History onNavigate={handleDashboardNavigate} />
+              )}
+
+              {dashboardRoute === '/profile' && (
+                <Profile currentUser={currentUser} />
+              )}
+
+              {dashboardRoute === '/settings' && (
+                <SettingsPage />
+              )}
+            </main>
           </div>
         </div>
       )}

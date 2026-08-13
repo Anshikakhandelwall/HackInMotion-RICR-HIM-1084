@@ -5,9 +5,34 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2.5rem 1rem;
+  padding: 2.5rem 1.5rem;
   background-color: var(--color-bg-main);
   overflow-x: hidden;
+}
+
+/* Organic Warm Background Decorative Shapes */
+.bg-shape {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.bg-shape-top-left {
+  top: -12%;
+  left: -8%;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, #FBEDEA 0%, rgba(251, 237, 234, 0) 70%);
+}
+
+.bg-shape-bottom-right {
+  bottom: -12%;
+  right: -8%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #F8E4E0 0%, rgba(248, 228, 224, 0) 70%);
 }
 
 .health-profile-container {
@@ -18,34 +43,8 @@
   justify-content: center;
 }
 
-/* Subtle background glow highlights for depth */
-.bg-glow {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(140px);
-  pointer-events: none;
-  opacity: 0.05;
-}
-
-.bg-glow-top-left {
-  top: -10%;
-  left: -5%;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, var(--color-accent-warm) 0%, transparent 70%);
-}
-
-.bg-glow-bottom-right {
-  bottom: -10%;
-  right: -5%;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, var(--color-accent-rose) 0%, transparent 70%);
-}
-
 @media (max-width: 640px) {
   .health-profile-page {
-    padding: 1.5rem 0.5rem;
-    align-items: flex-start;
+    padding: 1.25rem 0.5rem;
   }
 }

@@ -1,44 +1,30 @@
 .register-card {
   width: 100%;
-  max-width: 440px;
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  padding: 2.25rem 2rem;
+  max-width: 420px;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
   margin: 0 auto;
-  animation: cardFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes cardFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.mobile-logo-only {
+  display: none;
+  margin-bottom: 0.5rem;
 }
 
 .register-header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.5rem;
+  gap: 0.35rem;
   text-align: left;
 }
 
 .register-title {
-  font-size: 1.625rem;
+  font-size: 1.6rem;
   font-weight: 700;
   color: var(--color-text-primary);
-  letter-spacing: -0.025em;
-  margin-top: 0.25rem;
+  letter-spacing: -0.02em;
 }
 
 .register-subtitle {
@@ -50,7 +36,7 @@
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 1.15rem;
+  gap: 1rem;
   width: 100%;
 }
 
@@ -61,38 +47,38 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.35rem;
+  padding: 0.2rem;
+  cursor: pointer;
   border-radius: var(--radius-sm);
   transition: color var(--transition-fast);
 }
 
 .toggle-password-btn:hover {
-  color: var(--color-text-primary);
+  color: var(--color-primary);
 }
 
-/* Password Requirement Guidance List */
+/* Password Strength Guidance List */
 .password-guidance {
-  background: var(--color-bg-subtle);
+  background-color: var(--color-bg-subtle);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-md);
-  padding: 0.75rem 0.9rem;
-  font-size: 0.8125rem;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.78rem;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  animation: fadeIn 0.2s ease;
+  gap: 0.3rem;
 }
 
 .guidance-title {
+  font-weight: 600;
   color: var(--color-text-secondary);
-  font-weight: 500;
 }
 
 .guidance-list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
 }
 
 .guidance-list li {
@@ -100,50 +86,30 @@
   align-items: center;
   gap: 0.4rem;
   color: var(--color-text-muted);
-  transition: color var(--transition-fast);
-}
 
-.guidance-list li.valid {
-  color: var(--color-success);
-  font-weight: 500;
+  &.valid {
+    color: var(--color-success);
+    font-weight: 500;
+  }
 }
 
 .guidance-bullet {
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 0.85rem;
 }
 
 .register-submit-btn {
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
+  background-color: var(--color-primary);
 }
 
-/* Alerts */
-.alert {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.85rem 1rem;
-  border-radius: var(--radius-md);
-  font-size: 0.875rem;
-  line-height: 1.4;
+.register-submit-btn:hover {
+  background-color: var(--color-primary-hover);
 }
 
-.alert-error {
-  background-color: var(--color-error-bg);
-  border: 1px solid #F87171;
-  color: #991B1B;
-}
-
-.alert-success {
-  background-color: var(--color-success-bg);
-  border: 1px solid #4ADE80;
-  color: #166534;
-}
-
-/* Footer & Link Button */
 .register-footer {
-  border-top: 1px solid var(--color-border-subtle);
-  padding-top: 1rem;
   text-align: center;
+  padding-top: 0.1rem;
 }
 
 .login-prompt {
@@ -156,9 +122,10 @@
   border: none;
   color: var(--color-primary);
   font-weight: 600;
-  font-size: inherit;
-  padding: 0;
+  font-size: 0.875rem;
   cursor: pointer;
+  padding: 0;
+  margin-left: 0.25rem;
   transition: color var(--transition-fast);
 }
 
@@ -167,33 +134,47 @@
   text-decoration: underline;
 }
 
-/* Disclaimer */
 .register-disclaimer {
   display: flex;
   align-items: flex-start;
-  gap: 0.5rem;
+  gap: 0.4rem;
   font-size: 0.75rem;
   color: var(--color-text-muted);
   line-height: 1.4;
+  margin-top: 0.25rem;
 }
 
 .disclaimer-icon {
   flex-shrink: 0;
-  margin-top: 2px;
-  color: var(--color-text-muted);
+  margin-top: 0.15rem;
+  color: var(--color-primary);
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 480px) {
-  .register-card {
-    padding: 1.5rem 1.25rem;
-    border-radius: var(--radius-md);
-    box-shadow: none;
-    background: transparent;
-    border: none;
-  }
+/* Alert Boxes */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
 
-  .register-title {
-    font-size: 1.375rem;
+.alert-error {
+  background-color: var(--color-error-bg);
+  border: 1px solid rgba(217, 56, 58, 0.2);
+  color: var(--color-error);
+}
+
+.alert-success {
+  background-color: var(--color-success-bg);
+  border: 1px solid rgba(45, 138, 86, 0.2);
+  color: var(--color-success);
+}
+
+@media (max-width: 860px) {
+  .mobile-logo-only {
+    display: block;
   }
 }

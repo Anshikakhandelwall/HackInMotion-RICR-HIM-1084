@@ -17,8 +17,11 @@ export const storeAuthSession = (token, user) => {
   }
   if (user) {
     localStorage.setItem('currentUser', JSON.stringify(user));
-    if (user.profileCompleted) {
+    const isDone = Boolean(user.profileCompleted || user.profile_completed);
+    if (isDone) {
       localStorage.setItem('mediGuard_profileCompleted', 'true');
+    } else {
+      localStorage.removeItem('mediGuard_profileCompleted');
     }
   }
 };
@@ -47,11 +50,14 @@ export const getCurrentUser = () => {
 
 /**
  * Check if the user has completed the onboarding health profile.
+ * Checks persisted backend status on current user session object.
  * @returns {boolean}
  */
 export const isProfileCompleted = () => {
   const user = getCurrentUser();
-  if (user && user.profileCompleted) return true;
+  if (user) {
+    return Boolean(user.profileCompleted || user.profile_completed);
+  }
   return localStorage.getItem('mediGuard_profileCompleted') === 'true';
 };
 
@@ -66,7 +72,7 @@ export const clearAuthSession = () => {
 
 /**
  * Register a new user with MediGuard backend API.
- * Registration creates the account and returns response data.
+ * Registration creates the user account in the backend DB and returns response.
  * Does NOT set active login session so user proceeds to Login flow.
  * @param {Object} userData - { fullName, email, password }
  * @returns {Promise<Object>} Response data from registration API
@@ -96,7 +102,7 @@ export const registerUser = async (userData) => {
 
 /**
  * Login a user with MediGuard backend API.
- * Authenticates user, stores active session tokens, and returns user profile.
+ * Authenticates user with backend DB, retrieves stored profileCompleted status, and saves active session.
  * @param {Object} credentials - { email, password }
  * @returns {Promise<Object>} Response data containing token and user profile
  */
@@ -119,58 +125,55 @@ export const loginUser = async (credentials) => {
     throw new Error(errorMsg);
   }
 
-  // Store auth session upon successful login
+  // Store auth session upon successful login (includes profile_completed status from Django DB)
   storeAuthSession(data.token, data.user);
 
   return data;
 };
 
 /**
- * Save user's initial onboarding health profile.
+ * Save user's initial onboarding health profile directly to Django backend database.
  * @param {Object} profileData - { age, medicalConditions, regularMedicines }
- * @returns {Promise<Object>} Updated user profile
+ * @returns {Promise<Object>} Updated user profile from backend
  */
 export const saveHealthProfile = async (profileData) => {
   const token = getAuthToken();
 
-  // 1. Try sending to backend API if authenticated token is present
+  // 1. Send to Django backend endpoint POST /api/auth/profile/onboarding/
   if (token) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/profile/onboarding/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Token ${token}`,
-        },
-        body: JSON.stringify({
-          age: profileData.age,
-          medicalConditions: profileData.medicalConditions,
-          regularMedicines: profileData.regularMedicines,
-          profileCompleted: true,
-        }),
-      });
+    const response = await fetch(`${API_BASE_URL}/api/auth/profile/onboarding/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+      },
+      body: JSON.stringify({
+        age: profileData.age,
+        medicalConditions: profileData.medicalConditions,
+        regularMedicines: profileData.regularMedicines,
+        profileCompleted: true,
+      }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (response.ok && data.success) {
-        const currentUser = getCurrentUser() || {};
-        const updatedUser = {
-          ...currentUser,
-          ...data.user,
-          age: profileData.age,
-          medicalConditions: profileData.medicalConditions,
-          regularMedicines: profileData.regularMedicines,
-          profileCompleted: true,
-        };
-        storeAuthSession(data.token || token, updatedUser);
-        return updatedUser;
-      }
-    } catch (networkError) {
-      console.warn('Backend profile onboarding endpoint unreachable, persisting session locally:', networkError);
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Failed to save health profile.');
     }
+
+    // Persist updated user profile with profile_completed = True in active session
+    const currentUser = getCurrentUser() || {};
+    const updatedUser = {
+      ...currentUser,
+      ...data.user,
+      profileCompleted: true,
+      profile_completed: true,
+    };
+    storeAuthSession(token, updatedUser);
+    return updatedUser;
   }
 
-  // 2. Fallback persistence to localStorage session for offline/mock architecture
+  // Fallback for offline/unauthenticated state
   const currentUser = getCurrentUser() || {};
   const updatedUser = {
     ...currentUser,
@@ -178,11 +181,10 @@ export const saveHealthProfile = async (profileData) => {
     medicalConditions: profileData.medicalConditions,
     regularMedicines: profileData.regularMedicines,
     profileCompleted: true,
+    profile_completed: true,
   };
 
-  localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-  localStorage.setItem('mediGuard_profileCompleted', 'true');
-
+  storeAuthSession(null, updatedUser);
   return updatedUser;
 };
 
