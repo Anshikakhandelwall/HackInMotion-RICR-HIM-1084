@@ -34,7 +34,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,8 +51,13 @@ INSTALLED_APPS = [
     'apps.medicines',
     'apps.interactions',
     'apps.patients',
+    'apps.ai',
 ]
-]
+
+# AI layer. Defaults to the stub provider, which makes no network call — a
+# misconfigured deployment shows placeholder text beside the verified
+# interaction data rather than reaching for an unconfigured vendor.
+AI_PROVIDER = 'stub'
 
 
 MIDDLEWARE = [
