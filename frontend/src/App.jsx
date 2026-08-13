@@ -125,7 +125,8 @@ function App() {
             {/* Persistent Top Header */}
             <Header
               currentUser={currentUser}
-              onToggleMobileMenu={() => setIsMobileMenuOpen(true)}
+              isMobileMenuOpen={isMobileMenuOpen}
+              onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
             />
 
             {/* Main Sub-Page Views */}
