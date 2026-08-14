@@ -3,18 +3,27 @@ import MedicineSummaryCard from '../../components/dashboard/MedicineSummaryCard'
 import SafetyStatusCard from '../../components/dashboard/SafetyStatusCard';
 import RecentChecksCard from '../../components/dashboard/RecentChecksCard';
 import QuickActions from '../../components/dashboard/QuickActions';
-import { mockSafetySummary, mockMedicines } from '../../data/mockDashboardData';
 import { apiFetch } from '../../services/api/apiClient';
+import { getHistory } from '../../services/history/historyService';
 import { getUserFirstName } from '../../utils/userUtils';
 import { useLanguage } from '../../context/LanguageContext';
 import './Dashboard.css';
 
 /**
  * Dashboard Overview Content Component
+ *
+ * All data comes from the authenticated API.  If a fetch fails the user sees
+ * a clear error message with a retry option — never fake data.
  */
 export const Dashboard = ({ currentUser, onNavigate }) => {
   const { t } = useLanguage();
-  const [safetySummary, setSafetySummary] = useState(mockSafetySummary);
+
+  // ── Safety overview (from backend) ──────────────────────────────────────
+  const [safetySummary, setSafetySummary] = useState(null);
+  const [safetyLoading, setSafetyLoading] = useState(true);
+  const [safetyError, setSafetyError] = useState(null);
+
+  // ── Recent checks (from local history service) ─────────────────────────
   const [recentChecks, setRecentChecks] = useState(() => {
     const saved = getHistory();
     return saved.slice(0, 3).map((item) => ({
@@ -26,17 +35,25 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
     }));
   });
 
-  useEffect(() => {
-    const fetchDashboardOverview = async () => {
-      try {
-        const data = await apiFetch('/api/dashboard/overview/');
-        if (data && data.success && data.safety_overview) {
-          setSafetySummary(data.safety_overview);
-        }
-      } catch (err) {
-        console.warn('Dashboard overview live fetch failed, using session data:', err);
+  const fetchDashboardOverview = async () => {
+    setSafetyLoading(true);
+    setSafetyError(null);
+    try {
+      const data = await apiFetch('/api/dashboard/overview/');
+      if (data && data.success && data.safety_overview) {
+        setSafetySummary(data.safety_overview);
+      } else {
+        setSafetyError('Unexpected response from server.');
       }
-    };
+    } catch (err) {
+      console.error('Dashboard overview fetch failed:', err);
+      setSafetyError('Unable to load your safety overview. Please try again.');
+    } finally {
+      setSafetyLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchDashboardOverview();
 
     const handleHistoryUpdate = () => {
@@ -58,12 +75,13 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
 
   const displayName = getUserFirstName(currentUser);
 
-  // Use user's saved regular medicines if available, otherwise fallback to mockMedicines
-  const activeMedicines = (currentUser?.regularMedicines && currentUser.regularMedicines.length > 0)
-    ? currentUser.regularMedicines
-    : (currentUser?.regular_medicines && currentUser.regular_medicines.length > 0)
-    ? currentUser.regular_medicines
-    : mockMedicines;
+  // Use the authenticated user's medicines — empty array when none configured
+  const activeMedicines =
+    (currentUser?.regularMedicines && currentUser.regularMedicines.length > 0)
+      ? currentUser.regularMedicines
+      : (currentUser?.regular_medicines && currentUser.regular_medicines.length > 0)
+        ? currentUser.regular_medicines
+        : [];
 
   return (
     <div className="dashboard-content-area">
@@ -83,7 +101,20 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
           <MedicineSummaryCard medicines={activeMedicines} onNavigate={onNavigate} />
         </div>
         <div className="grid-card-col">
-          <SafetyStatusCard data={safetySummary} onNavigate={onNavigate} />
+          {safetyLoading && (
+            <div className="dashboard-loading-card">
+              <p>Loading safety overview…</p>
+            </div>
+          )}
+          {safetyError && !safetyLoading && (
+            <div className="dashboard-error-card">
+              <p>{safetyError}</p>
+              <button className="retry-btn" onClick={fetchDashboardOverview}>Retry</button>
+            </div>
+          )}
+          {!safetyLoading && !safetyError && safetySummary && (
+            <SafetyStatusCard data={safetySummary} onNavigate={onNavigate} />
+          )}
         </div>
       </section>
 
@@ -101,5 +132,3 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
 };
 
 export default Dashboard;
-
-

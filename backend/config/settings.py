@@ -41,7 +41,7 @@ SUPABASE_JWKS_URL = os.getenv(
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%fkx*wx%z6j&_x&vhiq4b=5-s^2zice=i_rg@^9_a61#9l%)fj'
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
