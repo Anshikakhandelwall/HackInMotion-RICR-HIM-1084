@@ -10,88 +10,106 @@ import Profile from './pages/Profile/Profile';
 import SettingsPage from './pages/Settings/SettingsPage';
 import Sidebar from './components/dashboard/Sidebar';
 import Header from './components/dashboard/Header';
-import { getCurrentUser, isProfileCompleted, logoutUser } from './services/auth/authService';
 import InteractionDetails from './pages/SafetyCheck/InteractionDetails';
-
+import useAuth from './hooks/useAuth';
 
 function App() {
-  // Determine initial main view state
-  const getInitialView = () => {
-    const user = getCurrentUser();
-    if (user) {
-      const isDone = Boolean(user.profileCompleted || user.profile_completed || isProfileCompleted());
-      if (isDone) {
-        return 'dashboard_shell';
-      }
-      return 'onboarding';
-    }
-    return 'login';
-  };
+  const { user, loading, signOut } = useAuth();
 
-  const [currentView, setCurrentView] = useState(getInitialView);
-  const [currentUser, setCurrentUser] = useState(getCurrentUser);
+  // 'loading'       — Supabase session check in progress; render nothing to avoid flash
+  // 'login'         — unauthenticated public view
+  // 'signup'        — unauthenticated public view
+  // 'onboarding'    — authenticated, health profile not yet completed
+  // 'dashboard_shell' — authenticated, full application shell
+  const [currentView, setCurrentView] = useState('loading');
   const [dashboardRoute, setDashboardRoute] = useState('/dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedInteraction, setSelectedInteraction] = useState(null);
 
-
-  // Keep state synchronized with active user session
+  // ── Auth guard ──────────────────────────────────────────────────────────────
+  // Runs once Supabase has resolved the initial session.
+  // Also re-runs whenever the user signs in or out (user changes).
   useEffect(() => {
-    const user = getCurrentUser();
-    setCurrentUser(user);
-  }, [currentView, dashboardRoute]);
+    if (loading) return; // Wait for session check to complete — prevents login flash.
+
+    if (user) {
+      // Authenticated: only redirect to login/signup views back to the shell.
+      // If the user is already inside the shell, leave dashboardRoute unchanged.
+      setCurrentView((prev) => {
+        if (prev === 'login' || prev === 'signup' || prev === 'loading') {
+          return 'dashboard_shell';
+        }
+        return prev; // Stay on onboarding or dashboard_shell as-is.
+      });
+    } else {
+      // Not authenticated: any protected view must redirect to login.
+      setCurrentView((prev) => {
+        if (prev === 'dashboard_shell' || prev === 'onboarding' || prev === 'loading') {
+          return 'login';
+        }
+        return prev; // Already on login or signup — leave it.
+      });
+    }
+  }, [user, loading]);
+
+  // ── Navigation handlers ─────────────────────────────────────────────────────
 
   const handleNavigateToLogin = () => {
+    // Guard: authenticated users cannot visit login — send to dashboard.
+    if (user) { setCurrentView('dashboard_shell'); return; }
     setCurrentView('login');
   };
 
   const handleNavigateToSignup = () => {
+    // Guard: authenticated users cannot visit signup — send to dashboard.
+    if (user) { setCurrentView('dashboard_shell'); return; }
     setCurrentView('signup');
   };
 
-  // Called after account registration -> navigates to Login page
+  // Called after account registration with email-confirm flow → go to Login.
   const handleRegisterSuccess = () => {
     setCurrentView('login');
   };
 
-  // Called after successful LOGIN -> checks profile completion status
-  const handleLoginSuccess = (data) => {
-    const user = (data && data.user) || getCurrentUser();
-    setCurrentUser(user);
-
-    const isDone = Boolean(user && (user.profileCompleted || user.profile_completed));
-
-    if (isDone) {
-      setDashboardRoute('/dashboard');
-      setCurrentView('dashboard_shell');
-    } else {
-      setCurrentView('onboarding');
-    }
-  };
-
-  // Called after user confirms and saves the Health Profile onboarding form to backend DB
-  const handleOnboardingSuccess = (updatedUser) => {
-    setCurrentUser(updatedUser);
+  // Called after successful LOGIN (LoginForm.onSuccess).
+  // Supabase onAuthStateChange already updated AuthContext; the guard useEffect
+  // above will fire and transition to dashboard_shell automatically.
+  // We call it here too for instant feedback without waiting for the next render cycle.
+  const handleLoginSuccess = () => {
     setDashboardRoute('/dashboard');
     setCurrentView('dashboard_shell');
   };
 
-  // Internal dashboard sub-route navigation handler
+  // Called after the onboarding health profile is saved.
+  const handleOnboardingSuccess = () => {
+    setDashboardRoute('/dashboard');
+    setCurrentView('dashboard_shell');
+  };
+
+  // Internal dashboard sub-route navigation handler.
   const handleDashboardNavigate = (routePath) => {
     setDashboardRoute(routePath);
   };
 
-  // Logout handler
+  // ── Logout ──────────────────────────────────────────────────────────────────
+  // Signs out from Supabase (clears session), then navigates to Login.
+  // The AuthContext onAuthStateChange listener will also fire and set user → null,
+  // so the guard useEffect above provides a second safety net.
   const handleLogout = async () => {
-    await logoutUser();
-    setCurrentUser(null);
+    await signOut();
     setCurrentView('login');
     setDashboardRoute('/dashboard');
   };
 
+  // ── Loading state ───────────────────────────────────────────────────────────
+  // Supabase session check is in flight — render nothing rather than flashing Login.
+  if (loading || currentView === 'loading') {
+    return null;
+  }
+
   return (
     <div className="app-root">
-      {/* 1. Register View */}
+      {/* 1. Register View — public */}
       {currentView === 'signup' && (
         <Signup
           onNavigateToLogin={handleNavigateToLogin}
@@ -99,7 +117,7 @@ function App() {
         />
       )}
 
-      {/* 2. Login View */}
+      {/* 2. Login View — public */}
       {currentView === 'login' && (
         <Login
           onNavigateToSignup={handleNavigateToSignup}
@@ -107,12 +125,12 @@ function App() {
         />
       )}
 
-      {/* 3. First-Login Health Profile Onboarding View */}
+      {/* 3. Health Profile Onboarding — authenticated, first-time only */}
       {currentView === 'onboarding' && (
         <HealthProfilePage onSuccess={handleOnboardingSuccess} />
       )}
 
-      {/* 4. MediGuard Dashboard Application Shell */}
+      {/* 4. MediGuard Dashboard Application Shell — authenticated */}
       {currentView === 'dashboard_shell' && (
         <div style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: '#FFFDFC' }}>
           {/* Persistent Sidebar */}
@@ -128,7 +146,7 @@ function App() {
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
             {/* Persistent Top Header */}
             <Header
-              currentUser={currentUser}
+              currentUser={user}
               isMobileMenuOpen={isMobileMenuOpen}
               onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
             />
@@ -136,7 +154,7 @@ function App() {
             {/* Main Sub-Page Views */}
             <main style={{ flex: 1, padding: '1.75rem 2rem', overflowY: 'auto' }}>
               {dashboardRoute === '/dashboard' && (
-                <Dashboard currentUser={currentUser} onNavigate={handleDashboardNavigate} />
+                <Dashboard currentUser={user} onNavigate={handleDashboardNavigate} />
               )}
 
               {dashboardRoute === '/medicines' && (
@@ -144,9 +162,9 @@ function App() {
               )}
 
               {dashboardRoute === '/safety-check' && (
-                <SafetyCheck 
-                  currentUser={currentUser} 
-                  onNavigate={handleDashboardNavigate} 
+                <SafetyCheck
+                  currentUser={user}
+                  onNavigate={handleDashboardNavigate}
                   onViewDetails={(interaction) => {
                     setSelectedInteraction(interaction);
                     setDashboardRoute('/interaction-details');
@@ -155,21 +173,18 @@ function App() {
               )}
 
               {dashboardRoute === '/interaction-details' && (
-                <InteractionDetails 
-                  interaction={selectedInteraction} 
-                  onBack={() => {
-                    setDashboardRoute('/safety-check');
-                  }}
+                <InteractionDetails
+                  interaction={selectedInteraction}
+                  onBack={() => setDashboardRoute('/safety-check')}
                 />
               )}
-
 
               {dashboardRoute === '/history' && (
                 <History onNavigate={handleDashboardNavigate} />
               )}
 
               {dashboardRoute === '/profile' && (
-                <Profile currentUser={currentUser} onUpdateUser={setCurrentUser} />
+                <Profile currentUser={user} onUpdateUser={() => {}} />
               )}
 
               {dashboardRoute === '/settings' && (
