@@ -223,6 +223,7 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
                     key={key} 
                     medicine={med} 
                     className="safety-check-preview-item"
+                    showReminder={false}
                   />
                 );
               })}

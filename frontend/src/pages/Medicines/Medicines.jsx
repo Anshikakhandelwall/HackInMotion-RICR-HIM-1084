@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from '../../components/common/Button';
 import MedicineListItem from '../../components/medicines/MedicineListItem';
 import MedicineSearch from '../../components/medicines/MedicineSearch';
+import TimePickerModal from '../../components/common/TimePickerModal';
 import './Medicines.css';
 
 /**
@@ -15,6 +16,10 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
   const [newMedInput, setNewMedInput] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  const [dosageInput, setDosageInput] = useState('');
+  const [selectedReminderTime, setSelectedReminderTime] = useState(null);
+  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
 
   useEffect(() => {
     const userMeds = currentUser?.regularMedicines || currentUser?.regular_medicines || [];
@@ -69,10 +74,16 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
     });
 
     if (!exists) {
-      saveUpdatedMedicines([...medicinesList, trimmed]);
+      const newMed = selectedReminderTime
+        ? { name: trimmed, reminderTime: selectedReminderTime }
+        : trimmed;
+      saveUpdatedMedicines([...medicinesList, newMed]);
     }
 
     setNewMedInput('');
+    setDosageInput('');
+    setSelectedReminderTime(null);
+    setIsTimePickerOpen(false);
     setIsModalOpen(false);
   };
 
@@ -220,6 +231,34 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
                 />
               </div>
 
+              <div className="form-group">
+                <label htmlFor="medDosageInput" className="form-label">
+                  Dosage <span className="label-optional">(Optional)</span>
+                </label>
+                <input
+                  id="medDosageInput"
+                  type="text"
+                  className="form-input"
+                  placeholder="e.g. 500mg, 1 tablet daily"
+                  value={dosageInput}
+                  onChange={(e) => setDosageInput(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group reminder-time-group">
+                <div className="reminder-time-header">
+                  <span className="form-label">Reminder Time</span>
+                  <button
+                    type="button"
+                    className={`add-time-btn ${selectedReminderTime ? 'time-set' : ''}`}
+                    onClick={() => setIsTimePickerOpen(true)}
+                    aria-label={selectedReminderTime ? `Edit reminder time ${selectedReminderTime}` : 'Add reminder time'}
+                  >
+                    {selectedReminderTime ? `⏰ ${selectedReminderTime}` : '+ Add Time'}
+                  </button>
+                </div>
+              </div>
+
               <div className="modal-actions">
                 <button
                   type="button"
@@ -236,6 +275,19 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
           </div>
         </div>
       )}
+
+      {/* Clock-Style Time Picker Modal */}
+      <TimePickerModal
+        isOpen={isTimePickerOpen}
+        initialTime={selectedReminderTime}
+        onConfirm={(formattedTime) => {
+          setSelectedReminderTime(formattedTime);
+          setIsTimePickerOpen(false);
+        }}
+        onCancel={() => {
+          setIsTimePickerOpen(false);
+        }}
+      />
     </div>
   );
 };

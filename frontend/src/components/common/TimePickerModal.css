@@ -1,0 +1,244 @@
+/* Clock-Style Time Picker Modal Styles (MediGuard Theme) */
+
+.time-picker-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(36, 32, 31, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 1rem;
+}
+
+.time-picker-card {
+  background-color: var(--color-bg-card, #FFFDFC);
+  border-radius: var(--radius-lg, 16px);
+  border: 1px solid var(--color-border-default, #E9DDD9);
+  box-shadow: 0 16px 32px rgba(36, 32, 31, 0.16);
+  width: 100%;
+  max-width: 330px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: pickerPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pickerPop {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.time-picker-header {
+  text-align: center;
+}
+
+.time-picker-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text-primary, #24201F);
+  margin: 0;
+}
+
+/* Digital Display Box */
+.time-picker-display-box {
+  background-color: var(--color-bg-subtle, #F9F6F5);
+  border: 1px solid var(--color-border-subtle, #F0E6E3);
+  border-radius: var(--radius-md, 10px);
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.time-display-digits {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.digit-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.2rem 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-text-primary, #24201F);
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.digit-btn:hover {
+  background-color: rgba(166, 61, 53, 0.08);
+}
+
+.digit-btn.active {
+  color: var(--color-primary, #A63D35);
+  background-color: rgba(166, 61, 53, 0.12);
+  border-color: rgba(166, 61, 53, 0.25);
+}
+
+.colon-separator {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-text-muted, #8C8481);
+}
+
+/* AM / PM Selector */
+.period-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.period-btn {
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-default, #E9DDD9);
+  background: transparent;
+  color: var(--color-text-secondary, #6E6663);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.period-btn:hover {
+  background-color: rgba(166, 61, 53, 0.06);
+}
+
+.period-btn.active {
+  background-color: var(--color-primary, #A63D35);
+  color: #FFFFFF;
+  border-color: var(--color-primary, #A63D35);
+}
+
+/* Tabs */
+.time-picker-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-border-default, #E9DDD9);
+  gap: 0.5rem;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 0.4rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-secondary, #6E6663);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tab-btn.active {
+  color: var(--color-primary, #A63D35);
+  border-bottom-color: var(--color-primary, #A63D35);
+}
+
+/* Selection Grid */
+.picker-grid-container {
+  padding: 0.25rem 0;
+}
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.grid-item-btn {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-default, #E9DDD9);
+  background: transparent;
+  color: var(--color-text-primary, #24201F);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.grid-item-btn:hover {
+  background-color: rgba(166, 61, 53, 0.08);
+  border-color: var(--color-primary, #A63D35);
+  color: var(--color-primary, #A63D35);
+}
+
+.grid-item-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(166, 61, 53, 0.2);
+}
+
+.grid-item-btn.selected {
+  background-color: var(--color-primary, #A63D35);
+  color: #FFFFFF;
+  border-color: var(--color-primary, #A63D35);
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(166, 61, 53, 0.3);
+}
+
+/* Actions */
+.time-picker-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.picker-cancel-btn {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--color-border-default, #E9DDD9);
+  background: transparent;
+  color: var(--color-text-secondary, #6E6663);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.picker-cancel-btn:hover {
+  background-color: var(--color-bg-subtle, #F9F6F5);
+}
+
+.picker-done-btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-md, 8px);
+  border: none;
+  background-color: var(--color-primary, #A63D35);
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px rgba(166, 61, 53, 0.25);
+}
+
+.picker-done-btn:hover {
+  background-color: #8E342D;
+}
+
+.picker-done-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(166, 61, 53, 0.3);
+}

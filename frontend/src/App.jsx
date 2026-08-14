@@ -13,6 +13,7 @@ import Header from './components/dashboard/Header';
 import InteractionDetails from './pages/SafetyCheck/InteractionDetails';
 import ForgotPasswordPage from './pages/ForgotPassword/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPassword/ResetPasswordPage';
+import LandingPage from './pages/Landing/LandingPage';
 import useAuth from './hooks/useAuth';
 import { getProfile, updateProfile } from './services/profile/profileService';
 
@@ -22,6 +23,7 @@ function App() {
 
   // ── View state machine ──────────────────────────────────────────────────
   // 'loading'          — waiting for Supabase session OR profile check
+  // 'landing'          — public landing page
   // 'login'            — unauthenticated
   // 'signup'           — unauthenticated
   // 'forgot_password'  — unauthenticated, forgot-password form
@@ -61,10 +63,10 @@ function App() {
     if (loading) return;
 
     if (!user) {
-      // Not authenticated — go to login unless already on a public view.
+      // Not authenticated — go to landing unless already on a public view.
       setCurrentView((prev) => {
-        const publicViews = ['login', 'signup', 'forgot_password'];
-        return publicViews.includes(prev) ? prev : 'login';
+        const publicViews = ['landing', 'login', 'signup', 'forgot_password'];
+        return publicViews.includes(prev) ? prev : 'landing';
       });
       return;
     }
@@ -183,6 +185,14 @@ function App() {
 
   return (
     <div className="app-root">
+      {/* 0. Landing Page — public */}
+      {currentView === 'landing' && (
+        <LandingPage
+          onNavigateToLogin={handleNavigateToLogin}
+          onNavigateToSignup={handleNavigateToSignup}
+        />
+      )}
+
       {/* 1. Register View — public */}
       {currentView === 'signup' && (
         <Signup
