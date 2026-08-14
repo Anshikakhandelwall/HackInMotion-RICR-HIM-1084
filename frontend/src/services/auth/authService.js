@@ -1,248 +1,76 @@
 /**
- * Authentication & Profile Service Module
- * Connects React frontend with MediGuard Django backend API for authentication flows:
- * registration, login, token storage, user profile onboarding, and logout.
+ * Authentication Service
+ * Thin wrapper around Supabase Auth — all auth calls go through here.
+ *
+ * This file contains ONLY active, used functions.
+ * All legacy localStorage shims have been removed.
  */
-
-const API_BASE_URL = ''; // Relative path leverages Vite dev proxy (/api -> http://127.0.0.1:8000)
+import { supabase } from './supabaseClient';
 
 /**
- * Helper to store auth tokens and user session data in localStorage.
- * @param {string} token 
- * @param {Object} user 
+ * Register a new user.
+ * @param {string} email
+ * @param {string} password
+ * @param {Object} [metadata] - Optional user metadata (e.g. { full_name })
+ * @returns {Promise<{data, error}>}
  */
-export const storeAuthSession = (token, user) => {
-  if (token) {
-    localStorage.setItem('authToken', token);
-  }
-  if (user) {
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    const isDone = Boolean(user.profileCompleted || user.profile_completed);
-    if (isDone) {
-      localStorage.setItem('mediGuard_profileCompleted', 'true');
-    } else {
-      localStorage.removeItem('mediGuard_profileCompleted');
-    }
-  }
-};
+export const signUp = (email, password, metadata = {}) =>
+  supabase.auth.signUp({ email, password, options: { data: metadata } });
 
 /**
- * Get current stored authentication token.
- * @returns {string|null}
+ * Sign in an existing user with email + password.
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<{data, error}>}
  */
-export const getAuthToken = () => {
-  return localStorage.getItem('authToken');
-};
+export const signIn = (email, password) =>
+  supabase.auth.signInWithPassword({ email, password });
 
 /**
- * Get current stored user object.
- * @returns {Object|null}
+ * Sign out the currently authenticated user.
+ * @returns {Promise<{error}>}
  */
-export const getCurrentUser = () => {
-  const userStr = localStorage.getItem('currentUser');
-  if (!userStr) return null;
-  try {
-    return JSON.parse(userStr);
-  } catch (e) {
-    return null;
-  }
-};
+export const signOut = () => supabase.auth.signOut();
 
 /**
- * Check if the user has completed the onboarding health profile.
- * Checks persisted backend status on current user session object.
- * @returns {boolean}
+ * Retrieve the active session (null if not authenticated).
+ * @returns {Promise<{data: {session}, error}>}
  */
-export const isProfileCompleted = () => {
-  const user = getCurrentUser();
-  if (user) {
-    return Boolean(user.profileCompleted || user.profile_completed);
-  }
-  return localStorage.getItem('mediGuard_profileCompleted') === 'true';
-};
+export const getSession = () => supabase.auth.getSession();
 
 /**
- * Clear stored auth session from localStorage.
+ * Retrieve the currently authenticated user object.
+ * @returns {Promise<{data: {user}, error}>}
  */
-export const clearAuthSession = () => {
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('currentUser');
-  localStorage.removeItem('mediGuard_profileCompleted');
-};
+export const getUser = () => supabase.auth.getUser();
 
 /**
- * Register a new user with MediGuard backend API.
- * Registration creates the user account in the backend DB and returns response.
- * Does NOT set active login session so user proceeds to Login flow.
- * @param {Object} userData - { fullName, email, password }
- * @returns {Promise<Object>} Response data from registration API
+ * Subscribe to authentication state changes.
+ * @param {Function} callback - Called with (event, session) on every change.
+ * @returns {{ data: { subscription } }} - Call subscription.unsubscribe() to clean up.
  */
-export const registerUser = async (userData) => {
-  const response = await fetch(`${API_BASE_URL}/api/auth/register/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      fullName: userData.fullName,
-      email: userData.email,
-      password: userData.password,
-    }),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok || !data.success) {
-    const errorMsg = data.message || (data.errors ? Object.values(data.errors).flat().join(', ') : 'Registration failed');
-    throw new Error(errorMsg);
-  }
-
-  return data;
-};
+export const onAuthStateChange = (callback) =>
+  supabase.auth.onAuthStateChange(callback);
 
 /**
- * Login a user with MediGuard backend API.
- * Authenticates user with backend DB, retrieves stored profileCompleted status, and saves active session.
- * @param {Object} credentials - { email, password }
- * @returns {Promise<Object>} Response data containing token and user profile
+ * Request a password-reset email from Supabase.
+ * Supabase sends a recovery link; the user clicks it and is redirected to
+ * the app where they can set a new password via updatePassword().
+ *
+ * @param {string} email
+ * @param {string} redirectTo - Full URL Supabase redirects to after the link is clicked.
+ * @returns {Promise<{data, error}>}
  */
-export const loginUser = async (credentials) => {
-  const response = await fetch(`${API_BASE_URL}/api/auth/login/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      email: credentials.email,
-      password: credentials.password,
-    }),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok || !data.success) {
-    const errorMsg = data.message || (data.errors ? Object.values(data.errors).flat().join(', ') : 'Login failed');
-    throw new Error(errorMsg);
-  }
-
-  // Store auth session upon successful login (includes profile_completed status from Django DB)
-  storeAuthSession(data.token, data.user);
-
-  return data;
-};
+export const resetPasswordForEmail = (email, redirectTo) =>
+  supabase.auth.resetPasswordForEmail(email, { redirectTo });
 
 /**
- * Save user's initial onboarding health profile directly to Django backend database.
- * @param {Object} profileData - { age, medicalConditions, regularMedicines }
- * @returns {Promise<Object>} Updated user profile from backend
+ * Set a new password for the currently authenticated recovery session.
+ * Must be called after the user has clicked the Supabase recovery link
+ * and the resulting RECOVERY event has set an active session.
+ *
+ * @param {string} newPassword
+ * @returns {Promise<{data, error}>}
  */
-export const saveHealthProfile = async (profileData) => {
-  const token = getAuthToken();
-
-  // 1. Send to Django backend endpoint POST /api/auth/profile/onboarding/
-  if (token) {
-    const response = await fetch(`${API_BASE_URL}/api/auth/profile/onboarding/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${token}`,
-      },
-      body: JSON.stringify({
-        age: profileData.age,
-        medicalConditions: profileData.medicalConditions,
-        regularMedicines: profileData.regularMedicines,
-        profileCompleted: true,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || 'Failed to save health profile.');
-    }
-
-    // Persist updated user profile with profile_completed = True in active session
-    const currentUser = getCurrentUser() || {};
-    const updatedUser = {
-      ...currentUser,
-      ...data.user,
-      profileCompleted: true,
-      profile_completed: true,
-    };
-    storeAuthSession(token, updatedUser);
-    return updatedUser;
-  }
-
-  // Fallback for offline/unauthenticated state
-  const currentUser = getCurrentUser() || {};
-  const updatedUser = {
-    ...currentUser,
-    age: profileData.age,
-    medicalConditions: profileData.medicalConditions,
-    regularMedicines: profileData.regularMedicines,
-    profileCompleted: true,
-    profile_completed: true,
-  };
-
-  storeAuthSession(null, updatedUser);
-  return updatedUser;
-};
-
-/**
- * Logout the current authenticated user.
- * @returns {Promise<Object>} Response data from logout endpoint
- */
-export const logoutUser = async () => {
-  const token = getAuthToken();
-
-  if (token) {
-    try {
-      await fetch(`${API_BASE_URL}/api/auth/logout/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Token ${token}`,
-        },
-      });
-    } catch (error) {
-      console.warn('Network error during logout:', error);
-    }
-  }
-
-  clearAuthSession();
-  return { success: true, message: 'Logged out successfully' };
-};
-
-/**
- * Fetch fresh user profile details from backend using stored Token.
- * @returns {Promise<Object>}
- */
-export const fetchUserProfile = async () => {
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('No authentication token found');
-  }
-
-  const response = await fetch(`${API_BASE_URL}/api/auth/me/`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Token ${token}`,
-    },
-  });
-
-  const data = await response.json();
-
-  if (!response.ok || !data.success) {
-    if (response.status === 401) {
-      clearAuthSession();
-    }
-    throw new Error(data.message || 'Failed to fetch user profile');
-  }
-
-  if (data.user) {
-    storeAuthSession(token, data.user);
-  }
-
-  return data.user;
-};
+export const updatePassword = (newPassword) =>
+  supabase.auth.updateUser({ password: newPassword });

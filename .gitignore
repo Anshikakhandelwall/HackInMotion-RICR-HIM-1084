@@ -27,3 +27,5 @@ out/
 
 # OS
 .DS_Store
+
+backend/.env

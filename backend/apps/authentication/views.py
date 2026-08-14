@@ -5,6 +5,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
 from .models import UserProfile
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
+from .supabase_auth import SupabaseAuthentication
 
 
 class RegisterView(APIView):
@@ -114,8 +115,8 @@ class LogoutView(APIView):
 
 class UserProfileView(APIView):
     """
-    API view to retrieve currently authenticated user profile.
-    Endpoint: GET /api/auth/me/
+    Legacy profile view — uses DRF TokenAuthentication (pre-Supabase).
+    Endpoint: GET /api/auth/me/  (kept for backward compatibility)
     """
     permission_classes = [IsAuthenticated]
 
@@ -125,6 +126,34 @@ class UserProfileView(APIView):
             {
                 "success": True,
                 "user": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class SupabaseMeView(APIView):
+    """
+    Protected test endpoint — verifies Supabase JWT authentication end-to-end.
+    Endpoint: GET /api/auth/supabase/me/
+
+    Returns the authenticated Supabase identity from verified JWT claims.
+    - 401 when no valid Supabase token is supplied.
+    - 200 with identity information when a valid Supabase token is supplied.
+
+    Only safe, non-sensitive identity fields are returned.
+    """
+    authentication_classes = [SupabaseAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # request.auth is the verified JWT payload dict.
+        payload = request.auth or {}
+        return Response(
+            {
+                "authenticated": True,
+                "supabase_user_id": payload.get("sub"),
+                "email": payload.get("email"),
+                "django_user_id": request.user.pk,
             },
             status=status.HTTP_200_OK,
         )
