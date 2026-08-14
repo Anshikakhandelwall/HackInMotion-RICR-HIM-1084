@@ -310,7 +310,9 @@ Beyond raw DDI pairs, the `PatientSafetyEngine` overlays condition-specific cont
 
 ## Screenshots
 
-> _Screenshots to be added after final UI polish._
+> <img width="1020" height="680" alt="image" src="https://github.com/user-attachments/assets/b4b2a3f1-ff60-48ea-9ce8-e1a6d53e2f58" />
+
+
 
 | Screen | Description |
 |---|---|
