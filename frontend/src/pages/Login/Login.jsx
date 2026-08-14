@@ -2,6 +2,8 @@ import React from 'react';
 import LoginForm from '../../components/auth/LoginForm';
 import BrandLogo from '../../components/common/BrandLogo';
 import HealthcareIllustration from '../../components/common/HealthcareIllustration';
+import LanguageSelector from '../../components/common/LanguageSelector';
+import { useLanguage } from '../../context/LanguageContext';
 import './Login.css';
 
 /**
@@ -11,8 +13,14 @@ import './Login.css';
  * Right panel features the compact login form card.
  */
 export const Login = ({ onNavigateToSignup, onForgotPassword, onSuccess }) => {
+  const { t } = useLanguage();
+
   return (
     <div className="login-page">
+      <div className="login-lang-selector-container">
+        <LanguageSelector />
+      </div>
+
       {/* Soft Organic Peach/Rose Background Shapes */}
       <div className="bg-shape bg-shape-top-left" aria-hidden="true" />
       <div className="bg-shape bg-shape-bottom-right" aria-hidden="true" />
@@ -26,10 +34,10 @@ export const Login = ({ onNavigateToSignup, onForgotPassword, onSuccess }) => {
 
           <div className="hero-content">
             <h2 className="hero-tagline">
-              Smart Medicine Safety &amp; Drug Interaction Assistant
+              {t('loginHeroTagline')}
             </h2>
             <p className="hero-description">
-              Verify prescription combinations, identify interaction risks, and protect patient safety with evidence-backed intelligence.
+              {t('loginHeroDesc')}
             </p>
 
             <div className="hero-illustration-area">
@@ -41,14 +49,14 @@ export const Login = ({ onNavigateToSignup, onForgotPassword, onSuccess }) => {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
-                DDInter 2.0 Verified
+                {t('loginHeroBadge1')}
               </span>
               <span className="hero-badge">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
                   <path d="m9 12 2 2 4-4" />
                 </svg>
-                Patient Safety Screening
+                {t('loginHeroBadge2')}
               </span>
             </div>
           </div>
@@ -57,9 +65,9 @@ export const Login = ({ onNavigateToSignup, onForgotPassword, onSuccess }) => {
         {/* Right Form Panel */}
         <div className="login-form-panel">
           <LoginForm
-            onNavigateToSignup={onNavigateToSignup}
-            onForgotPassword={onForgotPassword}
-            onSuccess={onSuccess}
+             onNavigateToSignup={onNavigateToSignup}
+             onForgotPassword={onForgotPassword}
+             onSuccess={onSuccess}
           />
         </div>
       </main>
@@ -68,3 +76,4 @@ export const Login = ({ onNavigateToSignup, onForgotPassword, onSuccess }) => {
 };
 
 export default Login;
+

@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import Button from '../../components/common/Button';
-import useAuth from '../../hooks/useAuth';
-import { getProfile, updateProfile } from '../../services/profile/profileService';
 import { getUserDisplayName, getUserInitials } from '../../utils/userUtils';
+import { useLanguage } from '../../context/LanguageContext';
 import './Profile.css';
 
 /**
@@ -11,6 +8,7 @@ import './Profile.css';
  * Supports inline editing of medical conditions and regular medicines.
  */
 export const Profile = ({ currentUser, onUpdateProfile }) => {
+  const { t } = useLanguage();
   const { user: authUser } = useAuth();
 
   // ── Remote profile state ──────────────────────────────────────────────────
@@ -27,17 +25,17 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
 
   // Derive display values from Supabase user + backend profile
   const activeUser = currentUser || authUser;
-  const userName = getUserDisplayName(activeUser) || 'Not available';
+  const userName = getUserDisplayName(activeUser) || t('notAvailableLabel');
   const userInitials = getUserInitials(activeUser);
-  const userEmail = authUser?.email || currentUser?.email || 'Not available';
+  const userEmail = authUser?.email || currentUser?.email || t('notAvailableLabel');
 
-  const age = profile?.age ?? 'Not available';
+  const age = profile?.age ?? t('notAvailableLabel');
 
   const rawConditions = profile?.medicalConditions || profile?.medical_conditions || '';
   const medicalHistory =
     rawConditions && rawConditions.trim().toUpperCase() !== 'NONE' && rawConditions.trim().length > 0
       ? rawConditions.trim()
-      : 'None';
+      : t('noneLabel');
 
   const rawMeds = profile?.regularMedicines || profile?.regular_medicines || [];
   const regularMedicinesList = Array.isArray(rawMeds)
@@ -80,7 +78,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
   // ── Edit mode helpers ─────────────────────────────────────────────────────
   const handleEnterEditMode = () => {
     setFormData({
-      medicalHistory: medicalHistory !== 'None' ? medicalHistory : '',
+      medicalHistory: medicalHistory !== t('noneLabel') ? medicalHistory : '',
       regularMedicines: hasMedicines ? regularMedicinesList.join(', ') : '',
     });
     setErrors({});
@@ -105,7 +103,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
   const validateForm = () => {
     const newErrors = {};
     if (!(formData.medicalHistory || '').trim()) {
-      newErrors.medicalHistory = 'Medical history is required. If you have no major medical history, type NONE.';
+      newErrors.medicalHistory = t('medHistoryRequired');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -141,7 +139,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
       setIsEditing(false);
       setTimeout(() => setSaveSuccess(false), 4000);
     } catch (err) {
-      setSaveError(err?.message || 'Unable to save your profile. Please try again.');
+      setSaveError(err?.message || t('unableToSaveProfile'));
     } finally {
       setIsSaving(false);
     }
@@ -151,7 +149,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
   if (loadingProfile) {
     return (
       <div className="profile-page-container">
-        <p style={{ padding: '2rem', color: '#57606a' }}>Loading profile…</p>
+        <p style={{ padding: '2rem', color: '#57606a' }}>{t('loadingProfile')}</p>
       </div>
     );
   }
@@ -169,15 +167,15 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
       {/* Success Notification Banner */}
       {saveSuccess && (
         <div className="profile-success-banner">
-          <span>✓ Profile updated successfully.</span>
+          <span>✓ {t('profileUpdateSuccess')}</span>
         </div>
       )}
 
       {/* Page Header */}
       <div className="profile-page-header">
         <div className="header-titles">
-          <h1 className="profile-page-title">Profile</h1>
-          <p className="profile-page-subtitle">Your personal health information</p>
+          <h1 className="profile-page-title">{t('profileTitle')}</h1>
+          <p className="profile-page-subtitle">{t('profileSubtitle')}</p>
         </div>
 
         {!isEditing && (
@@ -188,7 +186,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
             className="edit-profile-btn"
             onClick={handleEnterEditMode}
           >
-            Edit Profile
+            {t('editProfileBtn')}
           </Button>
         )}
       </div>
@@ -217,8 +215,8 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
               {/* Name — read-only */}
               <div className="profile-field-box locked-box">
                 <div className="field-label-group">
-                  <span className="profile-field-label">Name</span>
-                  <span className="locked-badge">(Read-only)</span>
+                  <span className="profile-field-label">{t('nameLabel')}</span>
+                  <span className="locked-badge">({t('readOnlyLabel')})</span>
                 </div>
                 <span className="profile-field-value locked-value">{userName}</span>
               </div>
@@ -226,8 +224,8 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
               {/* Email — read-only */}
               <div className="profile-field-box locked-box">
                 <div className="field-label-group">
-                  <span className="profile-field-label">Email</span>
-                  <span className="locked-badge">(Read-only)</span>
+                  <span className="profile-field-label">{t('emailLabel')}</span>
+                  <span className="locked-badge">({t('readOnlyLabel')})</span>
                 </div>
                 <span className="profile-field-value locked-value">{userEmail}</span>
               </div>
@@ -235,8 +233,8 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
               {/* Age — read-only */}
               <div className="profile-field-box locked-box">
                 <div className="field-label-group">
-                  <span className="profile-field-label">Age</span>
-                  <span className="locked-badge">(Read-only)</span>
+                  <span className="profile-field-label">{t('ageLabel')}</span>
+                  <span className="locked-badge">({t('readOnlyLabel')})</span>
                 </div>
                 <span className="profile-field-value locked-value">{age}</span>
               </div>
@@ -244,7 +242,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
               {/* Medical History — editable */}
               <div className={`profile-field-box edit-box ${errors.medicalHistory ? 'has-error' : ''}`}>
                 <label htmlFor="profileConditions" className="profile-field-label">
-                  Medical History
+                  {t('medicalHistoryLabel')}
                 </label>
                 <textarea
                   id="profileConditions"
@@ -253,7 +251,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
                   disabled={isSaving}
                   value={formData.medicalHistory}
                   onChange={(e) => handleInputChange('medicalHistory', e.target.value)}
-                  placeholder="e.g. Diabetes, Thyroid or NONE"
+                  placeholder={t('medHistoryPlaceholder')}
                 />
                 {errors.medicalHistory && (
                   <span className="field-error-message">⚠️ {errors.medicalHistory}</span>
@@ -263,14 +261,14 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
               {/* Regular Medicines — editable */}
               <div className={`profile-field-box edit-box full-width-field ${errors.regularMedicines ? 'has-error' : ''}`}>
                 <label htmlFor="profileMeds" className="profile-field-label">
-                  Regular Medicines
+                  {t('regularMedicinesLabel')}
                 </label>
                 <input
                   id="profileMeds"
                   type="text"
                   className={`profile-edit-input ${errors.regularMedicines ? 'input-error' : ''}`}
                   disabled={isSaving}
-                  placeholder="e.g. Paracetamol, Metformin"
+                  placeholder={t('regularMedsPlaceholder')}
                   value={formData.regularMedicines}
                   onChange={(e) => handleInputChange('regularMedicines', e.target.value)}
                 />
@@ -287,33 +285,33 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
                 disabled={isSaving}
                 onClick={handleCancelEdit}
               >
-                Cancel
+                {t('cancel')}
               </button>
               <Button type="submit" variant="primary" size="medium" disabled={isSaving}>
-                {isSaving ? 'Saving…' : 'Save Changes'}
+                {isSaving ? t('savingStatusLabel') : t('saveChanges')}
               </Button>
             </div>
           </form>
         ) : (
           <div className="profile-info-grid">
             <div className="profile-field-box">
-              <span className="profile-field-label">Name</span>
+              <span className="profile-field-label">{t('nameLabel')}</span>
               <span className="profile-field-value">{userName}</span>
             </div>
             <div className="profile-field-box">
-              <span className="profile-field-label">Email</span>
+              <span className="profile-field-label">{t('emailLabel')}</span>
               <span className="profile-field-value">{userEmail}</span>
             </div>
             <div className="profile-field-box">
-              <span className="profile-field-label">Age</span>
+              <span className="profile-field-label">{t('ageLabel')}</span>
               <span className="profile-field-value">{age}</span>
             </div>
             <div className="profile-field-box">
-              <span className="profile-field-label">Medical History</span>
+              <span className="profile-field-label">{t('medicalHistoryLabel')}</span>
               <span className="profile-field-value text-wrap">{medicalHistory}</span>
             </div>
             <div className="profile-field-box full-width-field">
-              <span className="profile-field-label">Regular Medicines</span>
+              <span className="profile-field-label">{t('regularMedicinesLabel')}</span>
               {hasMedicines ? (
                 <div className="regular-medicines-tags">
                   {regularMedicinesList.map((med, idx) => (
@@ -323,7 +321,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
                   ))}
                 </div>
               ) : (
-                <span className="profile-field-value empty-text">None</span>
+                <span className="profile-field-value empty-text">{t('noneLabel')}</span>
               )}
             </div>
           </div>

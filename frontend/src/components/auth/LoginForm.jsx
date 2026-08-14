@@ -3,28 +3,15 @@ import Input from '../common/Input';
 import Button from '../common/Button';
 import BrandLogo from '../common/BrandLogo';
 import useAuth from '../../hooks/useAuth';
+import { useLanguage } from '../../context/LanguageContext';
 import './LoginForm.css';
-
-/** Map raw Supabase error messages to user-friendly text. */
-const friendlyLoginError = (msg = '') => {
-  if (!msg) return 'Unable to sign in. Please try again.';
-  const m = msg.toLowerCase();
-  if (m.includes('invalid login credentials') || m.includes('invalid credentials') || m.includes('wrong password'))
-    return 'Invalid email or password.';
-  if (m.includes('email not confirmed'))
-    return 'Please confirm your email address before signing in.';
-  if (m.includes('too many requests') || m.includes('rate limit'))
-    return 'Too many attempts. Please wait a moment and try again.';
-  if (m.includes('network') || m.includes('fetch'))
-    return 'Network error. Please check your connection and try again.';
-  return msg;
-};
 
 /**
  * LoginForm Component
  * Renders the compact, elegant MediGuard login form.
  */
 export const LoginForm = ({ onNavigateToSignup, onForgotPassword, onSuccess }) => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -43,15 +30,15 @@ export const LoginForm = ({ onNavigateToSignup, onForgotPassword, onSuccess }) =
     switch (name) {
       case 'email':
         if (!value.trim()) {
-          error = 'Email address is required';
+          error = t('emailRequired');
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          error = 'Please enter a valid email address';
+          error = t('validEmail');
         }
         break;
 
       case 'password':
         if (!value) {
-          error = 'Password is required';
+          error = t('passwordRequired');
         }
         break;
 
@@ -118,7 +105,7 @@ export const LoginForm = ({ onNavigateToSignup, onForgotPassword, onSuccess }) =
     const { data, error } = await signIn(formData.email, formData.password);
 
     if (error) {
-      setSubmitError(error.message || friendlyLoginError(error.message));
+      setSubmitError(t('loginFailed'));
       setIsSubmitting(false);
       return;
     }
@@ -132,6 +119,7 @@ export const LoginForm = ({ onNavigateToSignup, onForgotPassword, onSuccess }) =
     setIsSubmitting(false);
   };
 
+
   return (
     <div className="login-card">
       {/* Brand Header */}
@@ -139,9 +127,9 @@ export const LoginForm = ({ onNavigateToSignup, onForgotPassword, onSuccess }) =
         <div className="mobile-logo-only">
           <BrandLogo size="medium" />
         </div>
-        <h1 className="login-title">Welcome Back</h1>
+        <h1 className="login-title">{t('welcomeBack')}</h1>
         <p className="login-subtitle">
-          Login to your account to manage your medication safety.
+          {t('loginSubtitle')}
         </p>
       </div>
 
@@ -164,8 +152,8 @@ export const LoginForm = ({ onNavigateToSignup, onForgotPassword, onSuccess }) =
           id="email"
           name="email"
           type="email"
-          label="Email"
-          placeholder="name@example.com"
+          label={t('email')}
+          placeholder={t('emailPlaceholder')}
           value={formData.email}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -185,8 +173,8 @@ export const LoginForm = ({ onNavigateToSignup, onForgotPassword, onSuccess }) =
           id="password"
           name="password"
           type={showPassword ? 'text' : 'password'}
-          label="Password"
-          placeholder="Enter your password"
+          label={t('password')}
+          placeholder={t('enterPasswordPlaceholder')}
           value={formData.password}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -204,7 +192,7 @@ export const LoginForm = ({ onNavigateToSignup, onForgotPassword, onSuccess }) =
               type="button"
               className="toggle-password-btn"
               onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              aria-label={showPassword ? t('hidePassword') : t('showPassword')}
               tabIndex="-1"
             >
               {showPassword ? (
@@ -231,7 +219,7 @@ export const LoginForm = ({ onNavigateToSignup, onForgotPassword, onSuccess }) =
           fullWidth
           className="login-submit-btn"
         >
-          Login
+          {t('login')}
         </Button>
       </form>
 
@@ -244,23 +232,24 @@ export const LoginForm = ({ onNavigateToSignup, onForgotPassword, onSuccess }) =
               className="link-button"
               onClick={onForgotPassword}
             >
-              Forgot password?
+              {t('forgotPassword')}
             </button>
           </p>
         )}
         <p className="signup-prompt">
-          Don&apos;t have an account?{' '}
+          {t('dontHaveAccount')}{' '}
           <button
             type="button"
             className="link-button"
             onClick={onNavigateToSignup}
           >
-            Sign up
+            {t('signUp')}
           </button>
         </p>
       </div>
     </div>
   );
+
 };
 
 export default LoginForm;

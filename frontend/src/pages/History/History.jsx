@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import HistoryDetails from './HistoryDetails';
 import { getHistory, clearHistory } from '../../services/history/historyService';
 import Button from '../../components/common/Button';
+import { useLanguage } from '../../context/LanguageContext';
 import './History.css';
 
 export const History = ({ onNavigate }) => {
+  const { t } = useLanguage();
   const [historyRecords, setHistoryRecords] = useState(() => getHistory());
   const [selectedRecordId, setSelectedRecordId] = useState(null);
 
@@ -22,7 +24,7 @@ export const History = ({ onNavigate }) => {
   }, []);
 
   const handleClearHistory = () => {
-    if (window.confirm('Are you sure you want to clear your safety check history?')) {
+    if (window.confirm(t('clearHistoryConfirm'))) {
       clearHistory();
       setHistoryRecords([]);
     }
@@ -46,8 +48,8 @@ export const History = ({ onNavigate }) => {
       {/* Page Header */}
       <div className="history-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h1 className="history-page-title">Safety Check History</h1>
-          <p className="history-page-subtitle">View your previous medication safety checks.</p>
+          <h1 className="history-page-title">{t('historyTitle')}</h1>
+          <p className="history-page-subtitle">{t('historySubtitle')}</p>
         </div>
         {historyRecords.length > 0 && (
           <button
@@ -65,7 +67,7 @@ export const History = ({ onNavigate }) => {
               fontWeight: 500,
             }}
           >
-            Clear History
+            {t('clearHistoryBtn')}
           </button>
         )}
       </div>
@@ -74,9 +76,9 @@ export const History = ({ onNavigate }) => {
       {historyRecords.length === 0 ? (
         <div className="history-empty-message" style={{ textAlign: 'center', padding: '3rem 1.5rem', backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
           <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>📜</div>
-          <h3 style={{ margin: '0 0 0.5rem', color: '#1E293B', fontSize: '1.1rem' }}>No Safety Checks Recorded</h3>
+          <h3 style={{ margin: '0 0 0.5rem', color: '#1E293B', fontSize: '1.1rem' }}>{t('noHistoryText')}</h3>
           <p style={{ margin: '0 0 1.25rem', color: '#64748B', fontSize: '0.9rem' }}>
-            Screen your medication cabinet to record safety check history.
+            {t('screenCabinetToRecord')}
           </p>
           <Button
             type="button"
@@ -84,7 +86,7 @@ export const History = ({ onNavigate }) => {
             size="medium"
             onClick={() => onNavigate && onNavigate('/safety-check')}
           >
-            Run Safety Check
+            {t('runSafetyCheck')}
           </Button>
         </div>
       ) : (
@@ -99,7 +101,7 @@ export const History = ({ onNavigate }) => {
                   </span>
                   <span className={`history-status-indicator status-${isSafe ? 'safe' : 'attention'}`}>
                     <span className="status-dot" style={{ marginRight: '0.2rem' }}>{isSafe ? '🟢' : '🔴'}</span>
-                    {record.status}
+                    {record.status === 'Safe' ? t('safe') : t('attentionRequired')}
                   </span>
                 </div>
                 
@@ -107,11 +109,11 @@ export const History = ({ onNavigate }) => {
                   <div className="history-card-body">
                     <div className="history-stat-item">
                       <span className="stat-icon" aria-hidden="true" style={{ marginRight: '0.2rem' }}>💊</span>
-                      <span className="stat-text">{record.medicinesCount} {record.medicinesCount === 1 ? 'medicine' : 'medicines'} checked</span>
+                      <span className="stat-text">{record.medicinesCount} {record.medicinesCount === 1 ? t('medicineChecked') : t('medicinesChecked')}</span>
                     </div>
                     <div className="history-stat-item">
                       <span className="stat-icon" aria-hidden="true" style={{ marginRight: '0.1rem' }}>🔄</span>
-                      <span className="stat-text">{record.interactionsCount} {record.interactionsCount === 1 ? 'interaction' : 'interactions'} found</span>
+                      <span className="stat-text">{record.interactionsCount} {record.interactionsCount === 1 ? t('interactionFound') : t('interactionsFoundCount')}</span>
                     </div>
                   </div>
 
@@ -121,7 +123,7 @@ export const History = ({ onNavigate }) => {
                       className="history-view-details-btn"
                       onClick={() => setSelectedRecordId(record.id)}
                     >
-                      View Details
+                      {t('viewDetailsBtn')}
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginLeft: '0.25rem', display: 'inline-block', verticalAlign: 'middle' }}>
                         <polyline points="9 18 15 12 9 6" />
                       </svg>

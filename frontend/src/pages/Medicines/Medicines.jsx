@@ -3,6 +3,7 @@ import Button from '../../components/common/Button';
 import MedicineListItem from '../../components/medicines/MedicineListItem';
 import MedicineSearch from '../../components/medicines/MedicineSearch';
 import TimePickerModal from '../../components/common/TimePickerModal';
+import { useLanguage } from '../../context/LanguageContext';
 import './Medicines.css';
 
 /**
@@ -11,6 +12,7 @@ import './Medicines.css';
  * for loading skeleton, empty state, and active medicine list.
  */
 export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) => {
+  const { t } = useLanguage();
   const initialMeds = currentUser?.regularMedicines || currentUser?.regular_medicines || [];
   const [medicineList, setMedicineList] = useState(initialMeds);
   const [newMedInput, setNewMedInput] = useState('');
@@ -102,9 +104,9 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
       {/* Page Header */}
       <div className="medicines-page-header">
         <div className="header-text-group">
-          <h1 className="medicines-page-title">My Medicines</h1>
+          <h1 className="medicines-page-title">{t('myMedicines')}</h1>
           <p className="medicines-page-subtitle">
-            Keep track of the medicines you&apos;re currently taking.
+            {t('cabinetSubtitle')}
           </p>
         </div>
 
@@ -121,7 +123,7 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
             className="add-med-primary-btn"
             onClick={() => setIsModalOpen(true)}
           >
-            + Add Medicine
+            + {t('addMedicineBtn')}
           </Button>
         </div>
       </div>
@@ -137,14 +139,14 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
               </svg>
             </div>
             <div>
-              <h2 className="cabinet-card-title">Medication Cabinet</h2>
-              <p className="cabinet-card-subtitle">Active daily prescriptions & supplements</p>
+              <h2 className="cabinet-card-title">{t('cabinetTitle')}</h2>
+              <p className="cabinet-card-subtitle">{t('activeMedCabinet')}</p>
             </div>
           </div>
 
           {!isLoading && (
             <span className="cabinet-count-tag">
-              {isSaving ? 'Saving...' : `${medicinesList.length} ${medicinesList.length === 1 ? 'medicine' : 'medicines'}`}
+              {isSaving ? t('savingStatusLabel') : `${medicinesList.length} ${medicinesList.length === 1 ? t('medicine') : t('medicines')}`}
             </span>
           )}
         </div>
@@ -167,9 +169,9 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
                 <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" />
               </svg>
             </div>
-            <h3 className="empty-title">No medicines added yet</h3>
+            <h3 className="empty-title">{t('noMedsAddedYet')}</h3>
             <p className="empty-subtext">
-              Add your current medicines to keep track of them and screen safety interactions.
+              {t('noMedicines')}
             </p>
             <Button
               type="button"
@@ -177,7 +179,7 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
               size="medium"
               onClick={() => setIsModalOpen(true)}
             >
-              + Add Medicine
+              + {t('addMedicineBtn')}
             </Button>
           </div>
         )}
@@ -204,7 +206,7 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
         <div className="modal-backdrop" onClick={() => setIsModalOpen(false)}>
           <div className="add-medicine-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3 className="modal-title">Add Medicine</h3>
+              <h3 className="modal-title">{t('addMedicineBtn')}</h3>
               <button
                 type="button"
                 className="modal-close-btn"
@@ -217,13 +219,13 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
             <form onSubmit={handleAddMedicineSubmit} className="modal-form">
               <div className="form-group">
                 <label htmlFor="medNameInput" className="form-label">
-                  Medicine Name
+                  {t('drugNameLabel')}
                 </label>
                 <input
                   id="medNameInput"
                   type="text"
                   className="form-input"
-                  placeholder="e.g. Paracetamol, Warfarin, Aspirin"
+                  placeholder={t('regularMedsPlaceholder')}
                   value={newMedInput}
                   onChange={(e) => setNewMedInput(e.target.value)}
                   autoFocus
@@ -265,10 +267,10 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
                   className="modal-cancel-btn"
                   onClick={() => setIsModalOpen(false)}
                 >
-                  Cancel
+                  {t('cancelBtn')}
                 </button>
                 <Button type="submit" variant="primary" size="medium">
-                  Save Medicine
+                  {t('saveMedicine')}
                 </Button>
               </div>
             </form>
@@ -291,6 +293,7 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
     </div>
   );
 };
+
 
 export default Medicines;
 

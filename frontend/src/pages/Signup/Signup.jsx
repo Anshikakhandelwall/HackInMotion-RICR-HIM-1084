@@ -2,6 +2,7 @@ import React from 'react';
 import RegisterForm from '../../components/auth/RegisterForm';
 import BrandLogo from '../../components/common/BrandLogo';
 import HealthcareIllustration from '../../components/common/HealthcareIllustration';
+import { useLanguage } from '../../context/LanguageContext';
 import './Signup.css';
 
 /**
@@ -11,6 +12,8 @@ import './Signup.css';
  * Right panel features the register form card.
  */
 export const Signup = ({ onNavigateToLogin, onSuccess }) => {
+  const { t } = useLanguage();
+
   return (
     <div className="signup-page">
       {/* Soft Organic Peach/Rose Background Shapes */}
@@ -26,10 +29,10 @@ export const Signup = ({ onNavigateToLogin, onSuccess }) => {
 
           <div className="hero-content">
             <h2 className="hero-tagline">
-              Join MediGuard Safety Network
+              {t('joinNetworkTitle')}
             </h2>
             <p className="hero-description">
-              Create an account to start screening prescriptions, tracking medication histories, and preventing adverse drug interactions.
+              {t('joinNetworkSub')}
             </p>
 
             <div className="hero-illustration-area">
@@ -41,13 +44,13 @@ export const Signup = ({ onNavigateToLogin, onSuccess }) => {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
-                RxNorm Standardized
+                {t('rxNormStandardized')}
               </span>
               <span className="hero-badge">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                 </svg>
-                100% Free Safety Tools
+                {t('freeSafetyTools')}
               </span>
             </div>
           </div>
@@ -66,3 +69,4 @@ export const Signup = ({ onNavigateToLogin, onSuccess }) => {
 };
 
 export default Signup;
+

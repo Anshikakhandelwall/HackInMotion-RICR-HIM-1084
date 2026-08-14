@@ -3,7 +3,9 @@ import Input from '../common/Input';
 import Button from '../common/Button';
 import BrandLogo from '../common/BrandLogo';
 import useAuth from '../../hooks/useAuth';
+import { useLanguage } from '../../context/LanguageContext';
 import './RegisterForm.css';
+
 
 /** Map raw Supabase error messages to user-friendly text. */
 const friendlySignupError = (msg = '') => {
@@ -27,6 +29,7 @@ const friendlySignupError = (msg = '') => {
  * DO NOT navigate directly to Health Profile from registration.
  */
 export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -56,35 +59,35 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
     switch (name) {
       case 'fullName':
         if (!value.trim()) {
-          error = 'Full name is required';
+          error = t('fullNameRequired');
         } else if (value.trim().length < 2) {
-          error = 'Name must be at least 2 characters';
+          error = t('nameMinLength');
         }
         break;
 
       case 'email':
         if (!value.trim()) {
-          error = 'Email address is required';
+          error = t('emailRequired');
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          error = 'Please enter a valid email address';
+          error = t('validEmail');
         }
         break;
 
       case 'password':
         if (!value) {
-          error = 'Password is required';
+          error = t('passwordRequired');
         } else if (value.length < 8) {
-          error = 'Password must be at least 8 characters';
+          error = t('passwordMinLength');
         } else if (!/\d/.test(value)) {
-          error = 'Password must contain at least one number';
+          error = t('passwordNumRequired');
         }
         break;
 
       case 'confirmPassword':
         if (!value) {
-          error = 'Please confirm your password';
+          error = t('confirmPasswordRequired');
         } else if (value !== formData.password) {
-          error = 'Passwords do not match';
+          error = t('passwordsDontMatch');
         }
         break;
 
@@ -94,6 +97,7 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
 
     return error;
   };
+
 
   // Validate entire form
   const validateForm = () => {
@@ -123,11 +127,12 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
     // Also revalidate confirmPassword if password changes
     if (name === 'password' && touched.confirmPassword) {
       if (formData.confirmPassword && value !== formData.confirmPassword) {
-        setErrors((prev) => ({ ...prev, confirmPassword: 'Passwords do not match' }));
+        setErrors((prev) => ({ ...prev, confirmPassword: t('passwordsDontMatch') }));
       } else {
         setErrors((prev) => ({ ...prev, confirmPassword: '' }));
       }
     }
+
   };
 
   const handleBlur = (e) => {
@@ -164,9 +169,10 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
     setIsSubmitting(false);
 
     if (error) {
-      setSubmitError(error.message || friendlySignupError(error.message));
+      setSubmitError(t('registerFailed'));
       return;
     }
+
 
     // Email confirmation required: user record exists but no active session yet.
     if (data.user && !data.session) {
@@ -189,9 +195,9 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
       {/* Brand Header */}
       <div className="register-header">
         <BrandLogo size="medium" />
-        <h1 className="register-title">Create your account</h1>
+        <h1 className="register-title">{t('createAccountTitle')}</h1>
         <p className="register-subtitle">
-          Join MediGuard for personalized medicine safety checks and drug interaction monitoring.
+          {t('registerSubtitle')}
         </p>
       </div>
 
@@ -214,11 +220,7 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
             <polyline points="22 4 12 14.01 9 11.01" />
           </svg>
           <span>
-            Account created! Check your email for a confirmation link, then{' '}
-            <button type="button" className="link-button" onClick={onNavigateToLogin}>
-              sign in
-            </button>
-            .
+            {t('registerSuccessMsg')}
           </span>
         </div>
       )}
@@ -230,8 +232,8 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
           id="fullName"
           name="fullName"
           type="text"
-          label="Full Name"
-          placeholder="e.g. Sarah Jenkins"
+          label={t('fullNameLabel')}
+          placeholder={t('fullNamePlaceholder')}
           value={formData.fullName}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -251,8 +253,8 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
           id="email"
           name="email"
           type="email"
-          label="Email Address"
-          placeholder="name@example.com"
+          label={t('email')}
+          placeholder={t('emailPlaceholder')}
           value={formData.email}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -272,8 +274,8 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
           id="password"
           name="password"
           type={showPassword ? 'text' : 'password'}
-          label="Password"
-          placeholder="Create a strong password"
+          label={t('password')}
+          placeholder={t('passwordPlaceholder')}
           value={formData.password}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -291,7 +293,7 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
               type="button"
               className="toggle-password-btn"
               onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              aria-label={showPassword ? t('hidePassword') : t('showPassword')}
               tabIndex="-1"
             >
               {showPassword ? (
@@ -312,19 +314,19 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
         {/* Password Strength Requirements Guidance */}
         {formData.password.length > 0 && (
           <div className="password-guidance">
-            <span className="guidance-title">Password must include:</span>
+            <span className="guidance-title">{t('passwordMustInclude')}</span>
             <ul className="guidance-list">
               <li className={passwordRequirements.minLength ? 'valid' : 'invalid'}>
                 <span className="guidance-bullet">{passwordRequirements.minLength ? '✓' : '•'}</span>
-                At least 8 characters
+                {t('minChars')}
               </li>
               <li className={passwordRequirements.hasNumber ? 'valid' : 'invalid'}>
                 <span className="guidance-bullet">{passwordRequirements.hasNumber ? '✓' : '•'}</span>
-                At least one number (0-9)
+                {t('minNumber')}
               </li>
               <li className={passwordRequirements.hasLetter ? 'valid' : 'invalid'}>
                 <span className="guidance-bullet">{passwordRequirements.hasLetter ? '✓' : '•'}</span>
-                At least one letter
+                {t('minLetter')}
               </li>
             </ul>
           </div>
@@ -335,8 +337,8 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
           id="confirmPassword"
           name="confirmPassword"
           type={showConfirmPassword ? 'text' : 'password'}
-          label="Confirm Password"
-          placeholder="Re-enter your password"
+          label={t('confirmPasswordLabel')}
+          placeholder={t('confirmPasswordPlaceholder')}
           value={formData.confirmPassword}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -354,7 +356,7 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
               type="button"
               className="toggle-password-btn"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+              aria-label={showConfirmPassword ? t('hidePassword') : t('showPassword')}
               tabIndex="-1"
             >
               {showConfirmPassword ? (
@@ -381,20 +383,20 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
           isLoading={isSubmitting}
           className="register-submit-btn"
         >
-          Create Account
+          {t('createAccountBtn')}
         </Button>
       </form>
 
       {/* Footer Navigation Link */}
       <div className="register-footer">
         <p className="login-prompt">
-          Already have an account?{' '}
+          {t('alreadyHaveAccount')}{' '}
           <button
             type="button"
             onClick={onNavigateToLogin}
             className="link-button"
           >
-            Log in
+            {t('login')}
           </button>
         </p>
       </div>
@@ -407,7 +409,7 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
           <line x1="12" y1="8" x2="12.01" y2="8" />
         </svg>
         <p>
-          By creating an account, you agree to MediGuard&apos;s Terms of Service and Privacy Policy. MediGuard provides medication safety insights and does not replace professional medical advice.
+          {t('registerDisclaimer')}
         </p>
       </div>
     </div>
@@ -415,3 +417,4 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
 };
 
 export default RegisterForm;
+

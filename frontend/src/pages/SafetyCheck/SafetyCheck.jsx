@@ -3,68 +3,75 @@ import Button from '../../components/common/Button';
 import MedicineListItem from '../../components/medicines/MedicineListItem';
 import { checkPersonalizedSafety } from '../../services/interactions/interactionService';
 import { saveHistoryRecord } from '../../services/history/historyService';
+import { useLanguage } from '../../context/LanguageContext';
 import './SafetyCheck.css';
 
-// Reusable severity indicator configurations
-const SEVERITY_CONFIG = {
-  severe: {
-    label: 'Severe',
-    colorClass: 'severe',
-    badgeClass: 'severity-severe-badge',
-    icon: '🔴',
-    colorHex: 'var(--color-error)',
-  },
-  major: {
-    label: 'Major',
-    colorClass: 'severe',
-    badgeClass: 'severity-severe-badge',
-    icon: '🔴',
-    colorHex: 'var(--color-error)',
-  },
-  moderate: {
-    label: 'Moderate',
-    colorClass: 'moderate',
-    badgeClass: 'severity-moderate-badge',
-    icon: '🟠',
-    colorHex: '#E27E36',
-  },
-  minor: {
-    label: 'Minor',
-    colorClass: 'safe',
-    badgeClass: 'severity-safe-badge',
-    icon: '🟡',
-    colorHex: '#D97706',
-  },
-  safe: {
-    label: 'Safe',
-    colorClass: 'safe',
-    badgeClass: 'severity-safe-badge',
-    icon: '🟢',
-    colorHex: 'var(--color-success)',
-  },
-  fallback: {
-    label: 'Unknown Risk',
+// Reusable severity indicator configurations helper
+const getSeverityConfig = (severity, t) => {
+  if (!severity) {
+    return {
+      label: t('unknownRisk'),
+      colorClass: 'unknown',
+      badgeClass: 'severity-unknown-badge',
+      icon: '⚪',
+      colorHex: '#A3A3A3',
+    };
+  }
+  
+  const key = severity.toLowerCase();
+  const configs = {
+    severe: {
+      label: t('severe'),
+      colorClass: 'severe',
+      badgeClass: 'severity-severe-badge',
+      icon: '🔴',
+      colorHex: 'var(--color-error)',
+    },
+    major: {
+      label: t('severe'),
+      colorClass: 'severe',
+      badgeClass: 'severity-severe-badge',
+      icon: '🔴',
+      colorHex: 'var(--color-error)',
+    },
+    moderate: {
+      label: t('moderate'),
+      colorClass: 'moderate',
+      badgeClass: 'severity-moderate-badge',
+      icon: '🟠',
+      colorHex: '#E27E36',
+    },
+    minor: {
+      label: t('minor'),
+      colorClass: 'safe', // visual green/orange style from original config
+      badgeClass: 'severity-safe-badge',
+      icon: '🟡',
+      colorHex: '#D97706',
+    },
+    safe: {
+      label: t('safe'),
+      colorClass: 'safe',
+      badgeClass: 'severity-safe-badge',
+      icon: '🟢',
+      colorHex: 'var(--color-success)',
+    },
+  };
+  
+  return configs[key] || {
+    label: t('unknownRisk'),
     colorClass: 'unknown',
     badgeClass: 'severity-unknown-badge',
     icon: '⚪',
     colorHex: '#A3A3A3',
-  }
-};
-
-const getSeverityConfig = (severity) => {
-  if (!severity) return SEVERITY_CONFIG.fallback;
-  const key = severity.toLowerCase();
-  return SEVERITY_CONFIG[key] || SEVERITY_CONFIG.fallback;
+  };
 };
 
 /**
  * SafetyCheck Page Component (Route: /safety-check)
- * Implements base Safety Check page, Safety Status Summary, and Interaction Result Cards.
- * - Displays active daily medicines of the user.
- * - Renders a Safety Status Summary box (Severe, Moderate, Safe categories).
- * - Dynamically states an overall warning message based on interaction risk counts.
  */
 export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
+  const { t } = useLanguage();
+
   // Extract user's active medicines directly from user profile
   const activeMedicines = Array.isArray(currentUser?.regularMedicines)
     ? currentUser.regularMedicines
@@ -121,7 +128,7 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
           drugA: item.medicine_a?.name || item.medicine_a?.rxnorm_name || 'Medicine A',
           drugB: item.medicine_b?.name || item.medicine_b?.rxnorm_name || 'Medicine B',
           severity: item.severity || item.level || 'Moderate',
-          description: item.description || `Potential interaction detected between ${item.medicine_a?.name || 'Medicine A'} and ${item.medicine_b?.name || 'Medicine B'}.`,
+          description: item.description || `Potential interaction detected.`,
         }));
 
         const formattedCondWarns = condWarns.map((item, idx) => ({
@@ -161,11 +168,11 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
   // Derive dynamic overall message based on summary data
   const getOverallMessage = (summary) => {
     if (summary.severe > 0) {
-      return `${summary.severe} severe interaction${summary.severe === 1 ? '' : 's'} require${summary.severe === 1 ? 's' : ''} your attention. Please review your safety results.`;
+      return `${summary.severe} ${t('severeOverallMsg')}`;
     } else if (summary.moderate > 0) {
-      return `${summary.moderate} moderate interaction${summary.moderate === 1 ? '' : 's'} identified. Review details for safety advice.`;
+      return `${summary.moderate} ${t('moderateOverallMsg')}`;
     } else {
-      return `All checked medicines are safe. No interactions found.`;
+      return t('statusSafeMsg');
     }
   };
 
@@ -173,9 +180,9 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
     <div className="safety-check-page-container">
       {/* 1. Page Title & Description */}
       <div className="safety-check-page-header">
-        <h1 className="safety-check-page-title">Safety Check</h1>
+        <h1 className="safety-check-page-title">{t('safetyCheckTitle')}</h1>
         <p className="safety-check-page-subtitle">
-          Screen your current medication cabinet for potential drug-drug interactions.
+          {t('safetyCheckSubtitle')}
         </p>
       </div>
 
@@ -189,21 +196,21 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
             </svg>
           </div>
           <div>
-            <h2 className="safety-check-card-title">Medication Screening Cabinet</h2>
-            <p className="safety-check-card-subtitle">Preview list of medicines that will be checked for safety risks</p>
+            <h2 className="safety-check-card-title">{t('safetyCabinetTitle')}</h2>
+            <p className="safety-check-card-subtitle">{t('safetyCabinetSub')}</p>
           </div>
         </div>
 
         {/* 3. Medicine Preview List Section */}
         <div className="safety-check-preview-content">
           <p className="safety-check-preview-hint">
-            The screening check will run against the DDInter 2.0 interaction database.
+            {t('databaseHint')}
           </p>
 
           {activeMedicines.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '2rem 1rem', backgroundColor: '#FAF8F5', borderRadius: '8px', border: '1px dashed #CBD5E1', margin: '1rem 0' }}>
               <p style={{ color: '#64748B', margin: '0 0 1rem', fontSize: '0.95rem' }}>
-                Your medication cabinet is currently empty. Add your daily medicines under <strong>My Medicines</strong> to screen for safety risks.
+                {t('safetyCabinetEmpty')}
               </p>
               <Button
                 type="button"
@@ -211,7 +218,7 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
                 size="medium"
                 onClick={() => onNavigate && onNavigate('/medicines')}
               >
-                + Add Medicines to Cabinet
+                + {t('addMedicinesToCabinet')}
               </Button>
             </div>
           ) : (
@@ -242,7 +249,7 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
               onClick={handleCheckMedicines}
               disabled={loading}
             >
-              {loading ? 'Checking...' : 'Check My Medicines'}
+              {loading ? t('checkingBtnLabel') : t('checkBtn')}
             </Button>
           </div>
         )}
@@ -253,7 +260,7 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
         <div className="safety-loading-container" aria-busy="true">
           <div className="safety-loading-spinner-wrapper">
             <div className="safety-loading-spinner"></div>
-            <span className="safety-loading-text">Checking your medicines...</span>
+            <span className="safety-loading-text">{t('checkingProgress')}</span>
           </div>
 
           <div className="safety-loading-skeletons">
@@ -283,9 +290,9 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
                 <line x1="12" y1="17" x2="12.01" y2="17" />
               </svg>
             </div>
-            <h2 className="safety-error-title">Unable to complete safety check</h2>
+            <h2 className="safety-error-title">{t('unableToComplete')}</h2>
             <p className="safety-error-subtitle">
-              Something went wrong while checking your medicines. Please try again.
+              {t('somethingWentWrong')}
             </p>
             <div className="safety-error-actions" style={{ marginTop: '0.5rem' }}>
               <Button
@@ -295,7 +302,7 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
                 className="retry-check-btn"
                 onClick={handleCheckMedicines}
               >
-                Try Again
+                {t('tryAgain')}
               </Button>
             </div>
           </div>
@@ -309,8 +316,8 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
                 <path d="m9 12 2 2 4-4" />
               </svg>
             </div>
-            <h2 className="safety-empty-title">No interactions found</h2>
-            <p className="safety-empty-subtitle">Your current medicines have no interactions to display.</p>
+            <h2 className="safety-empty-title">{t('noInteractionsTitle')}</h2>
+            <p className="safety-empty-subtitle">{t('noInteractionsSub')}</p>
           </div>
         </div>
       ) : (
@@ -323,7 +330,7 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
                 <line x1="12" y1="16" x2="12" y2="12" />
                 <line x1="12" y1="8" x2="12.01" y2="8" />
               </svg>
-              <h2 className="safety-summary-title">Safety Status Summary</h2>
+              <h2 className="safety-summary-title">{t('statusLabel')}</h2>
             </div>
 
             <div className="safety-summary-cards-container">
@@ -331,7 +338,7 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
               <div className="status-card status-card-severe">
                 <div className="status-card-header">
                   <span className="status-card-icon" aria-hidden="true" style={{ fontSize: '1.1rem' }}>🔴</span>
-                  <span className="status-card-label">Severe</span>
+                  <span className="status-card-label">{t('severe')}</span>
                 </div>
                 <span className="status-card-count">{summaryData.severe}</span>
               </div>
@@ -340,7 +347,7 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
               <div className="status-card status-card-moderate">
                 <div className="status-card-header">
                   <span className="status-card-icon" aria-hidden="true" style={{ fontSize: '1.1rem' }}>🟠</span>
-                  <span className="status-card-label">Moderate</span>
+                  <span className="status-card-label">{t('moderate')}</span>
                 </div>
                 <span className="status-card-count">{summaryData.moderate}</span>
               </div>
@@ -349,7 +356,7 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
               <div className="status-card status-card-safe">
                 <div className="status-card-header">
                   <span className="status-card-icon" aria-hidden="true" style={{ fontSize: '1.1rem' }}>🟢</span>
-                  <span className="status-card-label">Safe</span>
+                  <span className="status-card-label">{t('safe')}</span>
                 </div>
                 <span className="status-card-count">{summaryData.safe}</span>
               </div>
@@ -370,12 +377,12 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
 
           {/* Interactions List */}
           <div className="safety-interactions-section">
-            <h2 className="safety-interactions-title">Interactions Found</h2>
-            <p className="safety-interactions-subtitle">Click to interact</p>
+            <h2 className="safety-interactions-title">{t('interactionsFoundCount')}</h2>
+            <p className="safety-interactions-subtitle">{t('interactionSubtitle')}</p>
             
             <div className="safety-interactions-list">
               {interactions.map((interaction) => {
-                const config = getSeverityConfig(interaction.severity);
+                const config = getSeverityConfig(interaction.severity, t);
                 return (
                   <div
                     key={interaction.id}
@@ -431,7 +438,7 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
                           }
                         }}
                       >
-                        View Details
+                        {t('viewDetails')}
                       </Button>
                     </div>
                   </div>
@@ -446,3 +453,4 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
 };
 
 export default SafetyCheck;
+

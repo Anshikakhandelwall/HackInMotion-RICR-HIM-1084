@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getUserDisplayName, getUserInitials } from '../../utils/userUtils';
+import LanguageSelector from '../common/LanguageSelector';
+import { useLanguage } from '../../context/LanguageContext';
 import './Header.css';
 
 /**
@@ -8,7 +10,8 @@ import './Header.css';
  * Includes interactive Notification Bell 🔔 with unread count badge, dropdown panel, and outside-click handler.
  */
 export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMenu }) => {
-  const userName = getUserDisplayName(currentUser) || 'User';
+  const { t } = useLanguage();
+  const userName = getUserDisplayName(currentUser) || t('user');
   const userInitials = getUserInitials(currentUser);
 
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
@@ -69,7 +72,7 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
           type="button"
           className="mobile-menu-btn"
           onClick={onToggleMobileMenu}
-          aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-label={isMobileMenuOpen ? t('closeMenu') : t('openMenu')}
         >
           {isMobileMenuOpen ? (
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -86,17 +89,20 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
         </button>
 
         <div className="header-title-badge">
-          <span className="portal-tag">MediGuard Safety Network</span>
+          <span className="portal-tag">{t('networkPortalTag')}</span>
         </div>
       </div>
 
       <div className="header-right" ref={dropdownRef}>
+        {/* Language Selector */}
+        <LanguageSelector />
+
         {/* Notification Icon Badge */}
         <button
           type="button"
           className={`header-icon-btn ${isNotificationPanelOpen ? 'active' : ''}`}
           onClick={() => setIsNotificationPanelOpen((prev) => !prev)}
-          aria-label="Open notifications"
+          aria-label={t('notifications')}
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -171,3 +177,4 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
 };
 
 export default Header;
+
