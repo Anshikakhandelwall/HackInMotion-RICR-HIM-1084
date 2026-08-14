@@ -291,10 +291,13 @@
   box-shadow: 0 0 0 3px rgba(166, 61, 53, 0.18);
 }
 
-.add-time-btn.active {
+.add-time-btn.active,
+.add-time-btn.time-set {
   border-style: solid;
   border-color: var(--color-primary);
-  background-color: rgba(166, 61, 53, 0.1);
+  background-color: rgba(166, 61, 53, 0.08);
+  color: var(--color-primary);
+  font-weight: 700;
 }
 
 .demo-notice-box {

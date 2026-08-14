@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from '../../components/common/Button';
 import MedicineListItem from '../../components/medicines/MedicineListItem';
 import MedicineSearch from '../../components/medicines/MedicineSearch';
+import TimePickerModal from '../../components/common/TimePickerModal';
 import './Medicines.css';
 
 /**
@@ -16,8 +17,9 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const [isReminderTimeActive, setIsReminderTimeActive] = useState(false);
   const [dosageInput, setDosageInput] = useState('');
+  const [selectedReminderTime, setSelectedReminderTime] = useState(null);
+  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
 
   useEffect(() => {
     const userMeds = currentUser?.regularMedicines || currentUser?.regular_medicines || [];
@@ -77,7 +79,8 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
 
     setNewMedInput('');
     setDosageInput('');
-    setIsReminderTimeActive(false);
+    setSelectedReminderTime(null);
+    setIsTimePickerOpen(false);
     setIsModalOpen(false);
   };
 
@@ -244,11 +247,11 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
                   <span className="form-label">Reminder Time</span>
                   <button
                     type="button"
-                    className={`add-time-btn ${isReminderTimeActive ? 'active' : ''}`}
-                    onClick={() => setIsReminderTimeActive((prev) => !prev)}
-                    aria-label="Add reminder time"
+                    className={`add-time-btn ${selectedReminderTime ? 'time-set' : ''}`}
+                    onClick={() => setIsTimePickerOpen(true)}
+                    aria-label={selectedReminderTime ? `Edit reminder time ${selectedReminderTime}` : 'Add reminder time'}
                   >
-                    + Add Time
+                    {selectedReminderTime ? `⏰ ${selectedReminderTime}` : '+ Add Time'}
                   </button>
                 </div>
               </div>
@@ -269,6 +272,19 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
           </div>
         </div>
       )}
+
+      {/* Clock-Style Time Picker Modal */}
+      <TimePickerModal
+        isOpen={isTimePickerOpen}
+        initialTime={selectedReminderTime}
+        onConfirm={(formattedTime) => {
+          setSelectedReminderTime(formattedTime);
+          setIsTimePickerOpen(false);
+        }}
+        onCancel={() => {
+          setIsTimePickerOpen(false);
+        }}
+      />
     </div>
   );
 };
