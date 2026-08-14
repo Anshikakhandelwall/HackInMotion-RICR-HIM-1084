@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import Input from '../common/Input';
 import Button from '../common/Button';
 import BrandLogo from '../common/BrandLogo';
-import { saveHealthProfile } from '../../services/auth/authService';
+import { createProfile } from '../../services/profile/profileService';
 import './HealthProfileForm.css';
 
 /**
  * HealthProfileForm Component
  * First-login onboarding form collecting basic user health profile:
  * Age, Medical Conditions, and conditional Regular Medicines chips.
+ * Saves to Django backend via POST /api/profile/.
  */
 export const HealthProfileForm = ({ onSuccess }) => {
   const [age, setAge] = useState('');
@@ -115,7 +116,7 @@ export const HealthProfileForm = ({ onSuccess }) => {
     setRegularMedicines((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
-  // Form Submit Handler
+  // Form Submit Handler — saves to Django backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitError(null);
@@ -131,22 +132,20 @@ export const HealthProfileForm = ({ onSuccess }) => {
       return;
     }
 
+    if (isSubmitting) return;
     setIsSubmitting(true);
 
-    const profilePayload = {
-      age: Number(age),
-      medicalConditions: medicalConditions.trim(),
-      regularMedicines: isNoneActive ? [] : regularMedicines,
-      profileCompleted: true,
-    };
-
     try {
-      const updatedUser = await saveHealthProfile(profilePayload);
+      const result = await createProfile({
+        age: Number(age),
+        medicalConditions: medicalConditions.trim(),
+        regularMedicines: isNoneActive ? [] : regularMedicines,
+      });
+
       if (onSuccess) {
-        onSuccess(updatedUser);
+        onSuccess(result.profile);
       }
-    } catch (err) {
-      // Friendly, non-crashing error handling
+    } catch {
       setSubmitError('Something went wrong while saving your information. Please try again.');
     } finally {
       setIsSubmitting(false);

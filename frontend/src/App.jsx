@@ -12,97 +12,93 @@ import Sidebar from './components/dashboard/Sidebar';
 import Header from './components/dashboard/Header';
 import InteractionDetails from './pages/SafetyCheck/InteractionDetails';
 import useAuth from './hooks/useAuth';
+import { getProfile } from './services/profile/profileService';
 
 function App() {
   const { user, loading, signOut } = useAuth();
 
-  // 'loading'       — Supabase session check in progress; render nothing to avoid flash
-  // 'login'         — unauthenticated public view
-  // 'signup'        — unauthenticated public view
-  // 'onboarding'    — authenticated, health profile not yet completed
-  // 'dashboard_shell' — authenticated, full application shell
+  // ── View state machine ──────────────────────────────────────────────────
+  // 'loading'          — waiting for Supabase session OR profile check
+  // 'login'            — unauthenticated
+  // 'signup'           — unauthenticated
+  // 'onboarding'       — authenticated, profile incomplete
+  // 'dashboard_shell'  — authenticated, profile complete
   const [currentView, setCurrentView] = useState('loading');
   const [dashboardRoute, setDashboardRoute] = useState('/dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedInteraction, setSelectedInteraction] = useState(null);
 
-  // ── Auth guard ──────────────────────────────────────────────────────────────
-  // Runs once Supabase has resolved the initial session.
-  // Also re-runs whenever the user signs in or out (user changes).
+  // ── Profile-completion check ────────────────────────────────────────────
+  // Runs once per authenticated session (after Supabase resolves + user is set).
+  // Queries Django /api/profile/ to determine whether to show onboarding or
+  // dashboard. The view stays 'loading' until this check completes, preventing
+  // the unwanted Login → Dashboard → Onboarding flash.
   useEffect(() => {
-    if (loading) return; // Wait for session check to complete — prevents login flash.
+    if (loading) return;
 
-    if (user) {
-      // Authenticated: only redirect to login/signup views back to the shell.
-      // If the user is already inside the shell, leave dashboardRoute unchanged.
-      setCurrentView((prev) => {
-        if (prev === 'login' || prev === 'signup' || prev === 'loading') {
-          return 'dashboard_shell';
-        }
-        return prev; // Stay on onboarding or dashboard_shell as-is.
-      });
-    } else {
-      // Not authenticated: any protected view must redirect to login.
-      setCurrentView((prev) => {
-        if (prev === 'dashboard_shell' || prev === 'onboarding' || prev === 'loading') {
-          return 'login';
-        }
-        return prev; // Already on login or signup — leave it.
-      });
+    if (!user) {
+      // Not authenticated — go to login (guard any protected view)
+      setCurrentView((prev) =>
+        prev === 'login' || prev === 'signup' ? prev : 'login'
+      );
+      return;
     }
+
+    // User is authenticated — check backend profile completion.
+    // Stay in 'loading' view until the check resolves.
+    setCurrentView('loading');
+
+    getProfile()
+      .then((res) => {
+        const completed = res?.profile?.profileCompleted === true;
+        setCurrentView(completed ? 'dashboard_shell' : 'onboarding');
+      })
+      .catch(() => {
+        // 404 (no profile yet) or network error → send to onboarding
+        setCurrentView('onboarding');
+      });
   }, [user, loading]);
 
-  // ── Navigation handlers ─────────────────────────────────────────────────────
+  // ── Navigation helpers ──────────────────────────────────────────────────
 
   const handleNavigateToLogin = () => {
-    // Guard: authenticated users cannot visit login — send to dashboard.
     if (user) { setCurrentView('dashboard_shell'); return; }
     setCurrentView('login');
   };
 
   const handleNavigateToSignup = () => {
-    // Guard: authenticated users cannot visit signup — send to dashboard.
     if (user) { setCurrentView('dashboard_shell'); return; }
     setCurrentView('signup');
   };
 
-  // Called after account registration with email-confirm flow → go to Login.
-  const handleRegisterSuccess = () => {
-    setCurrentView('login');
-  };
+  // After email-confirm signup → show login
+  const handleRegisterSuccess = () => setCurrentView('login');
 
-  // Called after successful LOGIN (LoginForm.onSuccess).
-  // Supabase onAuthStateChange already updated AuthContext; the guard useEffect
-  // above will fire and transition to dashboard_shell automatically.
-  // We call it here too for instant feedback without waiting for the next render cycle.
+  // After login — Supabase onAuthStateChange fires → user updates → useEffect
+  // above triggers the profile check. We also set the view immediately for
+  // instant feedback.
   const handleLoginSuccess = () => {
-    setDashboardRoute('/dashboard');
-    setCurrentView('dashboard_shell');
+    // Profile check will run via useEffect when user state updates.
+    // Just ensure we're not stuck on 'login'.
+    setCurrentView('loading');
   };
 
-  // Called after the onboarding health profile is saved.
+  // After onboarding form saved → profile is now complete
   const handleOnboardingSuccess = () => {
     setDashboardRoute('/dashboard');
     setCurrentView('dashboard_shell');
   };
 
-  // Internal dashboard sub-route navigation handler.
-  const handleDashboardNavigate = (routePath) => {
-    setDashboardRoute(routePath);
-  };
+  const handleDashboardNavigate = (routePath) => setDashboardRoute(routePath);
 
-  // ── Logout ──────────────────────────────────────────────────────────────────
-  // Signs out from Supabase (clears session), then navigates to Login.
-  // The AuthContext onAuthStateChange listener will also fire and set user → null,
-  // so the guard useEffect above provides a second safety net.
+  // ── Logout ──────────────────────────────────────────────────────────────
   const handleLogout = async () => {
     await signOut();
     setCurrentView('login');
     setDashboardRoute('/dashboard');
   };
 
-  // ── Loading state ───────────────────────────────────────────────────────────
-  // Supabase session check is in flight — render nothing rather than flashing Login.
+  // ── Loading screen (Supabase check + profile check) ────────────────────
   if (loading || currentView === 'loading') {
     return null;
   }
@@ -125,15 +121,14 @@ function App() {
         />
       )}
 
-      {/* 3. Health Profile Onboarding — authenticated, first-time only */}
+      {/* 3. Health Profile Onboarding — authenticated, profile incomplete */}
       {currentView === 'onboarding' && (
         <HealthProfilePage onSuccess={handleOnboardingSuccess} />
       )}
 
-      {/* 4. MediGuard Dashboard Application Shell — authenticated */}
+      {/* 4. Dashboard Application Shell — authenticated, profile complete */}
       {currentView === 'dashboard_shell' && (
         <div style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: '#FFFDFC' }}>
-          {/* Persistent Sidebar */}
           <Sidebar
             activeRoute={dashboardRoute}
             onNavigate={handleDashboardNavigate}
@@ -142,16 +137,13 @@ function App() {
             onClose={() => setIsMobileMenuOpen(false)}
           />
 
-          {/* Main Content Layout Container */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-            {/* Persistent Top Header */}
             <Header
               currentUser={user}
               isMobileMenuOpen={isMobileMenuOpen}
               onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
             />
 
-            {/* Main Sub-Page Views */}
             <main style={{ flex: 1, padding: '1.75rem 2rem', overflowY: 'auto' }}>
               {dashboardRoute === '/dashboard' && (
                 <Dashboard currentUser={user} onNavigate={handleDashboardNavigate} />
@@ -184,7 +176,7 @@ function App() {
               )}
 
               {dashboardRoute === '/profile' && (
-                <Profile currentUser={user} onUpdateUser={() => {}} />
+                <Profile />
               )}
 
               {dashboardRoute === '/settings' && (
