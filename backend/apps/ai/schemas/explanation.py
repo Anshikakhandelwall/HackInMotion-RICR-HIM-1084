@@ -30,6 +30,9 @@ class Explanation:
     text: str
     facts: tuple[InteractionFact, ...]
     model: str
+    what_does_this_mean: str = ""
+    what_to_watch_for: str = ""
+    what_should_you_do: str = ""
     disclaimer: str = DEFAULT_DISCLAIMER
     generated_by_ai: bool = True
 
@@ -37,6 +40,18 @@ class Explanation:
     def sources(self) -> tuple[str, ...]:
         """Distinct attributions across the underlying facts, for display."""
         return tuple(dict.fromkeys(fact.source for fact in self.facts))
+
+    def to_dict(self) -> dict:
+        return {
+            "text": self.text,
+            "what_does_this_mean": self.what_does_this_mean,
+            "what_to_watch_for": self.what_to_watch_for,
+            "what_should_you_do": self.what_should_you_do,
+            "disclaimer": self.disclaimer,
+            "generated_by_ai": self.generated_by_ai,
+            "model": self.model,
+            "sources": list(self.sources),
+        }
 
 
 @dataclass(frozen=True)

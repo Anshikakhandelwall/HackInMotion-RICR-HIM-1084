@@ -12,14 +12,12 @@ from django.conf import settings
 
 from ..providers.base import LLMProvider
 from ..providers.stub import StubProvider
+from ..providers.clinical_ai import ClinicalAIProvider
 
 #: Registry of available providers, keyed by `LLMProvider.name`.
-#:
-#: A concrete vendor provider is not chosen yet. To add one: implement
-#: `LLMProvider` in `providers/`, register it here, and set AI_PROVIDER in
-#: settings. Nothing else in the app needs to change.
 _PROVIDERS: dict[str, type[LLMProvider]] = {
     StubProvider.name: StubProvider,
+    ClinicalAIProvider.name: ClinicalAIProvider,
 }
 
 
@@ -28,13 +26,7 @@ def available_providers() -> tuple[str, ...]:
 
 
 def get_provider(name: str | None = None) -> LLMProvider:
-    """Return a provider instance.
-
-    Raises `ValueError` for an unknown name rather than falling back, so a typo
-    in configuration surfaces immediately instead of quietly downgrading to the
-    stub in production.
-    """
-    resolved = name or getattr(settings, "AI_PROVIDER", StubProvider.name)
+    resolved = name or getattr(settings, "AI_PROVIDER", ClinicalAIProvider.name)
     try:
         provider_class = _PROVIDERS[resolved]
     except KeyError:

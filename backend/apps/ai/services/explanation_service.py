@@ -38,17 +38,12 @@ class UnsafeExplanationError(RuntimeError):
         )
 
 
+import json
+
 def generate_explanation(
     request: ExplanationRequest,
     provider: LLMProvider,
 ) -> Explanation:
-    """Generate one explanation for a set of verified facts.
-
-    Raises `UnsafeExplanationError` if the output fails validation, and
-    `ProviderError` if the model could not be reached. Callers are expected to
-    handle both by falling back to the verified facts on their own — an
-    interaction check must still work when the AI layer does not.
-    """
     system = safety_preamble(request.audience)
     user = build_user_prompt(request)
 
@@ -63,10 +58,26 @@ def generate_explanation(
         )
         raise UnsafeExplanationError(violations)
 
+    what_does_this_mean = text
+    what_to_watch_for = ""
+    what_should_you_do = ""
+
+    try:
+        data = json.loads(text)
+        if isinstance(data, dict):
+            what_does_this_mean = data.get("what_does_this_mean", text)
+            what_to_watch_for = data.get("what_to_watch_for", "")
+            what_should_you_do = data.get("what_should_you_do", "")
+    except Exception:
+        pass
+
     return Explanation(
         text=text,
         facts=request.facts,
         model=provider.model_id,
+        what_does_this_mean=what_does_this_mean,
+        what_to_watch_for=what_to_watch_for,
+        what_should_you_do=what_should_you_do,
     )
 
 

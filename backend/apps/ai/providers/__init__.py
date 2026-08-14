@@ -8,5 +8,6 @@ exists so the layer is runnable and testable without an API key or a network.
 
 from .base import LLMProvider, ProviderError
 from .stub import StubProvider
+from .clinical_ai import ClinicalAIProvider
 
-__all__ = ["LLMProvider", "ProviderError", "StubProvider"]
+__all__ = ["LLMProvider", "ProviderError", "StubProvider", "ClinicalAIProvider"]
