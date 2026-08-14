@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from apps.patients.views import DashboardOverviewView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,4 +24,6 @@ urlpatterns = [
     path('api/profile/', include('apps.patients.urls')),
     path('api/medicines/', include('apps.medicines.urls')),
     path('api/interactions/', include('apps.interactions.urls')),
+    path('api/patients/', include('apps.patients.urls')),
+    path('api/dashboard/overview/', DashboardOverviewView.as_view(), name='dashboard-overview'),
 ]

@@ -237,16 +237,6 @@ Screens a list of medicines against the 10,874 canonical drug interaction pairs 
         "id": 10,
         "medicine_a": {
           "id": 1,
-          "rxcui": "161",
-          "name": "acetaminophen",
-          "rxnorm_name": "acetaminophen"
-        },
-        "medicine_b": {
-          "id": 2,
-          "rxcui": "11289",
-          "name": "warfarin",
-          "rxnorm_name": "warfarin"
-        },
         "severity": "Moderate",
         "level": "Moderate",
         "description": "Potential moderate interaction identified between acetaminophen and warfarin."
@@ -254,4 +244,105 @@ Screens a list of medicines against the 10,874 canonical drug interaction pairs 
     ]
   }
   ```
+
+---
+
+## 4. Dashboard Overview & Patient Safety APIs (`apps.patients`)
+
+### 4.1 Dashboard Overview API
+
+- **Endpoint**: `GET /api/dashboard/overview/`
+- **Name**: `patients:dashboard-overview`
+
+#### Initialization
+- **Service Engine**: `PatientSafetyEngine` ([apps/patients/services.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/apps/patients/services.py))
+- **View**: `DashboardOverviewView` ([apps/patients/views.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/apps/patients/views.py)) extending DRF `APIView`.
+- **Route**: `path("dashboard/overview/", DashboardOverviewView.as_view(), name="dashboard-overview")` in [apps/patients/urls.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/apps/patients/urls.py), registered in [config/urls.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/config/urls.py).
+
+#### What It Does
+Provides dynamic overview card metrics for the user dashboard: count of active cabinet medicines, overall safety alert status, and breakdown of detected major and moderate warnings.
+
+#### Request Specification
+- **HTTP Method**: `GET`
+- **Example Request**:
+  ```http
+  GET /api/dashboard/overview/ HTTP/1.1
+  Host: 127.0.0.1:8000
+  Accept: application/json
+  ```
+
+#### Provided Service
+- Evaluates the user's active prescriptions and health conditions to return a live safety card overview.
+- **Success Response (200 OK)**:
+  ```json
+  {
+    "success": true,
+    "safety_overview": {
+      "title": "Safety Overview",
+      "mainValue": "1 Active Warning",
+      "supportingText": "Potential medication interactions need your attention.",
+      "lastChecked": "Today",
+      "hasWarnings": true,
+      "majorCount": 0,
+      "moderateCount": 1
+    },
+    "active_medicines_count": 2,
+    "regular_medicines": ["acetaminophen", "warfarin"],
+    "medical_conditions": "Asthma"
+  }
+  ```
+
+---
+
+### 4.2 Personalized Patient Safety Check API
+
+- **Endpoint**: `POST /api/patients/safety-check/`
+- **Name**: `patients:patient-safety-check`
+
+#### Initialization
+- **Service Engine**: `PatientSafetyEngine` ([apps/patients/services.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/apps/patients/services.py))
+- **View**: `PersonalizedSafetyCheckView` ([apps/patients/views.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/apps/patients/views.py)) extending DRF `APIView`.
+- **Route**: `path("safety-check/", PersonalizedSafetyCheckView.as_view(), name="patient-safety-check")` in [apps/patients/urls.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/apps/patients/urls.py).
+
+#### What It Does
+Combines canonical drug-drug interactions (`DrugInteraction` database) with patient-specific medical conditions (e.g., Asthma, Renal impairment, Hypertension) to generate personalized safety warnings.
+
+#### Request Specification
+- **HTTP Method**: `POST`
+- **Headers**: `Content-Type: application/json`
+- **Request Body Payload**:
+  ```json
+  {
+    "medicines": ["acetaminophen", "warfarin", "aspirin"],
+    "medicalConditions": "Asthma"
+  }
+  ```
+
+#### Provided Service
+- **Canonical Drug Interactions**: Runs $N(N-1)/2$ pairwise interaction checks.
+- **Patient Condition Warnings**: Evaluates condition contraindications (e.g. Asthma + NSAIDs like Aspirin/Ibuprofen; Renal impairment + NSAIDs/Metformin; Hypertension + Decongestants).
+- **Success Response (200 OK)**:
+  ```json
+  {
+    "success": true,
+    "has_warnings": true,
+    "drug_interactions": { ... },
+    "patient_condition_warnings": [
+      {
+        "type": "condition_warning",
+        "severity": "Moderate",
+        "title": "Asthma & NSAID Caution",
+        "description": "Patient has asthma. Aspirin should be used with caution as NSAIDs can trigger bronchospasm in susceptible individuals."
+      }
+    ],
+    "summary": {
+      "total_medicines_checked": 3,
+      "drug_interactions_count": 1,
+      "condition_warnings_count": 1,
+      "major_warnings": 0,
+      "moderate_warnings": 2
+    }
+  }
+  ```
+
 

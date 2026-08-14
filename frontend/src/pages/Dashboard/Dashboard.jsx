@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import MedicineSummaryCard from '../../components/dashboard/MedicineSummaryCard';
 import SafetyStatusCard from '../../components/dashboard/SafetyStatusCard';
 import RecentChecksCard from '../../components/dashboard/RecentChecksCard';
@@ -14,6 +14,23 @@ import './Dashboard.css';
  * - Responsive 1-column layout stacking on mobile/tablet (Current Medicines -> Safety Overview -> Recent Safety Checks).
  */
 export const Dashboard = ({ currentUser, onNavigate }) => {
+  const [safetySummary, setSafetySummary] = useState(mockSafetySummary);
+
+  useEffect(() => {
+    const fetchDashboardOverview = async () => {
+      try {
+        const response = await fetch('/api/dashboard/overview/');
+        const data = await response.json();
+        if (response.ok && data.success && data.safety_overview) {
+          setSafetySummary(data.safety_overview);
+        }
+      } catch (err) {
+        console.warn('Dashboard overview live fetch failed, using session data:', err);
+      }
+    };
+    fetchDashboardOverview();
+  }, []);
+
   // Extract user first name safely without crashing
   const getFirstName = () => {
     if (!currentUser) return 'there';
@@ -54,7 +71,7 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
           <MedicineSummaryCard medicines={activeMedicines} onNavigate={onNavigate} />
         </div>
         <div className="grid-card-col">
-          <SafetyStatusCard data={mockSafetySummary} onNavigate={onNavigate} />
+          <SafetyStatusCard data={safetySummary} onNavigate={onNavigate} />
         </div>
       </section>
 
