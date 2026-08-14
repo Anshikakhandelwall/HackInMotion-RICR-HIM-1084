@@ -16,6 +16,7 @@ import ResetPasswordPage from './pages/ResetPassword/ResetPasswordPage';
 import LandingPage from './pages/Landing/LandingPage';
 import useAuth from './hooks/useAuth';
 import { getProfile, updateProfile } from './services/profile/profileService';
+import { getUserDisplayName } from './utils/userUtils';
 
 function App() {
   const { user, loading, signOut, authEvent } = useAuth();
@@ -111,9 +112,16 @@ function App() {
   };
 
   // Combine auth user with DB profile data
-  const fullUser = {
+  const combinedUser = {
     ...user,
     ...(userProfile || {}),
+  };
+  const resolvedDisplayName = getUserDisplayName(combinedUser);
+  const fullUser = {
+    ...combinedUser,
+    fullName: resolvedDisplayName,
+    full_name: resolvedDisplayName,
+    name: resolvedDisplayName,
   };
 
   // ── Navigation helpers ──────────────────────────────────────────────────

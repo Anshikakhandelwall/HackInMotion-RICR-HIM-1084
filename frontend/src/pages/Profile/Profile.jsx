@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from '../../components/common/Button';
 import useAuth from '../../hooks/useAuth';
 import { getProfile, updateProfile } from '../../services/profile/profileService';
+import { getUserDisplayName, getUserInitials } from '../../utils/userUtils';
 import './Profile.css';
 
 /**
@@ -25,13 +26,9 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
   }, [currentUser]);
 
   // Derive display values from Supabase user + backend profile
-  const userName =
-    currentUser?.fullName ||
-    currentUser?.full_name ||
-    authUser?.user_metadata?.full_name ||
-    authUser?.user_metadata?.name ||
-    authUser?.email ||
-    'Not available';
+  const activeUser = currentUser || authUser;
+  const userName = getUserDisplayName(activeUser) || 'Not available';
+  const userInitials = getUserInitials(activeUser);
   const userEmail = authUser?.email || currentUser?.email || 'Not available';
 
   const age = profile?.age ?? 'Not available';
@@ -150,16 +147,6 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
     }
   };
 
-  // ── Initials helper ───────────────────────────────────────────────────────
-  const getInitials = (name) => {
-    if (!name || name === 'Not available') return 'MG';
-    const parts = name.trim().split(' ');
-    if (parts.length >= 2 && parts[0][0] && parts[1][0]) {
-      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
-    }
-    return name.slice(0, 2).toUpperCase();
-  };
-
   // ── Loading / error states ────────────────────────────────────────────────
   if (loadingProfile) {
     return (
@@ -210,7 +197,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
       <div className="profile-main-container">
         {/* Banner Header */}
         <div className="profile-banner-header">
-          <div className="profile-avatar-circle">{getInitials(userName)}</div>
+          <div className="profile-avatar-circle">{userInitials}</div>
           <div className="profile-banner-text">
             <h2 className="profile-user-name">{userName}</h2>
             <p className="profile-user-email">{userEmail}</p>

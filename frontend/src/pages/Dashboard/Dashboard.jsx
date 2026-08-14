@@ -6,6 +6,7 @@ import QuickActions from '../../components/dashboard/QuickActions';
 import { mockSafetySummary, mockMedicines } from '../../data/mockDashboardData';
 import { apiFetch } from '../../services/api/apiClient';
 import { getHistory } from '../../services/history/historyService';
+import { getUserFirstName } from '../../utils/userUtils';
 import './Dashboard.css';
 
 /**
@@ -58,20 +59,7 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
     return () => window.removeEventListener('mediguard:history_updated', handleHistoryUpdate);
   }, []);
 
-  // Extract user first name safely without crashing
-  const getFirstName = () => {
-    if (!currentUser) return 'there';
-    const fullName = currentUser.fullName || currentUser.full_name || currentUser.name;
-    if (typeof fullName === 'string' && fullName.trim().length > 0) {
-      return fullName.trim().split(' ')[0];
-    }
-    if (typeof currentUser.email === 'string' && currentUser.email.includes('@')) {
-      return currentUser.email.split('@')[0];
-    }
-    return 'there';
-  };
-
-  const displayName = getFirstName();
+  const displayName = getUserFirstName(currentUser);
 
   // Use user's saved regular medicines if available, otherwise fallback to mockMedicines
   const activeMedicines = (currentUser?.regularMedicines && currentUser.regularMedicines.length > 0)

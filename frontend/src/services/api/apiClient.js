@@ -14,7 +14,7 @@
  */
 import { supabase } from '../auth/supabaseClient';
 
-const API_BASE = '';  // Relative — relies on Vite dev proxy (/api → Django :8000)
+const API_BASE = '';  // Relative — relies on Vite dev proxy (/api → Django :8001)
 
 /**
  * Fetch wrapper that attaches the Supabase Bearer token.

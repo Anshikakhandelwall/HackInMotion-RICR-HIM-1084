@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { getUserDisplayName, getUserInitials } from '../../utils/userUtils';
 import './Header.css';
 
 /**
@@ -7,7 +8,8 @@ import './Header.css';
  * Includes interactive Notification Bell 🔔 with unread count badge, dropdown panel, and outside-click handler.
  */
 export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMenu }) => {
-  const userName = currentUser?.fullName || currentUser?.full_name || currentUser?.email || 'User';
+  const userName = getUserDisplayName(currentUser) || 'User';
+  const userInitials = getUserInitials(currentUser);
 
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
   const [notifications, setNotifications] = useState([
@@ -46,16 +48,6 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isNotificationPanelOpen]);
-
-  // Extract initials for avatar badge
-  const getInitials = (name) => {
-    if (!name || typeof name !== 'string') return 'MG';
-    const parts = name.trim().split(' ');
-    if (parts.length >= 2 && parts[0][0] && parts[1][0]) {
-      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
-    }
-    return name.slice(0, 2).toUpperCase();
-  };
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -170,7 +162,7 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
 
         {/* User Profile Avatar */}
         <div className="header-user-profile">
-          <div className="user-avatar">{getInitials(userName)}</div>
+          <div className="user-avatar">{userInitials}</div>
           <span className="user-name-display">{userName}</span>
         </div>
       </div>
