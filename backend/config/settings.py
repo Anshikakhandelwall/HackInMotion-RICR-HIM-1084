@@ -75,7 +75,7 @@ INSTALLED_APPS = [
 # AI layer. Defaults to the stub provider, which makes no network call — a
 # misconfigured deployment shows placeholder text beside the verified
 # interaction data rather than reaching for an unconfigured vendor.
-AI_PROVIDER = 'stub'
+AI_PROVIDER = os.getenv('AI_PROVIDER', 'clinical_ai')
 
 
 MIDDLEWARE = [

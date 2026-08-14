@@ -88,8 +88,26 @@ export const checkPersonalizedSafety = async (medicines, medicalConditions = '')
   }
 };
 
+export const getInteractionExplanation = async (drugA, drugB, severity = 'Major') => {
+  try {
+    const data = await apiFetch('/api/interactions/explain/', {
+      method: 'POST',
+      body: JSON.stringify({
+        drug_a: drugA,
+        drug_b: drugB,
+        severity,
+      }),
+    });
+    return data;
+  } catch (error) {
+    console.error('Error fetching interaction explanation from AI backend:', error);
+    throw error;
+  }
+};
+
 export default {
   checkInteractions,
   checkPersonalizedSafety,
+  getInteractionExplanation,
 };
 
