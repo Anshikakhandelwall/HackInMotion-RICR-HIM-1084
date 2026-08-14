@@ -2,8 +2,23 @@ import React, { useState } from 'react';
 import Input from '../common/Input';
 import Button from '../common/Button';
 import BrandLogo from '../common/BrandLogo';
-import { loginUser } from '../../services/auth/authService';
+import useAuth from '../../hooks/useAuth';
 import './LoginForm.css';
+
+/** Map raw Supabase error messages to user-friendly text. */
+const friendlyLoginError = (msg = '') => {
+  if (!msg) return 'Unable to sign in. Please try again.';
+  const m = msg.toLowerCase();
+  if (m.includes('invalid login credentials') || m.includes('invalid credentials') || m.includes('wrong password'))
+    return 'Invalid email or password.';
+  if (m.includes('email not confirmed'))
+    return 'Please confirm your email address before signing in.';
+  if (m.includes('too many requests') || m.includes('rate limit'))
+    return 'Too many attempts. Please wait a moment and try again.';
+  if (m.includes('network') || m.includes('fetch'))
+    return 'Network error. Please check your connection and try again.';
+  return 'Unable to sign in. Please try again.';
+};
 
 /**
  * LoginForm Component
@@ -80,6 +95,8 @@ export const LoginForm = ({ onNavigateToSignup, onSuccess }) => {
     setErrors((prev) => ({ ...prev, [name]: fieldError }));
   };
 
+  const { signIn } = useAuth();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitError(null);
@@ -95,18 +112,24 @@ export const LoginForm = ({ onNavigateToSignup, onSuccess }) => {
       return;
     }
 
+    if (isSubmitting) return;
     setIsSubmitting(true);
 
-    try {
-      const response = await loginUser(formData);
-      if (onSuccess) {
-        onSuccess(response);
-      }
-    } catch (err) {
-      setSubmitError(err.message || 'Login failed. Please try again.');
-    } finally {
+    const { data, error } = await signIn(formData.email, formData.password);
+
+    if (error) {
+      setSubmitError(friendlyLoginError(error.message));
       setIsSubmitting(false);
+      return;
     }
+
+    // Auth state is updated globally by AuthContext's onAuthStateChange listener.
+    // Pass the session user to onSuccess so App.jsx can handle routing.
+    if (onSuccess) {
+      onSuccess({ user: data.session?.user ?? null });
+    }
+
+    setIsSubmitting(false);
   };
 
   return (

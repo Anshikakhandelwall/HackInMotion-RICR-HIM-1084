@@ -2,8 +2,23 @@ import React, { useState } from 'react';
 import Input from '../common/Input';
 import Button from '../common/Button';
 import BrandLogo from '../common/BrandLogo';
-import { registerUser } from '../../services/auth/authService';
+import useAuth from '../../hooks/useAuth';
 import './RegisterForm.css';
+
+/** Map raw Supabase error messages to user-friendly text. */
+const friendlySignupError = (msg = '') => {
+  if (!msg) return 'Unable to create account. Please try again.';
+  const m = msg.toLowerCase();
+  if (m.includes('already registered') || m.includes('already exists') || m.includes('user already'))
+    return 'An account with this email already exists. Please sign in instead.';
+  if (m.includes('password should be') || m.includes('password must') || m.includes('weak password'))
+    return 'Password does not meet the requirements. Please choose a stronger password.';
+  if (m.includes('invalid email') || m.includes('unable to validate email'))
+    return 'Please enter a valid email address.';
+  if (m.includes('network') || m.includes('fetch'))
+    return 'Network error. Please check your connection and try again.';
+  return 'Unable to create account. Please try again.';
+};
 
 /**
  * RegisterForm Component
@@ -122,6 +137,8 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
     setErrors((prev) => ({ ...prev, [name]: fieldError }));
   };
 
+  const { signUp } = useAuth();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitError(null);
@@ -137,21 +154,33 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
       return;
     }
 
+    if (isSubmitting) return;
     setIsSubmitting(true);
 
-    try {
-      const response = await registerUser(formData);
+    const { data, error } = await signUp(formData.email, formData.password, {
+      full_name: formData.fullName,
+    });
+
+    setIsSubmitting(false);
+
+    if (error) {
+      setSubmitError(friendlySignupError(error.message));
+      return;
+    }
+
+    // Email confirmation required: user record exists but no active session yet.
+    if (data.user && !data.session) {
       setSubmitSuccess(true);
-      
-      if (onSuccess) {
-        onSuccess(response);
-      } else if (onNavigateToLogin) {
-        onNavigateToLogin();
-      }
-    } catch (err) {
-      setSubmitError(err.message || 'Registration failed. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+      // Stay on the signup page showing the confirmation message; do not navigate.
+      return;
+    }
+
+    // Immediate session (email confirmation disabled in Supabase project settings).
+    setSubmitSuccess(true);
+    if (onSuccess) {
+      onSuccess({ user: data.session?.user ?? null });
+    } else if (onNavigateToLogin) {
+      onNavigateToLogin();
     }
   };
 
@@ -184,7 +213,13 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
             <polyline points="22 4 12 14.01 9 11.01" />
           </svg>
-          <span>Account created successfully! Please log in to continue.</span>
+          <span>
+            Account created! Check your email for a confirmation link, then{' '}
+            <button type="button" className="link-button" onClick={onNavigateToLogin}>
+              sign in
+            </button>
+            .
+          </span>
         </div>
       )}
 
