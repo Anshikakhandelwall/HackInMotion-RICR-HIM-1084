@@ -13,9 +13,11 @@ def search_medicine(name):
 
     response = requests.get(url, params=params, timeout=10)
 
-    print(f"\nSearching: {name}")
+    print("\n==============================")
+    print(f"Searching: {name}")
     print(f"Status: {response.status_code}")
     print(f"URL: {response.url}")
+    print("==============================")
 
     response.raise_for_status()
 
@@ -38,9 +40,11 @@ def approximate_search(name):
 
     response = requests.get(url, params=params, timeout=10)
 
-    print(f"\nApproximate search: {name}")
+    print("\n==============================")
+    print(f"Approximate search: {name}")
     print(f"Status: {response.status_code}")
     print(f"URL: {response.url}")
+    print("==============================")
 
     response.raise_for_status()
 
@@ -52,13 +56,31 @@ def approximate_search(name):
     return data
 
 
+def get_medicine_details(rxcui):
+    url = f"{BASE_URL}/rxcui/{rxcui}/properties.json"
+
+    response = requests.get(url, timeout=10)
+
+    print("\n==============================")
+    print(f"Medicine details for RxCUI: {rxcui}")
+    print(f"Status: {response.status_code}")
+    print("==============================")
+
+    response.raise_for_status()
+
+    data = response.json()
+
+    print(data)
+
+    return data
+
+
 if __name__ == "__main__":
 
-    # 1. Normal search
     search_medicine("paracetamol")
 
-    # 2. Brand-name search
     search_medicine("Dolo 650")
 
-    # 3. Misspelling / approximate search
     approximate_search("paracetmol")
+
+    get_medicine_details("161")
