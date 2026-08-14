@@ -172,6 +172,35 @@ Retrieves canonical medicine information using its standardized RxNorm Concept U
 
 ---
 
+### 2.4 Patient Health Profile API (`GET`, `POST`, `PATCH /api/profile/`)
+
+- **Endpoints**:
+  - `GET /api/profile/` — Retrieve authenticated user profile
+  - `POST /api/profile/` — Create or update user profile (idempotent upsert)
+  - `PATCH /api/profile/` — Partial update of user profile
+- **Name**: `patient-profile`
+
+#### Authentication & Authorization
+- **Authentication**: `SupabaseAuthentication` (validates `Authorization: Bearer <token>` via RS256 / JWKS)
+- **Permissions**: `IsAuthenticated`
+- **User Scoping**: Profile ownership is determined strictly via `request.user` (`username` = Supabase JWT `sub`). No user IDs are accepted from request bodies or parameters to prevent IDOR vulnerabilities.
+
+#### Request Payload Specification (POST / PATCH)
+```json
+{
+  "age": 30,
+  "medicalConditions": "Asthma, Hypertension",
+  "regularMedicines": ["acetaminophen", "warfarin"]
+}
+```
+
+#### Provided Service
+- **GET**: Returns `{ "profile_exists": true, "profile": { "age": 30, "medicalConditions": "...", "regularMedicines": [...], "profileCompleted": true } }`. Returns 404 with `"profile_exists": false` if uninitialized.
+- **POST/PATCH**: Creates or updates `UserProfile` for the authenticated user and automatically updates `profileCompleted` status.
+
+
+---
+
 ## 3. Drug Interaction APIs (`apps.interactions`)
 
 ### 3.1 Pairwise Drug Interaction Check API

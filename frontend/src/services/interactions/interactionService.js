@@ -3,7 +3,7 @@
  * Connects React frontend with MediGuard Django backend API for drug interaction screening.
  */
 
-const API_BASE_URL = ''; // Relative path leverages Vite dev proxy (/api -> http://127.0.0.1:8000)
+import { apiFetch } from '../api/apiClient';
 
 /**
  * Check drug-drug interactions for a list of selected medicines or RxCUIs.
@@ -36,21 +36,12 @@ export const checkInteractions = async (medicines) => {
   }).filter(Boolean);
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/interactions/check/`, {
+    const data = await apiFetch('/api/interactions/check/', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({
         medicines: medicinePayload,
       }),
     });
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || (data.errors ? Object.values(data.errors).flat().join(', ') : 'Failed to check drug interactions'));
-    }
 
     return data;
   } catch (error) {

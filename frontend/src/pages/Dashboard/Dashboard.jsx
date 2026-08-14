@@ -4,6 +4,7 @@ import SafetyStatusCard from '../../components/dashboard/SafetyStatusCard';
 import RecentChecksCard from '../../components/dashboard/RecentChecksCard';
 import QuickActions from '../../components/dashboard/QuickActions';
 import { mockSafetySummary, mockMedicines, mockRecentChecks } from '../../data/mockDashboardData';
+import { apiFetch } from '../../services/api/apiClient';
 import './Dashboard.css';
 
 /**
@@ -19,9 +20,8 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
   useEffect(() => {
     const fetchDashboardOverview = async () => {
       try {
-        const response = await fetch('/api/dashboard/overview/');
-        const data = await response.json();
-        if (response.ok && data.success && data.safety_overview) {
+        const data = await apiFetch('/api/dashboard/overview/');
+        if (data && data.success && data.safety_overview) {
           setSafetySummary(data.safety_overview);
         }
       } catch (err) {

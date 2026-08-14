@@ -3,7 +3,7 @@
  * Connects React frontend with MediGuard Django backend API for medicine lookup and search.
  */
 
-const API_BASE_URL = ''; // Relative path leverages Vite dev proxy (/api -> http://127.0.0.1:8000)
+import { apiFetch } from '../api/apiClient';
 
 /**
  * Search canonical RxNorm medicines database via Django REST API.
@@ -25,18 +25,7 @@ export const searchMedicines = async (query) => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/medicines/?search=${encodeURIComponent(trimmedQuery)}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || 'Failed to fetch medicines');
-    }
+    const data = await apiFetch(`/api/medicines/?search=${encodeURIComponent(trimmedQuery)}`);
 
     return {
       success: true,
@@ -65,15 +54,8 @@ export const getMedicineByRxCUI = async (rxcui) => {
   if (!rxcui) return null;
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/medicines/rxcui/${encodeURIComponent(rxcui)}/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const data = await response.json();
-    if (response.ok && data.success) {
+    const data = await apiFetch(`/api/medicines/rxcui/${encodeURIComponent(rxcui)}/`);
+    if (data && data.success) {
       return data.medicine;
     }
     return null;
