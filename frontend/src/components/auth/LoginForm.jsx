@@ -24,7 +24,7 @@ const friendlyLoginError = (msg = '') => {
  * LoginForm Component
  * Renders the compact, elegant MediGuard login form.
  */
-export const LoginForm = ({ onNavigateToSignup, onSuccess }) => {
+export const LoginForm = ({ onNavigateToSignup, onForgotPassword, onSuccess }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -235,8 +235,19 @@ export const LoginForm = ({ onNavigateToSignup, onSuccess }) => {
         </Button>
       </form>
 
-      {/* Footer & Sign Up Link */}
+      {/* Footer & Sign Up / Forgot Password Links */}
       <div className="login-footer">
+        {onForgotPassword && (
+          <p className="forgot-prompt" style={{ marginBottom: '0.5rem' }}>
+            <button
+              type="button"
+              className="link-button"
+              onClick={onForgotPassword}
+            >
+              Forgot password?
+            </button>
+          </p>
+        )}
         <p className="signup-prompt">
           Don&apos;t have an account?{' '}
           <button

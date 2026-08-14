@@ -10,7 +10,7 @@ import './Login.css';
  * Left panel features branding tagline & healthcare safety illustration.
  * Right panel features the compact login form card.
  */
-export const Login = ({ onNavigateToSignup, onSuccess }) => {
+export const Login = ({ onNavigateToSignup, onForgotPassword, onSuccess }) => {
   return (
     <div className="login-page">
       {/* Soft Organic Peach/Rose Background Shapes */}
@@ -58,6 +58,7 @@ export const Login = ({ onNavigateToSignup, onSuccess }) => {
         <div className="login-form-panel">
           <LoginForm
             onNavigateToSignup={onNavigateToSignup}
+            onForgotPassword={onForgotPassword}
             onSuccess={onSuccess}
           />
         </div>

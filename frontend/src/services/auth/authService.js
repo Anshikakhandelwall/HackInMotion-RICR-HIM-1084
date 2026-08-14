@@ -1,99 +1,11 @@
 /**
  * Authentication Service
  * Thin wrapper around Supabase Auth — all auth calls go through here.
+ *
+ * This file contains ONLY active, used functions.
+ * All legacy localStorage shims have been removed.
  */
 import { supabase } from './supabaseClient';
-
-// ---------------------------------------------------------------------------
-// Legacy localStorage helpers — kept for backward compatibility with App.jsx
-// and Profile.jsx until those components are migrated in later commits.
-// ---------------------------------------------------------------------------
-
-/** @returns {Object|null} */
-export const getCurrentUser = () => {
-  const raw = localStorage.getItem('currentUser');
-  if (!raw) return null;
-  try { return JSON.parse(raw); } catch { return null; }
-};
-
-/** @returns {boolean} */
-export const isProfileCompleted = () => {
-  const user = getCurrentUser();
-  if (user) return Boolean(user.profileCompleted || user.profile_completed);
-  return localStorage.getItem('mediGuard_profileCompleted') === 'true';
-};
-
-/** Clears the legacy localStorage session. */
-export const clearAuthSession = () => {
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('currentUser');
-  localStorage.removeItem('mediGuard_profileCompleted');
-};
-
-/**
- * Legacy logout — clears session storage.
- * App.jsx calls this until it is migrated to AuthContext.signOut in Commit 3.
- * @returns {Promise<void>}
- */
-export const logoutUser = async () => {
-  await supabase.auth.signOut();
-  clearAuthSession();
-};
-
-/**
- * Legacy profile save — persists health profile data to localStorage.
- * Profile.jsx calls this until it is migrated to Supabase in Commit 3.
- * @param {Object} profileData - { age, medicalConditions, regularMedicines }
- * @returns {Promise<Object>} Updated user object
- */
-export const saveHealthProfile = async (profileData) => {
-  const currentUser = getCurrentUser() || {};
-  const updatedUser = {
-    ...currentUser,
-    age: profileData.age,
-    medicalConditions: profileData.medicalConditions,
-    regularMedicines: profileData.regularMedicines,
-    profileCompleted: true,
-    profile_completed: true,
-  };
-  localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-  localStorage.setItem('mediGuard_profileCompleted', 'true');
-  return updatedUser;
-};
-
-/**
- * Legacy login — wraps signInWithPassword in the old { success, token, user } contract.
- * LoginForm.jsx calls this until it is migrated to AuthContext.signIn in Commit 3.
- * @param {{ email: string, password: string }} credentials
- * @returns {Promise<{ success: boolean, token: string, user: Object }>}
- */
-export const loginUser = async (credentials) => {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: credentials.email,
-    password: credentials.password,
-  });
-  if (error) throw new Error(error.message);
-  const user = data.session?.user ?? null;
-  return { success: true, token: data.session?.access_token ?? '', user };
-};
-
-/**
- * Legacy register — wraps signUp in the old { success } contract.
- * RegisterForm.jsx calls this until it is migrated to AuthContext.signUp in Commit 3.
- * @param {{ fullName: string, email: string, password: string }} userData
- * @returns {Promise<{ success: boolean }>}
- */
-export const registerUser = async (userData) => {
-  const { error } = await supabase.auth.signUp({
-    email: userData.email,
-    password: userData.password,
-    options: { data: { full_name: userData.fullName } },
-  });
-  if (error) throw new Error(error.message);
-  return { success: true };
-};
-
-// ---------------------------------------------------------------------------
 
 /**
  * Register a new user.
@@ -139,3 +51,26 @@ export const getUser = () => supabase.auth.getUser();
  */
 export const onAuthStateChange = (callback) =>
   supabase.auth.onAuthStateChange(callback);
+
+/**
+ * Request a password-reset email from Supabase.
+ * Supabase sends a recovery link; the user clicks it and is redirected to
+ * the app where they can set a new password via updatePassword().
+ *
+ * @param {string} email
+ * @param {string} redirectTo - Full URL Supabase redirects to after the link is clicked.
+ * @returns {Promise<{data, error}>}
+ */
+export const resetPasswordForEmail = (email, redirectTo) =>
+  supabase.auth.resetPasswordForEmail(email, { redirectTo });
+
+/**
+ * Set a new password for the currently authenticated recovery session.
+ * Must be called after the user has clicked the Supabase recovery link
+ * and the resulting RECOVERY event has set an active session.
+ *
+ * @param {string} newPassword
+ * @returns {Promise<{data, error}>}
+ */
+export const updatePassword = (newPassword) =>
+  supabase.auth.updateUser({ password: newPassword });

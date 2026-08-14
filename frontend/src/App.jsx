@@ -11,22 +11,45 @@ import SettingsPage from './pages/Settings/SettingsPage';
 import Sidebar from './components/dashboard/Sidebar';
 import Header from './components/dashboard/Header';
 import InteractionDetails from './pages/SafetyCheck/InteractionDetails';
+import ForgotPasswordPage from './pages/ForgotPassword/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPassword/ResetPasswordPage';
 import useAuth from './hooks/useAuth';
 import { getProfile } from './services/profile/profileService';
 
 function App() {
-  const { user, loading, signOut } = useAuth();
+  const { user, loading, signOut, authEvent } = useAuth();
 
   // ── View state machine ──────────────────────────────────────────────────
   // 'loading'          — waiting for Supabase session OR profile check
   // 'login'            — unauthenticated
   // 'signup'           — unauthenticated
+  // 'forgot_password'  — unauthenticated, forgot-password form
+  // 'reset_password'   — RECOVERY session active, new-password form
   // 'onboarding'       — authenticated, profile incomplete
   // 'dashboard_shell'  — authenticated, profile complete
   const [currentView, setCurrentView] = useState('loading');
   const [dashboardRoute, setDashboardRoute] = useState('/dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedInteraction, setSelectedInteraction] = useState(null);
+
+  // ── Handle backend 401 → force logout ──────────────────────────────────
+  // apiClient dispatches this event when the Django API rejects the token.
+  // Supabase sign-out has already been called by apiClient; we just update view.
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setCurrentView('login');
+      setDashboardRoute('/dashboard');
+    };
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
+  }, []);
+
+  // ── Handle Supabase RECOVERY event (password-reset link clicked) ────────
+  useEffect(() => {
+    if (authEvent === 'PASSWORD_RECOVERY') {
+      setCurrentView('reset_password');
+    }
+  }, [authEvent]);
 
   // ── Profile-completion check ────────────────────────────────────────────
   // Runs once per authenticated session (after Supabase resolves + user is set).
@@ -37,10 +60,18 @@ function App() {
     if (loading) return;
 
     if (!user) {
-      // Not authenticated — go to login (guard any protected view)
-      setCurrentView((prev) =>
-        prev === 'login' || prev === 'signup' ? prev : 'login'
-      );
+      // Not authenticated — go to login unless already on a public view.
+      setCurrentView((prev) => {
+        const publicViews = ['login', 'signup', 'forgot_password'];
+        return publicViews.includes(prev) ? prev : 'login';
+      });
+      return;
+    }
+
+    // RECOVERY session: user is authenticated for password reset only.
+    // Do not redirect to dashboard or run profile check.
+    if (authEvent === 'PASSWORD_RECOVERY') {
+      setCurrentView('reset_password');
       return;
     }
 
@@ -57,36 +88,47 @@ function App() {
         // 404 (no profile yet) or network error → send to onboarding
         setCurrentView('onboarding');
       });
-  }, [user, loading]);
+  }, [user, loading, authEvent]);
 
   // ── Navigation helpers ──────────────────────────────────────────────────
 
   const handleNavigateToLogin = () => {
-    if (user) { setCurrentView('dashboard_shell'); return; }
+    if (user && authEvent !== 'PASSWORD_RECOVERY') {
+      setCurrentView('dashboard_shell');
+      return;
+    }
     setCurrentView('login');
   };
 
   const handleNavigateToSignup = () => {
-    if (user) { setCurrentView('dashboard_shell'); return; }
+    if (user && authEvent !== 'PASSWORD_RECOVERY') {
+      setCurrentView('dashboard_shell');
+      return;
+    }
     setCurrentView('signup');
   };
+
+  const handleNavigateToForgotPassword = () => setCurrentView('forgot_password');
 
   // After email-confirm signup → show login
   const handleRegisterSuccess = () => setCurrentView('login');
 
-  // After login — Supabase onAuthStateChange fires → user updates → useEffect
-  // above triggers the profile check. We also set the view immediately for
-  // instant feedback.
-  const handleLoginSuccess = () => {
-    // Profile check will run via useEffect when user state updates.
-    // Just ensure we're not stuck on 'login'.
-    setCurrentView('loading');
-  };
+  // After login — profile check runs via useEffect when user state updates.
+  const handleLoginSuccess = () => setCurrentView('loading');
 
   // After onboarding form saved → profile is now complete
   const handleOnboardingSuccess = () => {
     setDashboardRoute('/dashboard');
     setCurrentView('dashboard_shell');
+  };
+
+  // After password-reset email sent → back to login
+  const handleForgotPasswordSuccess = () => setCurrentView('login');
+
+  // After new password set successfully → back to login (Supabase signs out)
+  const handleResetPasswordSuccess = () => {
+    signOut().catch(() => {});
+    setCurrentView('login');
   };
 
   const handleDashboardNavigate = (routePath) => setDashboardRoute(routePath);
@@ -117,16 +159,30 @@ function App() {
       {currentView === 'login' && (
         <Login
           onNavigateToSignup={handleNavigateToSignup}
+          onForgotPassword={handleNavigateToForgotPassword}
           onSuccess={handleLoginSuccess}
         />
       )}
 
-      {/* 3. Health Profile Onboarding — authenticated, profile incomplete */}
+      {/* 3. Forgot password — public */}
+      {currentView === 'forgot_password' && (
+        <ForgotPasswordPage
+          onBackToLogin={handleNavigateToLogin}
+          onSuccess={handleForgotPasswordSuccess}
+        />
+      )}
+
+      {/* 4. Reset password — RECOVERY session */}
+      {currentView === 'reset_password' && (
+        <ResetPasswordPage onSuccess={handleResetPasswordSuccess} />
+      )}
+
+      {/* 5. Health Profile Onboarding — authenticated, profile incomplete */}
       {currentView === 'onboarding' && (
         <HealthProfilePage onSuccess={handleOnboardingSuccess} />
       )}
 
-      {/* 4. Dashboard Application Shell — authenticated, profile complete */}
+      {/* 6. Dashboard Application Shell — authenticated, profile complete */}
       {currentView === 'dashboard_shell' && (
         <div style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: '#FFFDFC' }}>
           <Sidebar

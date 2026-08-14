@@ -4,15 +4,13 @@
  * Automatically attaches the current Supabase access token as:
  *   Authorization: Bearer <access_token>
  *
- * Usage:
- *   import { apiFetch } from './apiClient';
- *   const data = await apiFetch('/api/auth/supabase/me/');
+ * Behaviour on 401:
+ *   Signs the user out of Supabase and dispatches a custom
+ *   'auth:unauthorized' window event so the application can
+ *   transition to the login view without importing the auth
+ *   context here (avoids circular dependencies).
  *
- * The function:
- *   - Retrieves the live session from the existing Supabase client (no duplication).
- *   - Attaches the Bearer token to every request.
- *   - Throws a plain Error with a message for non-2xx responses.
- *   - Never stores or logs the access token.
+ * Never stores or logs the access token.
  */
 import { supabase } from '../auth/supabaseClient';
 
@@ -44,6 +42,13 @@ export const apiFetch = async (path, options = {}) => {
   });
 
   if (!response.ok) {
+    // On 401 the session is invalid or expired. Sign out silently and
+    // notify the app so it can redirect to login without a stale state.
+    if (response.status === 401) {
+      supabase.auth.signOut().catch(() => {});
+      window.dispatchEvent(new CustomEvent('auth:unauthorized'));
+    }
+
     let message = `Request failed: ${response.status} ${response.statusText}`;
     try {
       const body = await response.json();
