@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import JsonResponse
 from apps.patients.views import DashboardOverviewView
 
 urlpatterns = [
+    path('', lambda request: JsonResponse({'status': 'healthy', 'service': 'MediGuard Backend REST API', 'version': '1.0.0'})),
     path('admin/', admin.site.urls),
     path('api/auth/', include('apps.authentication.urls')),
     path('api/profile/', include('apps.patients.urls')),

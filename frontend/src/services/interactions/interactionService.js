@@ -50,6 +50,46 @@ export const checkInteractions = async (medicines) => {
   }
 };
 
+export const checkPersonalizedSafety = async (medicines, medicalConditions = '') => {
+  if (!Array.isArray(medicines) || medicines.length === 0) {
+    return {
+      success: true,
+      has_warnings: false,
+      summary: {
+        total_medicines_checked: 0,
+        drug_interactions_count: 0,
+        condition_warnings_count: 0,
+        major_warnings: 0,
+        moderate_warnings: 0,
+      },
+      drug_interactions: { interactions: [] },
+      patient_condition_warnings: [],
+    };
+  }
+
+  const medicinePayload = medicines.map((item) => {
+    if (typeof item === 'string') return item;
+    return item.rxcui || item.rxnorm_name || item.name || String(item.id || '');
+  }).filter(Boolean);
+
+  try {
+    const data = await apiFetch('/api/patients/safety-check/', {
+      method: 'POST',
+      body: JSON.stringify({
+        medicines: medicinePayload,
+        medicalConditions,
+      }),
+    });
+
+    return data;
+  } catch (error) {
+    console.error('Error running personalized safety check:', error);
+    throw error;
+  }
+};
+
 export default {
   checkInteractions,
+  checkPersonalizedSafety,
 };
+
