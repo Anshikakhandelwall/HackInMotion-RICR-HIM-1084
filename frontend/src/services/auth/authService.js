@@ -1,13 +1,8 @@
 /**
  * Authentication Service
- * Thin wrapper around Supabase Auth with dev fallback for offline/unconfigured environments.
+ * Thin wrapper around Supabase Auth – all errors are propagated; no fallbacks.
  */
 import { supabase } from './supabaseClient';
-
-const isDevFallback = () => {
-  const url = import.meta.env.VITE_SUPABASE_URL;
-  return !url || url.includes('dummyproject');
-};
 
 /**
  * Register a new user.
@@ -20,17 +15,12 @@ export const signUp = async (email, password, metadata = {}) => {
   try {
     const result = await supabase.auth.signUp({ email, password, options: { data: metadata } });
     if (result.error) {
-      console.error('Supabase signUp error details:', result.error);
-    }
-    if (result.error && (isDevFallback() || result.error.message.includes('Failed to fetch') || result.error.message.includes('Network'))) {
-      const mockUser = { id: 'dev-user-id', email, user_metadata: { full_name: metadata.full_name || 'Demo User' } };
-      return { data: { user: mockUser, session: null }, error: null };
+      console.error('Supabase signUp error:', result.error);
     }
     return result;
   } catch (err) {
     console.error('Supabase signUp exception:', err);
-    const mockUser = { id: 'dev-user-id', email, user_metadata: { full_name: metadata.full_name || 'Demo User' } };
-    return { data: { user: mockUser, session: null }, error: null };
+    return { data: { user: null, session: null }, error: err };
   }
 };
 
@@ -44,19 +34,12 @@ export const signIn = async (email, password) => {
   try {
     const result = await supabase.auth.signInWithPassword({ email, password });
     if (result.error) {
-      console.error('Supabase signIn error details:', result.error);
-    }
-    if (result.error && (isDevFallback() || result.error.message.includes('Failed to fetch') || result.error.message.includes('Network'))) {
-      const mockUser = { id: 'dev-user-id', email, user_metadata: { full_name: 'Demo User' } };
-      const mockSession = { access_token: 'dev-access-token', user: mockUser };
-      return { data: { user: mockUser, session: mockSession }, error: null };
+      console.error('Supabase signIn error:', result.error);
     }
     return result;
   } catch (err) {
     console.error('Supabase signIn exception:', err);
-    const mockUser = { id: 'dev-user-id', email, user_metadata: { full_name: 'Demo User' } };
-    const mockSession = { access_token: 'dev-access-token', user: mockUser };
-    return { data: { user: mockUser, session: mockSession }, error: null };
+    return { data: { user: null, session: null }, error: err };
   }
 };
 
