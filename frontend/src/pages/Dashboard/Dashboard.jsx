@@ -5,18 +5,15 @@ import RecentChecksCard from '../../components/dashboard/RecentChecksCard';
 import QuickActions from '../../components/dashboard/QuickActions';
 import { mockSafetySummary, mockMedicines } from '../../data/mockDashboardData';
 import { apiFetch } from '../../services/api/apiClient';
-import { getHistory } from '../../services/history/historyService';
 import { getUserFirstName } from '../../utils/userUtils';
+import { useLanguage } from '../../context/LanguageContext';
 import './Dashboard.css';
 
 /**
  * Dashboard Overview Content Component
- * Implements the responsive dashboard overview content area with:
- * - LEFT position: Current Medicines Card
- * - RIGHT position: Safety Overview Card
- * - Responsive 1-column layout stacking on mobile/tablet (Current Medicines -> Safety Overview -> Recent Safety Checks).
  */
 export const Dashboard = ({ currentUser, onNavigate }) => {
+  const { t } = useLanguage();
   const [safetySummary, setSafetySummary] = useState(mockSafetySummary);
   const [recentChecks, setRecentChecks] = useState(() => {
     const saved = getHistory();
@@ -73,10 +70,10 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
       {/* 1. Dashboard Greeting */}
       <section className="dashboard-greeting-section">
         <h1 className="dashboard-greeting-title">
-          Good morning, {displayName}
+          {t('goodMorning')}, {displayName}
         </h1>
         <p className="dashboard-greeting-subtitle">
-          Here&apos;s your medication safety overview.
+          {t('greetingText')}
         </p>
       </section>
 
@@ -104,4 +101,5 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
 };
 
 export default Dashboard;
+
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import BrandLogo from '../common/BrandLogo';
+import { useLanguage } from '../../context/LanguageContext';
 import './Sidebar.css';
 
 /**
@@ -8,10 +9,12 @@ import './Sidebar.css';
  * Connects existing navigation items to React Router sub-routes and closes mobile menu on selection.
  */
 export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOpen, onClose }) => {
+  const { t } = useLanguage();
+
   const mainNavItems = [
     {
       id: '/dashboard',
-      label: 'Dashboard',
+      label: t('dashboard'),
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <rect x="3" y="3" width="7" height="7" rx="2" />
@@ -23,7 +26,7 @@ export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOp
     },
     {
       id: '/medicines',
-      label: 'My Medicines',
+      label: t('myMedicines'),
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" />
@@ -33,7 +36,7 @@ export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOp
     },
     {
       id: '/safety-check',
-      label: 'Safety Check',
+      label: t('safetyCheck'),
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -43,7 +46,7 @@ export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOp
     },
     {
       id: '/history',
-      label: 'History',
+      label: t('history'),
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M12 8v4l3 3" />
@@ -53,7 +56,7 @@ export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOp
     },
     {
       id: '/profile',
-      label: 'Profile',
+      label: t('profile'),
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
@@ -66,7 +69,7 @@ export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOp
   const secondaryNavItems = [
     {
       id: '/settings',
-      label: 'Settings',
+      label: t('settings'),
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="3" />
@@ -104,7 +107,7 @@ export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOp
         <div className="sidebar-brand">
           <BrandLogo size="medium" />
           {onClose && (
-            <button type="button" className="sidebar-close-btn" onClick={onClose} aria-label="Close menu">
+            <button type="button" className="sidebar-close-btn" onClick={onClose} aria-label={t('closeMenu')}>
               &times;
             </button>
           )}
@@ -112,7 +115,7 @@ export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOp
 
         {/* Primary Navigation Links */}
         <nav className="sidebar-nav">
-          <div className="nav-section-label">MENU</div>
+          <div className="nav-section-label">{t('menu')}</div>
           <ul className="nav-list">
             {mainNavItems.map((item) => {
               const isActive = activeRoute === item.id;
@@ -134,7 +137,7 @@ export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOp
 
         {/* Bottom Section (Settings & Logout) */}
         <div className="sidebar-footer">
-          <div className="nav-section-label">ACCOUNT</div>
+          <div className="nav-section-label">{t('account')}</div>
           <ul className="nav-list">
             {secondaryNavItems.map((item) => {
               const isActive = activeRoute === item.id;
@@ -162,7 +165,7 @@ export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOp
                     <line x1="21" y1="12" x2="9" y2="12" />
                   </svg>
                 </span>
-                <span className="nav-label">Logout</span>
+                <span className="nav-label">{t('logout')}</span>
               </button>
             </li>
           </ul>
@@ -173,3 +176,4 @@ export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOp
 };
 
 export default Sidebar;
+

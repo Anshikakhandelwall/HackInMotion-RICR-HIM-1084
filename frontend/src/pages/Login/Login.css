@@ -10,6 +10,14 @@
   overflow-x: hidden;
 }
 
+.login-lang-selector-container {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  z-index: 10;
+}
+
+
 /* Organic Warm Background Decorative Shapes */
 .bg-shape {
   position: absolute;

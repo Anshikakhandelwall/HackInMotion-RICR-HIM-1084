@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getUserDisplayName, getUserInitials } from '../../utils/userUtils';
+import LanguageSelector from '../common/LanguageSelector';
+import { useLanguage } from '../../context/LanguageContext';
 import './Header.css';
 
 /**
@@ -8,7 +10,8 @@ import './Header.css';
  * Includes interactive Notification Bell 🔔 with unread count badge, dropdown panel, and outside-click handler.
  */
 export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMenu }) => {
-  const userName = getUserDisplayName(currentUser) || 'User';
+  const { t } = useLanguage();
+  const userName = getUserDisplayName(currentUser) || t('user');
   const userInitials = getUserInitials(currentUser);
 
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
@@ -69,7 +72,7 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
           type="button"
           className="mobile-menu-btn"
           onClick={onToggleMobileMenu}
-          aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-label={isMobileMenuOpen ? t('closeMenu') : t('openMenu')}
         >
           {isMobileMenuOpen ? (
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -86,17 +89,20 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
         </button>
 
         <div className="header-title-badge">
-          <span className="portal-tag">MediGuard Safety Network</span>
+          <span className="portal-tag">{t('networkPortalTag')}</span>
         </div>
       </div>
 
       <div className="header-right" ref={dropdownRef}>
+        {/* Language Selector */}
+        <LanguageSelector />
+
         {/* Notification Icon Badge */}
         <button
           type="button"
           className={`header-icon-btn ${isNotificationPanelOpen ? 'active' : ''}`}
           onClick={() => setIsNotificationPanelOpen((prev) => !prev)}
-          aria-label="Open notifications"
+          aria-label={t('notifications')}
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -109,16 +115,16 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
 
         {/* Notification Dropdown Panel */}
         {isNotificationPanelOpen && (
-          <div className="notification-panel-dropdown" role="dialog" aria-label="Notifications Panel">
+          <div className="notification-panel-dropdown" role="dialog" aria-label={t('notificationsPanelTitle')}>
             <div className="notif-panel-header">
-              <h4 className="notif-panel-title">Notifications</h4>
+              <h4 className="notif-panel-title">{t('notificationsPanelTitle')}</h4>
               {unreadCount > 0 && (
                 <button
                   type="button"
                   className="mark-all-read-btn"
                   onClick={handleMarkAllAsRead}
                 >
-                  Mark all as read
+                  {t('markAllRead')}
                 </button>
               )}
             </div>
@@ -127,8 +133,8 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
               {notifications.length === 0 ? (
                 <div className="notif-empty-state">
                   <div className="empty-bell-icon">🔔</div>
-                  <p className="empty-title">No new notifications</p>
-                  <p className="empty-subtext">You&apos;re all caught up with your medicine reminders.</p>
+                  <p className="empty-title">{t('noNewNotifications')}</p>
+                  <p className="empty-subtext">{t('allCaughtUp')}</p>
                 </div>
               ) : (
                 <ul className="notif-list">
@@ -141,16 +147,16 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
                       <div className="notif-card-header">
                         <span className="notif-category">
                           <span className="notif-pill-emoji" aria-hidden="true">💊</span>
-                          Medicine Reminder
+                          {t('medicineReminderCategory')}
                         </span>
-                        {!notif.read && <span className="unread-dot" title="Unread" />}
+                        {!notif.read && <span className="unread-dot" title={t('clickToMarkRead')} />}
                       </div>
                       <p className="notif-message">
-                        It&apos;s time for your <strong>{notif.medicineName}</strong> reminder.
+                        {t('notifMessagePre')}<strong>{notif.medicineName}</strong>{t('notifMessagePost')}
                       </p>
                       <div className="notif-card-footer">
                         <span className="notif-time-badge">⏰ {notif.time}</span>
-                        {!notif.read && <span className="mark-read-hint">Click to mark read</span>}
+                        {!notif.read && <span className="mark-read-hint">{t('clickToMarkRead')}</span>}
                       </div>
                     </li>
                   ))}
@@ -171,3 +177,4 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
 };
 
 export default Header;
+

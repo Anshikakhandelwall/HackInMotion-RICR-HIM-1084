@@ -3,6 +3,7 @@ import BrandLogo from '../../components/common/BrandLogo';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 import useAuth from '../../hooks/useAuth';
+import { useLanguage } from '../../context/LanguageContext';
 
 /**
  * ForgotPasswordPage
@@ -16,6 +17,7 @@ import useAuth from '../../hooks/useAuth';
  *   onSuccess      () → void   — called after email is sent (optional)
  */
 const ForgotPasswordPage = ({ onBackToLogin, onSuccess }) => {
+  const { t } = useLanguage();
   const { resetPassword } = useAuth();
 
   const [email, setEmail] = useState('');
@@ -26,8 +28,8 @@ const ForgotPasswordPage = ({ onBackToLogin, onSuccess }) => {
   const [sent, setSent] = useState(false);
 
   const validateEmail = (val) => {
-    if (!val.trim()) return 'Email address is required.';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) return 'Please enter a valid email address.';
+    if (!val.trim()) return t('emailRequired');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) return t('validEmail');
     return '';
   };
 
@@ -59,7 +61,7 @@ const ForgotPasswordPage = ({ onBackToLogin, onSuccess }) => {
       // Supabase does NOT reveal whether the email exists (prevents enumeration).
       // We show a generic error only for clear technical failures.
       if (error.message?.toLowerCase().includes('rate limit') || error.message?.toLowerCase().includes('too many')) {
-        setSubmitError('Too many attempts. Please wait a moment and try again.');
+        setSubmitError(t('tooManyAttempts'));
       } else {
         // For any other error, still show the success message to prevent
         // email enumeration — the email may or may not exist.
@@ -85,9 +87,9 @@ const ForgotPasswordPage = ({ onBackToLogin, onSuccess }) => {
               <div className="mobile-logo-only">
                 <BrandLogo size="medium" />
               </div>
-              <h1 className="login-title">Reset your password</h1>
+              <h1 className="login-title">{t('resetPasswordTitle')}</h1>
               <p className="login-subtitle">
-                Enter your email address and we'll send you a link to reset your password.
+                {t('resetPasswordSub')}
               </p>
             </div>
 
@@ -100,8 +102,7 @@ const ForgotPasswordPage = ({ onBackToLogin, onSuccess }) => {
                     <polyline points="22 4 12 14.01 9 11.01" />
                   </svg>
                   <span>
-                    If an account with that email exists, you'll receive a reset link shortly.
-                    Check your inbox (and spam folder).
+                    {t('resetSuccessAlert')}
                   </span>
                 </div>
                 <button
@@ -110,7 +111,7 @@ const ForgotPasswordPage = ({ onBackToLogin, onSuccess }) => {
                   style={{ marginTop: '1rem', display: 'block' }}
                   onClick={onBackToLogin}
                 >
-                  ← Back to sign in
+                  {t('backToSignIn')}
                 </button>
               </div>
             ) : (
@@ -131,8 +132,8 @@ const ForgotPasswordPage = ({ onBackToLogin, onSuccess }) => {
                     id="reset-email"
                     name="email"
                     type="email"
-                    label="Email"
-                    placeholder="name@example.com"
+                    label={t('email')}
+                    placeholder={t('emailPlaceholder')}
                     value={email}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -154,14 +155,14 @@ const ForgotPasswordPage = ({ onBackToLogin, onSuccess }) => {
                     isLoading={isSubmitting}
                     className="login-submit-btn"
                   >
-                    Send reset link
+                    {t('sendResetLink')}
                   </Button>
                 </form>
 
                 <div className="login-footer">
                   <p className="signup-prompt">
                     <button type="button" className="link-button" onClick={onBackToLogin}>
-                      ← Back to sign in
+                      {t('backToSignIn')}
                     </button>
                   </p>
                 </div>
@@ -175,3 +176,4 @@ const ForgotPasswordPage = ({ onBackToLogin, onSuccess }) => {
 };
 
 export default ForgotPasswordPage;
+

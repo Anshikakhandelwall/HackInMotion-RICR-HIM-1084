@@ -3,6 +3,7 @@ import BrandLogo from '../../components/common/BrandLogo';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 import useAuth from '../../hooks/useAuth';
+import { useLanguage } from '../../context/LanguageContext';
 
 /**
  * ResetPasswordPage
@@ -18,6 +19,7 @@ import useAuth from '../../hooks/useAuth';
  *   onSuccess  () → void   — called after password is updated
  */
 const ResetPasswordPage = ({ onSuccess }) => {
+  const { t } = useLanguage();
   const { updatePassword } = useAuth();
 
   const [password, setPassword] = useState('');
@@ -36,15 +38,15 @@ const ResetPasswordPage = ({ onSuccess }) => {
   };
 
   const validatePassword = (val) => {
-    if (!val) return 'New password is required.';
-    if (val.length < 8) return 'Password must be at least 8 characters.';
-    if (!/\d/.test(val)) return 'Password must contain at least one number.';
+    if (!val) return t('newPasswordRequired');
+    if (val.length < 8) return t('passwordMinLength');
+    if (!/\d/.test(val)) return t('passwordNumRequired');
     return '';
   };
 
   const validateConfirm = (val) => {
-    if (!val) return 'Please confirm your new password.';
-    if (val !== password) return 'Passwords do not match.';
+    if (!val) return t('confirmNewPasswordRequired');
+    if (val !== password) return t('passwordsDontMatch');
     return '';
   };
 
@@ -52,7 +54,7 @@ const ResetPasswordPage = ({ onSuccess }) => {
     const val = e.target.value;
     setPassword(val);
     if (touched.password) setErrors((p) => ({ ...p, password: validatePassword(val) }));
-    if (touched.confirmPassword) setErrors((p) => ({ ...p, confirmPassword: val !== confirmPassword ? 'Passwords do not match.' : '' }));
+    if (touched.confirmPassword) setErrors((p) => ({ ...p, confirmPassword: val !== confirmPassword ? t('passwordsDontMatch') : '' }));
   };
 
   const handleConfirmChange = (e) => {
@@ -85,11 +87,11 @@ const ResetPasswordPage = ({ onSuccess }) => {
     if (error) {
       const m = error.message?.toLowerCase() ?? '';
       if (m.includes('same password') || m.includes('different from')) {
-        setSubmitError('New password must be different from your current password.');
+        setSubmitError(t('passwordDifferentFromCurrent'));
       } else if (m.includes('weak') || m.includes('should be')) {
-        setSubmitError('Password is too weak. Please choose a stronger password.');
+        setSubmitError(t('passwordTooWeak'));
       } else {
-        setSubmitError('Unable to update password. Please try again or request a new reset link.');
+        setSubmitError(t('unableToUpdatePassword'));
       }
       return;
     }
@@ -110,9 +112,9 @@ const ResetPasswordPage = ({ onSuccess }) => {
               <div className="mobile-logo-only">
                 <BrandLogo size="medium" />
               </div>
-              <h1 className="login-title">Set new password</h1>
+              <h1 className="login-title">{t('setNewPasswordTitle')}</h1>
               <p className="login-subtitle">
-                Choose a strong password for your MediGuard account.
+                {t('setNewPasswordSub')}
               </p>
             </div>
 
@@ -122,7 +124,7 @@ const ResetPasswordPage = ({ onSuccess }) => {
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                   <polyline points="22 4 12 14.01 9 11.01" />
                 </svg>
-                <span>Password updated! Redirecting you to sign in…</span>
+                <span>{t('passwordUpdatedSuccess')}</span>
               </div>
             ) : (
               <>
@@ -142,8 +144,8 @@ const ResetPasswordPage = ({ onSuccess }) => {
                     id="new-password"
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    label="New Password"
-                    placeholder="Create a strong password"
+                    label={t('newPasswordLabel')}
+                    placeholder={t('passwordPlaceholder')}
                     value={password}
                     onChange={handlePasswordChange}
                     onBlur={() => handleBlur('password')}
@@ -157,7 +159,7 @@ const ResetPasswordPage = ({ onSuccess }) => {
                       </svg>
                     }
                     rightElement={
-                      <button type="button" className="toggle-password-btn" onClick={() => setShowPassword((v) => !v)} tabIndex="-1" aria-label={showPassword ? 'Hide' : 'Show'}>
+                      <button type="button" className="toggle-password-btn" onClick={() => setShowPassword((v) => !v)} tabIndex="-1" aria-label={showPassword ? t('hidePassword') : t('showPassword')}>
                         {showPassword ? (
                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" /><line x1="1" y1="1" x2="23" y2="23" />
@@ -173,19 +175,19 @@ const ResetPasswordPage = ({ onSuccess }) => {
 
                   {password.length > 0 && (
                     <div className="password-guidance">
-                      <span className="guidance-title">Password must include:</span>
+                      <span className="guidance-title">{t('passwordMustInclude')}</span>
                       <ul className="guidance-list">
                         <li className={passwordRequirements.minLength ? 'valid' : 'invalid'}>
                           <span className="guidance-bullet">{passwordRequirements.minLength ? '✓' : '•'}</span>
-                          At least 8 characters
+                          {t('minChars')}
                         </li>
                         <li className={passwordRequirements.hasNumber ? 'valid' : 'invalid'}>
                           <span className="guidance-bullet">{passwordRequirements.hasNumber ? '✓' : '•'}</span>
-                          At least one number (0–9)
+                          {t('minNumber')}
                         </li>
                         <li className={passwordRequirements.hasLetter ? 'valid' : 'invalid'}>
                           <span className="guidance-bullet">{passwordRequirements.hasLetter ? '✓' : '•'}</span>
-                          At least one letter
+                          {t('minLetter')}
                         </li>
                       </ul>
                     </div>
@@ -195,8 +197,8 @@ const ResetPasswordPage = ({ onSuccess }) => {
                     id="confirm-new-password"
                     name="confirmPassword"
                     type={showPassword ? 'text' : 'password'}
-                    label="Confirm New Password"
-                    placeholder="Re-enter your new password"
+                    label={t('confirmNewPasswordLabel')}
+                    placeholder={t('reEnterNewPasswordPlaceholder')}
                     value={confirmPassword}
                     onChange={handleConfirmChange}
                     onBlur={() => handleBlur('confirmPassword')}
@@ -212,7 +214,7 @@ const ResetPasswordPage = ({ onSuccess }) => {
                   />
 
                   <Button type="submit" variant="primary" size="medium" fullWidth isLoading={isSubmitting} className="login-submit-btn">
-                    Update password
+                    {t('updatePasswordBtn')}
                   </Button>
                 </form>
               </>
@@ -225,3 +227,4 @@ const ResetPasswordPage = ({ onSuccess }) => {
 };
 
 export default ResetPasswordPage;
+

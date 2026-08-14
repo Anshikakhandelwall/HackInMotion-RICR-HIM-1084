@@ -3,6 +3,7 @@ import Input from '../common/Input';
 import Button from '../common/Button';
 import BrandLogo from '../common/BrandLogo';
 import { createProfile } from '../../services/profile/profileService';
+import { useLanguage } from '../../context/LanguageContext';
 import './HealthProfileForm.css';
 
 /**
@@ -12,6 +13,7 @@ import './HealthProfileForm.css';
  * Saves to Django backend via POST /api/profile/.
  */
 export const HealthProfileForm = ({ onSuccess }) => {
+  const { t } = useLanguage();
   const [age, setAge] = useState('');
   const [medicalConditions, setMedicalConditions] = useState('');
   const [regularMedicines, setRegularMedicines] = useState([]);
@@ -35,17 +37,17 @@ export const HealthProfileForm = ({ onSuccess }) => {
   const validateAge = (val) => {
     const ageStr = String(val).trim();
     if (!ageStr) {
-      return 'Age is required';
+      return t('ageRequired');
     }
     const num = Number(ageStr);
     if (isNaN(num) || !Number.isInteger(num)) {
-      return 'Age must be a valid whole number';
+      return t('ageWholeNumber');
     }
     if (num <= 0) {
-      return 'Age must be greater than zero';
+      return t('ageGreaterThanZero');
     }
     if (num > 120) {
-      return 'Please enter a realistic age (1-120)';
+      return t('ageRealistic');
     }
     return '';
   };
@@ -54,7 +56,7 @@ export const HealthProfileForm = ({ onSuccess }) => {
   const validateConditions = (val) => {
     const trimmed = val ? val.trim() : '';
     if (!trimmed) {
-      return 'Medical conditions is required. Type "NONE" if no major history.';
+      return t('conditionsRequired');
     }
     return '';
   };
@@ -146,20 +148,21 @@ export const HealthProfileForm = ({ onSuccess }) => {
         onSuccess(result.profile);
       }
     } catch {
-      setSubmitError('Something went wrong while saving your information. Please try again.');
+      setSubmitError(t('onboardingSaveError'));
     } finally {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <div className="health-profile-card">
       {/* Brand & Header */}
       <div className="onboarding-header">
         <BrandLogo size="medium" />
-        <h1 className="onboarding-title">Tell us a little about yourself</h1>
+        <h1 className="onboarding-title">{t('onboardingIntroTitle')}</h1>
         <p className="onboarding-subtitle">
-          Help us personalize your medication safety experience.
+          {t('onboardingIntroSub')}
         </p>
       </div>
 
@@ -182,8 +185,8 @@ export const HealthProfileForm = ({ onSuccess }) => {
           id="age"
           name="age"
           type="number"
-          label="Age"
-          placeholder="e.g. 28"
+          label={t('ageLabel')}
+          placeholder={t('agePlaceholder')}
           value={age}
           onChange={handleAgeChange}
           onBlur={(e) => handleBlur('age', e.target.value)}
@@ -199,8 +202,8 @@ export const HealthProfileForm = ({ onSuccess }) => {
             id="medicalConditions"
             name="medicalConditions"
             type="text"
-            label="Medical Conditions"
-            placeholder="e.g. Diabetes, Asthma, or NONE"
+            label={t('medicalHistoryLabel')}
+            placeholder={t('conditionsPlaceholder')}
             value={medicalConditions}
             onChange={handleConditionsChange}
             onBlur={(e) => handleBlur('medicalConditions', e.target.value)}
@@ -208,20 +211,20 @@ export const HealthProfileForm = ({ onSuccess }) => {
             required
           />
           <p className="field-hint-text">
-            If no major medical history, type &quot;NONE&quot;.
+            {t('conditionsHintText')}
           </p>
         </div>
 
         {/* Conditional Field: Regular Medicines (Hidden when conditions === NONE) */}
         {!isNoneActive && medicalConditions.trim().length > 0 && (
           <div className="conditional-medicines-section">
-            <label className="section-label">Regular Medicines</label>
+            <label className="section-label">{t('regularMedicinesLabel')}</label>
 
             <div className="medicine-input-row">
               <input
                 type="text"
                 className="medicine-input-field"
-                placeholder="Search/type medicine name..."
+                placeholder={t('medsInputPlaceholder')}
                 value={medicineInput}
                 onChange={(e) => setMedicineInput(e.target.value)}
                 onKeyDown={handleMedicineKeyDown}
@@ -232,7 +235,7 @@ export const HealthProfileForm = ({ onSuccess }) => {
                 onClick={handleAddMedicine}
                 disabled={!medicineInput.trim()}
               >
-                Add
+                {t('addBtn')}
               </button>
             </div>
 
@@ -266,11 +269,12 @@ export const HealthProfileForm = ({ onSuccess }) => {
           isLoading={isSubmitting}
           className="confirm-onboarding-btn"
         >
-          Confirm
+          {t('confirmBtn')}
         </Button>
       </form>
     </div>
   );
 };
+
 
 export default HealthProfileForm;
