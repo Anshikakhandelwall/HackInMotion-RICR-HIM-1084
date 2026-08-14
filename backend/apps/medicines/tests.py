@@ -15,7 +15,7 @@ class MedicineModelTest(TestCase):
         self.assertEqual(self.medicine.rxcui, "161")
         self.assertEqual(self.medicine.rxnorm_name, "acetaminophen")
         self.assertEqual(self.medicine.tty, "IN")
-        self.assertEqual(str(self.medicine), "acetaminophen (RxCUI: 161)")
+        self.assertEqual(str(self.medicine), "acetaminophen (161)")
 
     def test_unique_rxcui_constraint(self):
         """Test that duplicate RxCUIs raise integrity error."""
@@ -24,4 +24,3 @@ class MedicineModelTest(TestCase):
                 rxcui="161",
                 rxnorm_name="duplicate acetaminophen",
             )
-
