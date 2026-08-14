@@ -115,16 +115,16 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
 
         {/* Notification Dropdown Panel */}
         {isNotificationPanelOpen && (
-          <div className="notification-panel-dropdown" role="dialog" aria-label="Notifications Panel">
+          <div className="notification-panel-dropdown" role="dialog" aria-label={t('notificationsPanelTitle')}>
             <div className="notif-panel-header">
-              <h4 className="notif-panel-title">Notifications</h4>
+              <h4 className="notif-panel-title">{t('notificationsPanelTitle')}</h4>
               {unreadCount > 0 && (
                 <button
                   type="button"
                   className="mark-all-read-btn"
                   onClick={handleMarkAllAsRead}
                 >
-                  Mark all as read
+                  {t('markAllRead')}
                 </button>
               )}
             </div>
@@ -133,8 +133,8 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
               {notifications.length === 0 ? (
                 <div className="notif-empty-state">
                   <div className="empty-bell-icon">🔔</div>
-                  <p className="empty-title">No new notifications</p>
-                  <p className="empty-subtext">You&apos;re all caught up with your medicine reminders.</p>
+                  <p className="empty-title">{t('noNewNotifications')}</p>
+                  <p className="empty-subtext">{t('allCaughtUp')}</p>
                 </div>
               ) : (
                 <ul className="notif-list">
@@ -147,16 +147,16 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
                       <div className="notif-card-header">
                         <span className="notif-category">
                           <span className="notif-pill-emoji" aria-hidden="true">💊</span>
-                          Medicine Reminder
+                          {t('medicineReminderCategory')}
                         </span>
-                        {!notif.read && <span className="unread-dot" title="Unread" />}
+                        {!notif.read && <span className="unread-dot" title={t('clickToMarkRead')} />}
                       </div>
                       <p className="notif-message">
-                        It&apos;s time for your <strong>{notif.medicineName}</strong> reminder.
+                        {t('notifMessagePre')}<strong>{notif.medicineName}</strong>{t('notifMessagePost')}
                       </p>
                       <div className="notif-card-footer">
                         <span className="notif-time-badge">⏰ {notif.time}</span>
-                        {!notif.read && <span className="mark-read-hint">Click to mark read</span>}
+                        {!notif.read && <span className="mark-read-hint">{t('clickToMarkRead')}</span>}
                       </div>
                     </li>
                   ))}

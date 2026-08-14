@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../../context/LanguageContext';
 import './TimePickerModal.css';
 
 /**
@@ -6,6 +7,7 @@ import './TimePickerModal.css';
  * Allows user to select Hour (1-12), Minute (00-55), and AM/PM.
  */
 export const TimePickerModal = ({ isOpen, initialTime, onConfirm, onCancel }) => {
+  const { t } = useLanguage();
   const [selectedHour, setSelectedHour] = useState('08');
   const [selectedMinute, setSelectedMinute] = useState('30');
   const [selectedPeriod, setSelectedPeriod] = useState('AM');
@@ -51,10 +53,10 @@ export const TimePickerModal = ({ isOpen, initialTime, onConfirm, onCancel }) =>
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label="Set Reminder Time"
+        aria-label={t('setReminderTime')}
       >
         <div className="time-picker-header">
-          <h4 className="time-picker-title">Set Reminder Time</h4>
+          <h4 className="time-picker-title">{t('setReminderTime')}</h4>
         </div>
 
         {/* Digital Clock Header Display */}
@@ -64,7 +66,7 @@ export const TimePickerModal = ({ isOpen, initialTime, onConfirm, onCancel }) =>
               type="button"
               className={`digit-btn ${activeTab === 'hour' ? 'active' : ''}`}
               onClick={() => setActiveTab('hour')}
-              aria-label="Select hour"
+              aria-label={t('selectHour')}
             >
               {selectedHour}
             </button>
@@ -73,7 +75,7 @@ export const TimePickerModal = ({ isOpen, initialTime, onConfirm, onCancel }) =>
               type="button"
               className={`digit-btn ${activeTab === 'minute' ? 'active' : ''}`}
               onClick={() => setActiveTab('minute')}
-              aria-label="Select minute"
+              aria-label={t('selectMinute')}
             >
               {selectedMinute}
             </button>
@@ -104,14 +106,14 @@ export const TimePickerModal = ({ isOpen, initialTime, onConfirm, onCancel }) =>
             className={`tab-btn ${activeTab === 'hour' ? 'active' : ''}`}
             onClick={() => setActiveTab('hour')}
           >
-            Select Hour
+            {t('selectHour')}
           </button>
           <button
             type="button"
             className={`tab-btn ${activeTab === 'minute' ? 'active' : ''}`}
             onClick={() => setActiveTab('minute')}
           >
-            Select Minute
+            {t('selectMinute')}
           </button>
         </div>
 
@@ -152,10 +154,10 @@ export const TimePickerModal = ({ isOpen, initialTime, onConfirm, onCancel }) =>
         {/* Footer Actions */}
         <div className="time-picker-actions">
           <button type="button" className="picker-cancel-btn" onClick={onCancel}>
-            Cancel
+            {t('cancelBtn')}
           </button>
           <button type="button" className="picker-done-btn" onClick={handleDone}>
-            Done
+            {t('doneBtn')}
           </button>
         </div>
       </div>

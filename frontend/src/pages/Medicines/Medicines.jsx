@@ -249,14 +249,14 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
 
               <div className="form-group reminder-time-group">
                 <div className="reminder-time-header">
-                  <span className="form-label">Reminder Time</span>
+                  <span className="form-label">{t('reminderTimeLabel')}</span>
                   <button
                     type="button"
                     className={`add-time-btn ${selectedReminderTime ? 'time-set' : ''}`}
                     onClick={() => setIsTimePickerOpen(true)}
-                    aria-label={selectedReminderTime ? `Edit reminder time ${selectedReminderTime}` : 'Add reminder time'}
+                    aria-label={selectedReminderTime ? `Edit reminder time ${selectedReminderTime}` : t('addTimeBtn')}
                   >
-                    {selectedReminderTime ? `⏰ ${selectedReminderTime}` : '+ Add Time'}
+                    {selectedReminderTime ? `⏰ ${selectedReminderTime}` : t('addTimeBtn')}
                   </button>
                 </div>
               </div>
