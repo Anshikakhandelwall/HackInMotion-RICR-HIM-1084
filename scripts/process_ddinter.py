@@ -60,13 +60,6 @@ for column in ["DDInterID_A", "Drug_A", "DDInterID_B", "Drug_B", "Level"]:
 df["Level"] = df["Level"].str.title()
 
 
-# --------------------------------------------------
-# Keep only valid severity levels
-# --------------------------------------------------
-
-valid_levels = ["Major", "Moderate", "Minor"]
-
-df = df[df["Level"].isin(valid_levels)]
 
 
 # --------------------------------------------------
