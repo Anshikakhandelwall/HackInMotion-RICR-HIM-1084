@@ -18,9 +18,22 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
-# Supabase
+# Supabase — frontend client config (already present)
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+
+# Supabase JWT verification — backend only, never exposed to the frontend
+# Derived from SUPABASE_URL when not explicitly set, so only SUPABASE_URL
+# is strictly required if your project uses the standard Supabase URL scheme.
+_supabase_url = (SUPABASE_URL or '').rstrip('/')
+SUPABASE_JWT_ISSUER = os.getenv(
+    'SUPABASE_JWT_ISSUER',
+    f'{_supabase_url}/auth/v1' if _supabase_url else '',
+)
+SUPABASE_JWKS_URL = os.getenv(
+    'SUPABASE_JWKS_URL',
+    f'{_supabase_url}/auth/v1/.well-known/jwks.json' if _supabase_url else '',
+)
 
 
 # Quick-start development settings - unsuitable for production
@@ -167,6 +180,9 @@ CORS_ALLOW_CREDENTIALS = True
 # Django REST Framework Configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        # Supabase JWT auth is first — it handles all frontend requests.
+        # Token and Session auth remain for the Django admin / legacy flows.
+        'apps.authentication.supabase_auth.SupabaseAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
