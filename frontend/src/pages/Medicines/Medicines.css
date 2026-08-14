@@ -247,9 +247,54 @@
   outline: none;
 }
 
-.form-input:focus {
+.label-optional {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--color-text-muted);
+  margin-left: 0.25rem;
+}
+
+.reminder-time-group {
+  margin-top: 0.25rem;
+}
+
+.reminder-time-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  gap: 1rem;
+}
+
+.add-time-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-border-default);
+  background-color: var(--color-bg-subtle);
+  color: var(--color-primary);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-time-btn:hover {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(166, 61, 53, 0.12);
+  background-color: rgba(166, 61, 53, 0.06);
+}
+
+.add-time-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(166, 61, 53, 0.18);
+}
+
+.add-time-btn.active {
+  border-style: solid;
+  border-color: var(--color-primary);
+  background-color: rgba(166, 61, 53, 0.1);
 }
 
 .demo-notice-box {

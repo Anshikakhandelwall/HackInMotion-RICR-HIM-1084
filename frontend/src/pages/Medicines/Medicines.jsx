@@ -16,6 +16,9 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
+  const [isReminderTimeActive, setIsReminderTimeActive] = useState(false);
+  const [dosageInput, setDosageInput] = useState('');
+
   useEffect(() => {
     const userMeds = currentUser?.regularMedicines || currentUser?.regular_medicines || [];
     setMedicineList(userMeds);
@@ -73,6 +76,8 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
     }
 
     setNewMedInput('');
+    setDosageInput('');
+    setIsReminderTimeActive(false);
     setIsModalOpen(false);
   };
 
@@ -218,6 +223,34 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
                   autoFocus
                   required
                 />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="medDosageInput" className="form-label">
+                  Dosage <span className="label-optional">(Optional)</span>
+                </label>
+                <input
+                  id="medDosageInput"
+                  type="text"
+                  className="form-input"
+                  placeholder="e.g. 500mg, 1 tablet daily"
+                  value={dosageInput}
+                  onChange={(e) => setDosageInput(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group reminder-time-group">
+                <div className="reminder-time-header">
+                  <span className="form-label">Reminder Time</span>
+                  <button
+                    type="button"
+                    className={`add-time-btn ${isReminderTimeActive ? 'active' : ''}`}
+                    onClick={() => setIsReminderTimeActive((prev) => !prev)}
+                    aria-label="Add reminder time"
+                  >
+                    + Add Time
+                  </button>
+                </div>
               </div>
 
               <div className="modal-actions">
