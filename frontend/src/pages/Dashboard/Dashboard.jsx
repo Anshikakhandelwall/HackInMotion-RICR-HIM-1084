@@ -3,8 +3,9 @@ import MedicineSummaryCard from '../../components/dashboard/MedicineSummaryCard'
 import SafetyStatusCard from '../../components/dashboard/SafetyStatusCard';
 import RecentChecksCard from '../../components/dashboard/RecentChecksCard';
 import QuickActions from '../../components/dashboard/QuickActions';
-import { mockSafetySummary, mockMedicines, mockRecentChecks } from '../../data/mockDashboardData';
+import { mockSafetySummary, mockMedicines } from '../../data/mockDashboardData';
 import { apiFetch } from '../../services/api/apiClient';
+import { getHistory } from '../../services/history/historyService';
 import './Dashboard.css';
 
 /**
@@ -16,6 +17,16 @@ import './Dashboard.css';
  */
 export const Dashboard = ({ currentUser, onNavigate }) => {
   const [safetySummary, setSafetySummary] = useState(mockSafetySummary);
+  const [recentChecks, setRecentChecks] = useState(() => {
+    const saved = getHistory();
+    return saved.slice(0, 3).map((item) => ({
+      id: item.id,
+      date: item.date,
+      medicineCount: item.medicinesCount,
+      status: item.status,
+      variant: item.status === 'Safe' ? 'safe' : 'attention',
+    }));
+  });
 
   useEffect(() => {
     const fetchDashboardOverview = async () => {
@@ -29,6 +40,22 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
       }
     };
     fetchDashboardOverview();
+
+    const handleHistoryUpdate = () => {
+      const saved = getHistory();
+      setRecentChecks(
+        saved.slice(0, 3).map((item) => ({
+          id: item.id,
+          date: item.date,
+          medicineCount: item.medicinesCount,
+          status: item.status,
+          variant: item.status === 'Safe' ? 'safe' : 'attention',
+        }))
+      );
+    };
+
+    window.addEventListener('mediguard:history_updated', handleHistoryUpdate);
+    return () => window.removeEventListener('mediguard:history_updated', handleHistoryUpdate);
   }, []);
 
   // Extract user first name safely without crashing
@@ -77,7 +104,7 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
 
       {/* 3. Recent Safety Checks */}
       <section className="dashboard-section">
-        <RecentChecksCard checks={mockRecentChecks} onNavigate={onNavigate} />
+        <RecentChecksCard checks={recentChecks} onNavigate={onNavigate} />
       </section>
 
       {/* 4. Quick Actions */}
@@ -89,3 +116,4 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
 };
 
 export default Dashboard;
+

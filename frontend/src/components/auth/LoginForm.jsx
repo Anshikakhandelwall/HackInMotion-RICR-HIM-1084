@@ -17,7 +17,7 @@ const friendlyLoginError = (msg = '') => {
     return 'Too many attempts. Please wait a moment and try again.';
   if (m.includes('network') || m.includes('fetch'))
     return 'Network error. Please check your connection and try again.';
-  return 'Unable to sign in. Please try again.';
+  return msg;
 };
 
 /**
@@ -118,7 +118,7 @@ export const LoginForm = ({ onNavigateToSignup, onForgotPassword, onSuccess }) =
     const { data, error } = await signIn(formData.email, formData.password);
 
     if (error) {
-      setSubmitError(friendlyLoginError(error.message));
+      setSubmitError(error.message || friendlyLoginError(error.message));
       setIsSubmitting(false);
       return;
     }

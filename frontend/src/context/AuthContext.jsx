@@ -30,11 +30,18 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // 1. Hydrate from the existing session on mount.
-    getSession().then(({ data: { session: initialSession } }) => {
-      setSession(initialSession);
-      setUser(initialSession?.user ?? null);
-      setLoading(false);
-    });
+    getSession()
+      .then((res) => {
+        const initialSession = res?.data?.session ?? null;
+        setSession(initialSession);
+        setUser(initialSession?.user ?? null);
+      })
+      .catch((err) => {
+        console.warn('Supabase auth session error:', err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
 
     // 2. Subscribe to future auth state changes (sign-in, sign-out, RECOVERY, …).
     const { data: { subscription } } = onAuthStateChange((event, updatedSession) => {

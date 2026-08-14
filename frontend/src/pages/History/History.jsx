@@ -1,75 +1,36 @@
-import React, { useState } from 'react';
-import './History.css';
+import React, { useState, useEffect } from 'react';
 import HistoryDetails from './HistoryDetails';
+import { getHistory, clearHistory } from '../../services/history/historyService';
+import Button from '../../components/common/Button';
+import './History.css';
 
-const MOCK_HISTORY = [
-  {
-    id: 'check-1',
-    date: 'August 12, 2026',
-    time: '10:30 AM',
-    medicinesCount: 4,
-    interactionsCount: 2,
-    status: 'Attention Required',
-    medicines: ['Warfarin', 'Aspirin', 'Amlodipine', 'Simvastatin'],
-    interactions: [
-      { id: 'int-1-1', drugA: 'Warfarin', drugB: 'Aspirin', severity: 'Severe' },
-      { id: 'int-1-2', drugA: 'Amlodipine', drugB: 'Simvastatin', severity: 'Moderate' }
-    ]
-  },
-  {
-    id: 'check-2',
-    date: 'August 10, 2026',
-    time: '04:15 PM',
-    medicinesCount: 3,
-    interactionsCount: 0,
-    status: 'Safe',
-    medicines: ['Amlodipine', 'Metoprolol', 'Lisinopril'],
-    interactions: []
-  },
-  {
-    id: 'check-3',
-    date: 'August 05, 2026',
-    time: '09:00 AM',
-    medicinesCount: 5,
-    interactionsCount: 1,
-    status: 'Attention Required',
-    medicines: ['Warfarin', 'Amlodipine', 'Simvastatin', 'Ibuprofen', 'Metformin'],
-    interactions: [
-      { id: 'int-3-1', drugA: 'Warfarin', drugB: 'Ibuprofen', severity: 'Severe' }
-    ]
-  },
-  {
-    id: 'check-4',
-    date: 'July 28, 2026',
-    time: '11:45 AM',
-    medicinesCount: 2,
-    interactionsCount: 0,
-    status: 'Safe',
-    medicines: ['Metformin', 'Atorvastatin'],
-    interactions: []
-  },
-  {
-    id: 'check-5',
-    date: 'July 15, 2026',
-    time: '02:30 PM',
-    medicinesCount: 4,
-    interactionsCount: 3,
-    status: 'Attention Required',
-    medicines: ['Warfarin', 'Aspirin', 'Ibuprofen', 'Clopidogrel'],
-    interactions: [
-      { id: 'int-5-1', drugA: 'Warfarin', drugB: 'Aspirin', severity: 'Severe' },
-      { id: 'int-5-2', drugA: 'Warfarin', drugB: 'Ibuprofen', severity: 'Severe' },
-      { id: 'int-5-3', drugA: 'Aspirin', drugB: 'Clopidogrel', severity: 'Moderate' }
-    ]
-  }
-];
-
-export const History = () => {
+export const History = ({ onNavigate }) => {
+  const [historyRecords, setHistoryRecords] = useState(() => getHistory());
   const [selectedRecordId, setSelectedRecordId] = useState(null);
+
+  useEffect(() => {
+    const handleHistoryUpdate = (e) => {
+      if (e.detail) {
+        setHistoryRecords(e.detail);
+      } else {
+        setHistoryRecords(getHistory());
+      }
+    };
+
+    window.addEventListener('mediguard:history_updated', handleHistoryUpdate);
+    return () => window.removeEventListener('mediguard:history_updated', handleHistoryUpdate);
+  }, []);
+
+  const handleClearHistory = () => {
+    if (window.confirm('Are you sure you want to clear your safety check history?')) {
+      clearHistory();
+      setHistoryRecords([]);
+    }
+  };
 
   // If a record is selected, show details view
   if (selectedRecordId) {
-    const selectedRecord = MOCK_HISTORY.find((record) => record.id === selectedRecordId);
+    const selectedRecord = historyRecords.find((record) => record.id === selectedRecordId);
     if (selectedRecord) {
       return (
         <HistoryDetails 
@@ -83,17 +44,52 @@ export const History = () => {
   return (
     <div className="history-page-container">
       {/* Page Header */}
-      <div className="history-page-header">
-        <h1 className="history-page-title">Safety Check History</h1>
-        <p className="history-page-subtitle">View your previous medication safety checks.</p>
+      <div className="history-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1 className="history-page-title">Safety Check History</h1>
+          <p className="history-page-subtitle">View your previous medication safety checks.</p>
+        </div>
+        {historyRecords.length > 0 && (
+          <button
+            type="button"
+            className="history-clear-btn"
+            onClick={handleClearHistory}
+            style={{
+              padding: '0.4rem 0.8rem',
+              fontSize: '0.85rem',
+              color: '#EF4444',
+              backgroundColor: '#FEF2F2',
+              border: '1px solid #FCA5A5',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontWeight: 500,
+            }}
+          >
+            Clear History
+          </button>
+        )}
       </div>
 
       {/* History Records List */}
-      {MOCK_HISTORY.length === 0 ? (
-        <div className="history-empty-message">No history available.</div>
+      {historyRecords.length === 0 ? (
+        <div className="history-empty-message" style={{ textAlign: 'center', padding: '3rem 1.5rem', backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>📜</div>
+          <h3 style={{ margin: '0 0 0.5rem', color: '#1E293B', fontSize: '1.1rem' }}>No Safety Checks Recorded</h3>
+          <p style={{ margin: '0 0 1.25rem', color: '#64748B', fontSize: '0.9rem' }}>
+            Screen your medication cabinet to record safety check history.
+          </p>
+          <Button
+            type="button"
+            variant="primary"
+            size="medium"
+            onClick={() => onNavigate && onNavigate('/safety-check')}
+          >
+            Run Safety Check
+          </Button>
+        </div>
       ) : (
         <div className="history-records-list">
-          {MOCK_HISTORY.map((record) => {
+          {historyRecords.map((record) => {
             const isSafe = record.status === 'Safe';
             return (
               <div key={record.id} className="history-record-card">
@@ -142,3 +138,4 @@ export const History = () => {
 };
 
 export default History;
+

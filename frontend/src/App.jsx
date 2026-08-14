@@ -14,10 +14,11 @@ import InteractionDetails from './pages/SafetyCheck/InteractionDetails';
 import ForgotPasswordPage from './pages/ForgotPassword/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPassword/ResetPasswordPage';
 import useAuth from './hooks/useAuth';
-import { getProfile } from './services/profile/profileService';
+import { getProfile, updateProfile } from './services/profile/profileService';
 
 function App() {
   const { user, loading, signOut, authEvent } = useAuth();
+  const [userProfile, setUserProfile] = useState(null);
 
   // ── View state machine ──────────────────────────────────────────────────
   // 'loading'          — waiting for Supabase session OR profile check
@@ -81,14 +82,37 @@ function App() {
 
     getProfile()
       .then((res) => {
-        const completed = res?.profile?.profileCompleted === true;
+        const profileData = res?.profile || null;
+        setUserProfile(profileData);
+        const completed = profileData?.profileCompleted === true;
         setCurrentView(completed ? 'dashboard_shell' : 'onboarding');
       })
       .catch(() => {
         // 404 (no profile yet) or network error → send to onboarding
+        setUserProfile(null);
         setCurrentView('onboarding');
       });
   }, [user, loading, authEvent]);
+
+  // Helper to update user profile in local state and call Django backend PATCH /api/profile/
+  const handleUpdateProfileData = async (updatedFields) => {
+    try {
+      const res = await updateProfile(updatedFields);
+      if (res && res.profile) {
+        setUserProfile(res.profile);
+      }
+      return res;
+    } catch (err) {
+      console.error('Failed to update user profile:', err);
+      throw err;
+    }
+  };
+
+  // Combine auth user with DB profile data
+  const fullUser = {
+    ...user,
+    ...(userProfile || {}),
+  };
 
   // ── Navigation helpers ──────────────────────────────────────────────────
 
@@ -117,7 +141,10 @@ function App() {
   const handleLoginSuccess = () => setCurrentView('loading');
 
   // After onboarding form saved → profile is now complete
-  const handleOnboardingSuccess = () => {
+  const handleOnboardingSuccess = (createdProfile) => {
+    if (createdProfile) {
+      setUserProfile(createdProfile);
+    }
     setDashboardRoute('/dashboard');
     setCurrentView('dashboard_shell');
   };
@@ -136,13 +163,22 @@ function App() {
   // ── Logout ──────────────────────────────────────────────────────────────
   const handleLogout = async () => {
     await signOut();
+    setUserProfile(null);
     setCurrentView('login');
     setDashboardRoute('/dashboard');
   };
 
   // ── Loading screen (Supabase check + profile check) ────────────────────
   if (loading || currentView === 'loading') {
-    return null;
+    return (
+      <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFDFC' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ width: '36px', height: '36px', border: '3px solid #E2E8F0', borderTopColor: '#0E7490', borderRadius: '50%', margin: '0 auto 1rem', animation: 'spin 0.8s linear infinite' }}></div>
+          <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+          <p style={{ color: '#64748B', fontFamily: 'sans-serif', fontSize: '0.95rem', margin: 0 }}>Loading MediGuard...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -195,23 +231,27 @@ function App() {
 
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
             <Header
-              currentUser={user}
+              currentUser={fullUser}
               isMobileMenuOpen={isMobileMenuOpen}
               onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
             />
 
             <main style={{ flex: 1, padding: '1.75rem 2rem', overflowY: 'auto' }}>
               {dashboardRoute === '/dashboard' && (
-                <Dashboard currentUser={user} onNavigate={handleDashboardNavigate} />
+                <Dashboard currentUser={fullUser} onNavigate={handleDashboardNavigate} />
               )}
 
               {dashboardRoute === '/medicines' && (
-                <Medicines onNavigate={handleDashboardNavigate} />
+                <Medicines
+                  currentUser={fullUser}
+                  onUpdateProfile={handleUpdateProfileData}
+                  onNavigate={handleDashboardNavigate}
+                />
               )}
 
               {dashboardRoute === '/safety-check' && (
                 <SafetyCheck
-                  currentUser={user}
+                  currentUser={fullUser}
                   onNavigate={handleDashboardNavigate}
                   onViewDetails={(interaction) => {
                     setSelectedInteraction(interaction);
@@ -232,7 +272,7 @@ function App() {
               )}
 
               {dashboardRoute === '/profile' && (
-                <Profile />
+                <Profile currentUser={fullUser} onUpdateProfile={handleUpdateProfileData} />
               )}
 
               {dashboardRoute === '/settings' && (
