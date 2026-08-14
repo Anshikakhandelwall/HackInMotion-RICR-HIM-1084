@@ -169,3 +169,89 @@ Retrieves canonical medicine information using its standardized RxNorm Concept U
 - **Service**: Updates user's age, medical conditions, and regular medicines, setting `profile_completed = True`.
 - **Request**: `{ "age": 30, "medicalConditions": "None", "regularMedicines": ["Paracetamol"] }`
 - **Response**: `{ "success": true, "user": { ... } }`
+
+---
+
+## 3. Drug Interaction APIs (`apps.interactions`)
+
+### 3.1 Pairwise Drug Interaction Check API
+
+- **Endpoint**: `POST /api/interactions/check/`
+- **Name**: `interactions:interaction-check`
+
+#### Initialization
+- **Serializer**: `InteractionCheckRequestSerializer` ([apps/interactions/serializers.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/apps/interactions/serializers.py))
+- **Service Engine**: `InteractionEngine` ([apps/interactions/services.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/apps/interactions/services.py))
+- **View**: `InteractionCheckView` ([apps/interactions/views.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/apps/interactions/views.py)) extending DRF `APIView`.
+- **Route**: `path("check/", InteractionCheckView.as_view(), name="interaction-check")` in [apps/interactions/urls.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/apps/interactions/urls.py), included under `/api/interactions/` in [config/urls.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/config/urls.py).
+
+#### What It Does
+Screens a list of medicines against the 10,874 canonical drug interaction pairs database (`DrugInteraction`). It resolves raw medicine names, RxCUIs, or IDs to canonical Medicine records, generates all unique pairwise combinations $N(N-1)/2$, and evaluates interaction severity (`Major`, `Moderate`, `Minor`).
+
+#### Request Specification
+- **HTTP Method**: `POST`
+- **Headers**: `Content-Type: application/json`
+- **Request Body Payload**:
+  ```json
+  {
+    "medicines": ["161", "11289"]
+  }
+  ```
+
+#### Provided Service
+- **Validation**: Ensures the `medicines` array is provided and not empty. Returns HTTP 400 Bad Request on invalid payloads.
+- **Canonical Resolution**: Maps RxCUIs, database primary keys, RxNorm names, and DDInter drug mappings to canonical `Medicine` objects.
+- **Pairwise Combination Logic**: Generates unique pairs and canonicalizes ordering `(medicine_a_id < medicine_b_id)`.
+- **Performance Optimization**: Executes a single optimized Django ORM query with combined `Q` filters and `select_related("medicine_a", "medicine_b")` to prevent N+1 queries.
+- **Success Response (200 OK)**:
+  ```json
+  {
+    "success": true,
+    "has_interactions": true,
+    "summary": {
+      "total_checked": 2,
+      "pairs_checked": 1,
+      "interactions_found": 1,
+      "major": 0,
+      "moderate": 1,
+      "minor": 0
+    },
+    "checked_medicines": [
+      {
+        "id": 1,
+        "rxcui": "161",
+        "name": "acetaminophen",
+        "rxnorm_name": "acetaminophen",
+        "tty": "IN"
+      },
+      {
+        "id": 2,
+        "rxcui": "11289",
+        "name": "warfarin",
+        "rxnorm_name": "warfarin",
+        "tty": "IN"
+      }
+    ],
+    "interactions": [
+      {
+        "id": 10,
+        "medicine_a": {
+          "id": 1,
+          "rxcui": "161",
+          "name": "acetaminophen",
+          "rxnorm_name": "acetaminophen"
+        },
+        "medicine_b": {
+          "id": 2,
+          "rxcui": "11289",
+          "name": "warfarin",
+          "rxnorm_name": "warfarin"
+        },
+        "severity": "Moderate",
+        "level": "Moderate",
+        "description": "Potential moderate interaction identified between acetaminophen and warfarin."
+      }
+    ]
+  }
+  ```
+

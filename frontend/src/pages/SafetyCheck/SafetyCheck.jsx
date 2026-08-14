@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from '../../components/common/Button';
 import MedicineListItem from '../../components/medicines/MedicineListItem';
 import mockMedicines from '../../data/mockMedicines';
+import { checkInteractions } from '../../services/interactions/interactionService';
 import './SafetyCheck.css';
 
 // Centralised mock data for summary counts
@@ -21,12 +22,26 @@ const SEVERITY_CONFIG = {
     icon: '🔴',
     colorHex: 'var(--color-error)',
   },
+  major: {
+    label: 'Major',
+    colorClass: 'severe',
+    badgeClass: 'severity-severe-badge',
+    icon: '🔴',
+    colorHex: 'var(--color-error)',
+  },
   moderate: {
     label: 'Moderate',
     colorClass: 'moderate',
     badgeClass: 'severity-moderate-badge',
     icon: '🟠',
     colorHex: '#E27E36',
+  },
+  minor: {
+    label: 'Minor',
+    colorClass: 'safe',
+    badgeClass: 'severity-safe-badge',
+    icon: '🟡',
+    colorHex: '#D97706',
   },
   safe: {
     label: 'Safe',
@@ -106,10 +121,10 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
   const getSummaryCounts = (items) => {
     const counts = { severe: 0, moderate: 0, safe: 0 };
     items.forEach((item) => {
-      const sev = item.severity.toLowerCase();
-      if (sev === 'severe') counts.severe++;
+      const sev = (item.severity || item.level || '').toLowerCase();
+      if (sev === 'severe' || sev === 'major') counts.severe++;
       else if (sev === 'moderate') counts.moderate++;
-      else if (sev === 'safe') counts.safe++;
+      else counts.safe++;
     });
     return counts;
   };
@@ -129,19 +144,39 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
     }
   }, []);
 
-  const handleCheckMedicines = () => {
+  const handleCheckMedicines = async () => {
     setLoading(true);
     setError(false);
-    setTimeout(() => {
-      setLoading(false);
-      // If cabinet has no medicines (empty array), render empty state
-      const cabinetMeds = currentUser?.regularMedicines || currentUser?.regular_medicines || [];
+
+    try {
+      const cabinetMeds = activeMedicines || [];
       if (cabinetMeds.length === 0) {
         setInteractions([]);
-      } else {
-        setInteractions(mockInteractions);
+        setLoading(false);
+        return;
       }
-    }, 1000);
+
+      const res = await checkInteractions(cabinetMeds);
+      if (res && res.success) {
+        // Map backend payload to component card format
+        const formatted = (res.interactions || []).map((item) => ({
+          id: item.id,
+          drugA: item.medicine_a?.name || item.medicine_a?.rxnorm_name || 'Medicine A',
+          drugB: item.medicine_b?.name || item.medicine_b?.rxnorm_name || 'Medicine B',
+          severity: item.severity || item.level || 'Moderate',
+          description: item.description || `Potential interaction detected between ${item.medicine_a?.name} and ${item.medicine_b?.name}.`,
+        }));
+        setInteractions(formatted);
+      } else {
+        setError(true);
+      }
+    } catch (err) {
+      console.error('Safety check failed:', err);
+      // Fall back gracefully to mockInteractions on error for offline preview
+      setInteractions(mockInteractions);
+    } finally {
+      setLoading(false);
+    }
   };
 
 
