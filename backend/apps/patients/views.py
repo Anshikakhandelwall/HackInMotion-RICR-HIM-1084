@@ -1,7 +1,7 @@
 """
-Patient profile API views.
+Patient profile and dashboard safety API views.
 
-All endpoints use SupabaseAuthentication so request.user is the Django User
+All secured endpoints use SupabaseAuthentication so request.user is the Django User
 whose username equals the Supabase JWT sub claim.
 
 Profile ownership is enforced exclusively by request.user — no user ID is
@@ -12,19 +12,20 @@ import logging
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from apps.authentication.supabase_auth import SupabaseAuthentication
 from apps.authentication.models import UserProfile
-from .serializers import PatientProfileSerializer
+from apps.patients.serializers import PatientProfileSerializer
+from apps.patients.services import PatientSafetyEngine
 
 logger = logging.getLogger(__name__)
 
 
 class PatientProfileView(APIView):
     """
-    GET  /api/profile/   — retrieve the authenticated user's health profile
-    POST /api/profile/   — create (idempotent: updates if already exists)
+    GET   /api/profile/  — retrieve the authenticated user's health profile
+    POST  /api/profile/  — create (idempotent: updates if already exists)
     PATCH /api/profile/  — partial update of the authenticated user's health profile
     """
     authentication_classes = [SupabaseAuthentication]
@@ -64,8 +65,7 @@ class PatientProfileView(APIView):
     def post(self, request):
         """
         Create or update the authenticated user's health profile.
-        Idempotent: safe to call even if a profile already exists
-        (acts as upsert — prevents duplicate-profile bugs).
+        Idempotent: safe to call even if a profile already exists.
         The user ID is NEVER read from the request body.
         """
         serializer = PatientProfileSerializer(
@@ -75,7 +75,6 @@ class PatientProfileView(APIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # get_or_create ensures no duplicate profile
         profile, created = UserProfile.objects.get_or_create(user=request.user)
         serializer.update(profile, serializer.validated_data)
 
@@ -119,6 +118,97 @@ class PatientProfileView(APIView):
             {
                 'profile_exists': True,
                 'profile': result.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class DashboardOverviewView(APIView):
+    """
+    GET /api/dashboard/overview/
+    Provides aggregated dashboard metrics: active medicines count, safety overview summary,
+    and recent interaction check highlights for the authenticated or session user.
+    """
+    authentication_classes = [SupabaseAuthentication]
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        user = request.user
+        regular_meds = []
+        medical_conditions = ""
+
+        if user.is_authenticated and hasattr(user, "profile"):
+            regular_meds = user.profile.regular_medicines or []
+            medical_conditions = user.profile.medical_conditions or ""
+
+        # Default fallback sample meds for preview if user profile is unpopulated
+        sample_meds = regular_meds if regular_meds else ["acetaminophen", "warfarin"]
+
+        safety_report = PatientSafetyEngine.evaluate_patient_safety(
+            medicines=sample_meds,
+            medical_conditions=medical_conditions,
+        )
+
+        major_count = safety_report["summary"]["major_warnings"]
+        moderate_count = safety_report["summary"]["moderate_warnings"]
+        total_warnings = major_count + moderate_count
+
+        return Response(
+            {
+                "success": True,
+                "safety_overview": {
+                    "title": "Safety Overview",
+                    "mainValue": f"{total_warnings} Active Warning{'s' if total_warnings != 1 else ''}" if total_warnings > 0 else "All Clear",
+                    "supportingText": "Potential medication interactions need your attention." if total_warnings > 0 else "No active medication interactions identified.",
+                    "lastChecked": "Today",
+                    "hasWarnings": total_warnings > 0,
+                    "majorCount": major_count,
+                    "moderateCount": moderate_count,
+                },
+                "active_medicines_count": len(regular_meds),
+                "regular_medicines": regular_meds,
+                "medical_conditions": medical_conditions,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class PersonalizedSafetyCheckView(APIView):
+    """
+    POST /api/patients/safety-check/
+    Combines canonical drug-drug interactions with patient medical conditions to return
+    personalized safety warnings.
+    """
+    authentication_classes = [SupabaseAuthentication]
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        medicines = request.data.get("medicines", [])
+        medical_conditions = request.data.get("medicalConditions", "")
+
+        if not medicines and request.user.is_authenticated and hasattr(request.user, "profile"):
+            medicines = request.user.profile.regular_medicines or []
+            if not medical_conditions:
+                medical_conditions = request.user.profile.medical_conditions or ""
+
+        if not medicines:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Please provide a list of medicines to check.",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        report = PatientSafetyEngine.evaluate_patient_safety(
+            medicines=medicines,
+            medical_conditions=medical_conditions,
+        )
+
+        return Response(
+            {
+                "success": True,
+                **report,
             },
             status=status.HTTP_200_OK,
         )

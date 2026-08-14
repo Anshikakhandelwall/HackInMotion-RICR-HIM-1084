@@ -17,7 +17,7 @@ const friendlySignupError = (msg = '') => {
     return 'Please enter a valid email address.';
   if (m.includes('network') || m.includes('fetch'))
     return 'Network error. Please check your connection and try again.';
-  return 'Unable to create account. Please try again.';
+  return msg;
 };
 
 /**
@@ -164,7 +164,7 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
     setIsSubmitting(false);
 
     if (error) {
-      setSubmitError(friendlySignupError(error.message));
+      setSubmitError(error.message || friendlySignupError(error.message));
       return;
     }
 

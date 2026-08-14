@@ -9,33 +9,42 @@ import './Profile.css';
  * Loads the authenticated user's health profile from Django backend.
  * Supports inline editing of medical conditions and regular medicines.
  */
-export const Profile = () => {
-  const { user } = useAuth();
+export const Profile = ({ currentUser, onUpdateProfile }) => {
+  const { user: authUser } = useAuth();
 
   // ── Remote profile state ──────────────────────────────────────────────────
-  const [profile, setProfile] = useState(null);
-  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [profile, setProfile] = useState(currentUser || null);
+  const [loadingProfile, setLoadingProfile] = useState(!currentUser);
   const [loadError, setLoadError] = useState(null);
+
+  useEffect(() => {
+    if (currentUser) {
+      setProfile(currentUser);
+      setLoadingProfile(false);
+    }
+  }, [currentUser]);
 
   // Derive display values from Supabase user + backend profile
   const userName =
-    user?.user_metadata?.full_name ||
-    user?.user_metadata?.name ||
-    user?.email ||
+    currentUser?.fullName ||
+    currentUser?.full_name ||
+    authUser?.user_metadata?.full_name ||
+    authUser?.user_metadata?.name ||
+    authUser?.email ||
     'Not available';
-  const userEmail = user?.email || 'Not available';
+  const userEmail = authUser?.email || currentUser?.email || 'Not available';
 
   const age = profile?.age ?? 'Not available';
 
-  const rawConditions = profile?.medicalConditions || '';
+  const rawConditions = profile?.medicalConditions || profile?.medical_conditions || '';
   const medicalHistory =
     rawConditions && rawConditions.trim().toUpperCase() !== 'NONE' && rawConditions.trim().length > 0
       ? rawConditions.trim()
       : 'None';
 
-  const rawMeds = profile?.regularMedicines ?? [];
+  const rawMeds = profile?.regularMedicines || profile?.regular_medicines || [];
   const regularMedicinesList = Array.isArray(rawMeds)
-    ? rawMeds.filter((m) => m && m.trim().length > 0 && m.trim().toUpperCase() !== 'NONE')
+    ? rawMeds.filter((m) => m && String(m).trim().length > 0 && String(m).trim().toUpperCase() !== 'NONE')
     : [];
   const hasMedicines = regularMedicinesList.length > 0;
 
@@ -47,8 +56,9 @@ export const Profile = () => {
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({ medicalHistory: '', regularMedicines: '' });
 
-  // ── Load profile on mount ─────────────────────────────────────────────────
+  // ── Load profile on mount if not provided ──────────────────────────────────
   useEffect(() => {
+    if (currentUser) return;
     let cancelled = false;
     setLoadingProfile(true);
     setLoadError(null);
@@ -62,14 +72,13 @@ export const Profile = () => {
       })
       .catch(() => {
         if (!cancelled) {
-          // 404 = no profile yet; treat as empty, not an error
           setProfile(null);
           setLoadingProfile(false);
         }
       });
 
     return () => { cancelled = true; };
-  }, []);
+  }, [currentUser]);
 
   // ── Edit mode helpers ─────────────────────────────────────────────────────
   const handleEnterEditMode = () => {
@@ -119,12 +128,18 @@ export const Profile = () => {
       : [];
 
     try {
-      const result = await updateProfile({
+      const updateData = {
         medicalConditions: formData.medicalHistory,
         regularMedicines: parsedMedicines,
-      });
+      };
 
-      setProfile(result.profile);
+      const result = onUpdateProfile
+        ? await onUpdateProfile(updateData)
+        : await updateProfile(updateData);
+
+      if (result && result.profile) {
+        setProfile(result.profile);
+      }
       setSaveSuccess(true);
       setIsEditing(false);
       setTimeout(() => setSaveSuccess(false), 4000);

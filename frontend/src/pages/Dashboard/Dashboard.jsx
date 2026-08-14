@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import MedicineSummaryCard from '../../components/dashboard/MedicineSummaryCard';
 import SafetyStatusCard from '../../components/dashboard/SafetyStatusCard';
 import RecentChecksCard from '../../components/dashboard/RecentChecksCard';
 import QuickActions from '../../components/dashboard/QuickActions';
-import { mockSafetySummary, mockMedicines, mockRecentChecks } from '../../data/mockDashboardData';
+import { mockSafetySummary, mockMedicines } from '../../data/mockDashboardData';
+import { apiFetch } from '../../services/api/apiClient';
+import { getHistory } from '../../services/history/historyService';
 import './Dashboard.css';
 
 /**
@@ -14,6 +16,48 @@ import './Dashboard.css';
  * - Responsive 1-column layout stacking on mobile/tablet (Current Medicines -> Safety Overview -> Recent Safety Checks).
  */
 export const Dashboard = ({ currentUser, onNavigate }) => {
+  const [safetySummary, setSafetySummary] = useState(mockSafetySummary);
+  const [recentChecks, setRecentChecks] = useState(() => {
+    const saved = getHistory();
+    return saved.slice(0, 3).map((item) => ({
+      id: item.id,
+      date: item.date,
+      medicineCount: item.medicinesCount,
+      status: item.status,
+      variant: item.status === 'Safe' ? 'safe' : 'attention',
+    }));
+  });
+
+  useEffect(() => {
+    const fetchDashboardOverview = async () => {
+      try {
+        const data = await apiFetch('/api/dashboard/overview/');
+        if (data && data.success && data.safety_overview) {
+          setSafetySummary(data.safety_overview);
+        }
+      } catch (err) {
+        console.warn('Dashboard overview live fetch failed, using session data:', err);
+      }
+    };
+    fetchDashboardOverview();
+
+    const handleHistoryUpdate = () => {
+      const saved = getHistory();
+      setRecentChecks(
+        saved.slice(0, 3).map((item) => ({
+          id: item.id,
+          date: item.date,
+          medicineCount: item.medicinesCount,
+          status: item.status,
+          variant: item.status === 'Safe' ? 'safe' : 'attention',
+        }))
+      );
+    };
+
+    window.addEventListener('mediguard:history_updated', handleHistoryUpdate);
+    return () => window.removeEventListener('mediguard:history_updated', handleHistoryUpdate);
+  }, []);
+
   // Extract user first name safely without crashing
   const getFirstName = () => {
     if (!currentUser) return 'there';
@@ -54,13 +98,13 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
           <MedicineSummaryCard medicines={activeMedicines} onNavigate={onNavigate} />
         </div>
         <div className="grid-card-col">
-          <SafetyStatusCard data={mockSafetySummary} onNavigate={onNavigate} />
+          <SafetyStatusCard data={safetySummary} onNavigate={onNavigate} />
         </div>
       </section>
 
       {/* 3. Recent Safety Checks */}
       <section className="dashboard-section">
-        <RecentChecksCard checks={mockRecentChecks} onNavigate={onNavigate} />
+        <RecentChecksCard checks={recentChecks} onNavigate={onNavigate} />
       </section>
 
       {/* 4. Quick Actions */}
@@ -72,3 +116,4 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
 };
 
 export default Dashboard;
+

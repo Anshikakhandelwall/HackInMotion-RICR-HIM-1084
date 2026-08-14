@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../../components/common/Button';
 import MedicineListItem from '../../components/medicines/MedicineListItem';
 import MedicineSearch from '../../components/medicines/MedicineSearch';
-import { mockMedicines } from '../../data/mockMedicines';
 import './Medicines.css';
 
 /**
@@ -10,41 +9,81 @@ import './Medicines.css';
  * Dedicated view displaying user's current medication cabinet, search bar, and state logic
  * for loading skeleton, empty state, and active medicine list.
  */
-export const Medicines = ({ isLoading = false, medicines = mockMedicines, onNavigate }) => {
-  const [medicineList, setMedicineList] = useState(medicines || []);
+export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) => {
+  const initialMeds = currentUser?.regularMedicines || currentUser?.regular_medicines || [];
+  const [medicineList, setMedicineList] = useState(initialMeds);
   const [newMedInput, setNewMedInput] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  // Defensive array normalization (handles null, undefined, or empty arrays)
+  useEffect(() => {
+    const userMeds = currentUser?.regularMedicines || currentUser?.regular_medicines || [];
+    setMedicineList(userMeds);
+  }, [currentUser?.regularMedicines, currentUser?.regular_medicines]);
+
+  // Normalize list to array of string names
   const medicinesList = Array.isArray(medicineList) ? medicineList : [];
   const hasMedicines = medicinesList.length > 0;
 
+  // Persist updated list to Django backend via profile API
+  const saveUpdatedMedicines = async (newList) => {
+    const cleanedNames = newList.map((item) => (typeof item === 'string' ? item : (item?.name || item?.rxnorm_name || ''))).filter(Boolean);
+    setMedicineList(cleanedNames);
+
+    if (onUpdateProfile) {
+      setIsSaving(true);
+      try {
+        await onUpdateProfile({ regularMedicines: cleanedNames });
+      } catch (err) {
+        console.error('Failed to sync medicines with backend profile:', err);
+      } finally {
+        setIsSaving(false);
+      }
+    }
+  };
+
   // Add medicine from Search component
   const handleAddFromSearch = (resultItem) => {
-    const medName = typeof resultItem === 'string' ? resultItem : resultItem?.name;
+    const medName = typeof resultItem === 'string' ? resultItem : (resultItem?.name || resultItem?.rxnorm_name);
     if (!medName) return;
 
-    const newItem = {
-      id: resultItem?.id || `search-${Date.now()}`,
-      name: medName,
-    };
+    const exists = medicinesList.some((m) => {
+      const existingName = typeof m === 'string' ? m : m?.name;
+      return String(existingName || '').toLowerCase().trim() === String(medName).toLowerCase().trim();
+    });
 
-    setMedicineList((prev) => [...(Array.isArray(prev) ? prev : []), newItem]);
+    if (!exists) {
+      saveUpdatedMedicines([...medicinesList, medName]);
+    }
   };
 
   // Add medicine from modal form
   const handleAddMedicineSubmit = (e) => {
     e.preventDefault();
-    if (!newMedInput.trim()) return;
+    const trimmed = newMedInput.trim();
+    if (!trimmed) return;
 
-    const newItem = {
-      id: `mock-${Date.now()}`,
-      name: newMedInput.trim(),
-    };
+    const exists = medicinesList.some((m) => {
+      const existingName = typeof m === 'string' ? m : m?.name;
+      return String(existingName || '').toLowerCase().trim() === trimmed.toLowerCase();
+    });
 
-    setMedicineList((prev) => [...(Array.isArray(prev) ? prev : []), newItem]);
+    if (!exists) {
+      saveUpdatedMedicines([...medicinesList, trimmed]);
+    }
+
     setNewMedInput('');
     setIsModalOpen(false);
+  };
+
+  // Remove medicine item from cabinet
+  const handleRemoveMedicine = (targetItem) => {
+    const targetName = typeof targetItem === 'string' ? targetItem : (targetItem?.name || targetItem?.rxnorm_name);
+    const updated = medicinesList.filter((m) => {
+      const mName = typeof m === 'string' ? m : (m?.name || m?.rxnorm_name);
+      return String(mName || '').toLowerCase().trim() !== String(targetName || '').toLowerCase().trim();
+    });
+    saveUpdatedMedicines(updated);
   };
 
   return (
@@ -92,9 +131,9 @@ export const Medicines = ({ isLoading = false, medicines = mockMedicines, onNavi
             </div>
           </div>
 
-          {!isLoading && hasMedicines && (
+          {!isLoading && (
             <span className="cabinet-count-tag">
-              {medicinesList.length} {medicinesList.length === 1 ? 'medicine' : 'medicines'}
+              {isSaving ? 'Saving...' : `${medicinesList.length} ${medicinesList.length === 1 ? 'medicine' : 'medicines'}`}
             </span>
           )}
         </div>
@@ -109,7 +148,7 @@ export const Medicines = ({ isLoading = false, medicines = mockMedicines, onNavi
           </div>
         )}
 
-        {/* 2. EMPTY STATE (loading === false && medicines.length === 0) */}
+        {/* 2. EMPTY STATE */}
         {!isLoading && !hasMedicines && (
           <div className="medicines-empty-state">
             <div className="empty-icon-circle">
@@ -119,7 +158,7 @@ export const Medicines = ({ isLoading = false, medicines = mockMedicines, onNavi
             </div>
             <h3 className="empty-title">No medicines added yet</h3>
             <p className="empty-subtext">
-              Add your current medicines to keep track of them in MediGuard.
+              Add your current medicines to keep track of them and screen safety interactions.
             </p>
             <Button
               type="button"
@@ -132,17 +171,24 @@ export const Medicines = ({ isLoading = false, medicines = mockMedicines, onNavi
           </div>
         )}
 
-        {/* 3. HAS MEDICINES STATE (loading === false && medicines.length > 0) */}
+        {/* 3. HAS MEDICINES STATE */}
         {!isLoading && hasMedicines && (
           <ul className="medicines-page-list">
-            {medicinesList.map((med) => (
-              <MedicineListItem key={med?.id || med?.name} medicine={med} />
-            ))}
+            {medicinesList.map((med, index) => {
+              const keyName = typeof med === 'string' ? med : (med?.name || `med-${index}`);
+              return (
+                <MedicineListItem
+                  key={`${keyName}-${index}`}
+                  medicine={med}
+                  onRemove={handleRemoveMedicine}
+                />
+              );
+            })}
           </ul>
         )}
       </div>
 
-      {/* Frontend Demo Add Medicine Modal */}
+      {/* Add Medicine Modal */}
       {isModalOpen && (
         <div className="modal-backdrop" onClick={() => setIsModalOpen(false)}>
           <div className="add-medicine-modal" onClick={(e) => e.stopPropagation()}>
@@ -166,16 +212,12 @@ export const Medicines = ({ isLoading = false, medicines = mockMedicines, onNavi
                   id="medNameInput"
                   type="text"
                   className="form-input"
-                  placeholder="e.g. Paracetamol"
+                  placeholder="e.g. Paracetamol, Warfarin, Aspirin"
                   value={newMedInput}
                   onChange={(e) => setNewMedInput(e.target.value)}
                   autoFocus
                   required
                 />
-              </div>
-
-              <div className="demo-notice-box">
-                ℹ️ <strong>Demo Mode:</strong> Newly added medicines persist locally in state. Connect backend API to save to database.
               </div>
 
               <div className="modal-actions">
@@ -199,3 +241,4 @@ export const Medicines = ({ isLoading = false, medicines = mockMedicines, onNavi
 };
 
 export default Medicines;
+

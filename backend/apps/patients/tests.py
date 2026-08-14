@@ -1,24 +1,9 @@
 """
-Tests for the patient profile API.
+Tests for the patient profile and safety APIs.
 
 Uses the same mock-JWT pattern as the authentication tests:
 the SupabaseAuthentication JWKS boundary is patched so no live
 Supabase project is required.
-
-Tests cover:
-  1.  Unauthenticated GET  → 401
-  2.  Unauthenticated POST → 401
-  3.  Authenticated user, no profile row yet → 404 with profile_exists: false
-  4.  Authenticated user can POST to create profile
-  5.  POST is idempotent (repeat POST does not create duplicate)
-  6.  Authenticated user can GET own profile
-  7.  Authenticated user can PATCH own profile
-  8.  Profile belongs to the authenticated Django user
-  9.  User A cannot read User B's profile
-  10. Invalid age → 400
-  11. Invalid regularMedicines type → 400
-  12. Valid profile data → profile_completed becomes true
-  13. Empty medicalConditions → profile_completed stays false after PATCH
 """
 
 import time
@@ -33,6 +18,8 @@ from django.test import TestCase, override_settings
 from rest_framework.test import APIClient
 
 from apps.authentication.models import UserProfile
+from apps.medicines.models import Medicine
+from apps.interactions.models import DrugInteraction
 
 # ── Shared test helpers ───────────────────────────────────────────────────────
 
@@ -96,8 +83,6 @@ class PatientProfileAPITests(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-    # ── Helper ────────────────────────────────────────────────────────────────
-
     def _auth_client(self, sub=None):
         """Return an APIClient with a valid Bearer token for the given sub."""
         token, sub, email = _make_token(sub=sub)
@@ -105,22 +90,17 @@ class PatientProfileAPITests(TestCase):
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         return client, sub, email
 
-    # 1. Unauthenticated GET → 401
     def test_unauthenticated_get_returns_401(self):
         response = self.client.get(self.PROFILE_URL)
         self.assertEqual(response.status_code, 401)
 
-    # 2. Unauthenticated POST → 401
     def test_unauthenticated_post_returns_401(self):
         response = self.client.post(self.PROFILE_URL, {}, format="json")
         self.assertEqual(response.status_code, 401)
 
-    # 3. Authenticated, no profile row → 404 + profile_exists: false
     def test_authenticated_no_profile_returns_404(self):
         client, sub, _ = self._auth_client()
-        # Delete the auto-created profile so we're testing the bare 404 path.
         with _jwks_patch():
-            # First touch to create the Django user
             client.get(self.PROFILE_URL)
             user = User.objects.get(username=sub)
             UserProfile.objects.filter(user=user).delete()
@@ -129,7 +109,6 @@ class PatientProfileAPITests(TestCase):
         self.assertFalse(response.data["profile_exists"])
         self.assertFalse(response.data["profile_completed"])
 
-    # 4. Authenticated user can POST to create profile
     def test_authenticated_user_can_create_profile(self):
         client, sub, _ = self._auth_client()
         payload = {
@@ -145,7 +124,6 @@ class PatientProfileAPITests(TestCase):
         self.assertEqual(response.data["profile"]["medicalConditions"], "Diabetes")
         self.assertEqual(response.data["profile"]["regularMedicines"], ["Metformin"])
 
-    # 5. POST is idempotent — no duplicate profiles
     def test_repeated_post_does_not_create_duplicate_profile(self):
         client, sub, _ = self._auth_client()
         payload = {"age": 25, "medicalConditions": "NONE", "regularMedicines": []}
@@ -155,7 +133,6 @@ class PatientProfileAPITests(TestCase):
         user = User.objects.get(username=sub)
         self.assertEqual(UserProfile.objects.filter(user=user).count(), 1)
 
-    # 6. Authenticated user can GET own profile
     def test_authenticated_user_can_get_own_profile(self):
         client, sub, _ = self._auth_client()
         payload = {"age": 28, "medicalConditions": "Asthma", "regularMedicines": []}
@@ -165,7 +142,6 @@ class PatientProfileAPITests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["profile"]["age"], 28)
 
-    # 7. Authenticated user can PATCH own profile
     def test_authenticated_user_can_patch_profile(self):
         client, sub, _ = self._auth_client()
         with _jwks_patch():
@@ -184,7 +160,6 @@ class PatientProfileAPITests(TestCase):
             response.data["profile"]["medicalConditions"], "Hypertension, Diabetes"
         )
 
-    # 8. Profile is associated with the authenticated Django user
     def test_profile_belongs_to_authenticated_user(self):
         client, sub, _ = self._auth_client()
         with _jwks_patch():
@@ -197,29 +172,23 @@ class PatientProfileAPITests(TestCase):
         profile = UserProfile.objects.get(user=user)
         self.assertEqual(profile.user.username, sub)
 
-    # 9. User A cannot access User B's profile
     def test_user_a_cannot_read_user_b_profile(self):
         client_a, sub_a, _ = self._auth_client()
         client_b, sub_b, _ = self._auth_client()
 
         with _jwks_patch():
-            # User A creates a profile
             client_a.post(
                 self.PROFILE_URL,
                 {"age": 22, "medicalConditions": "Allergy", "regularMedicines": []},
                 format="json",
             )
-            # User B reads their own profile (not user A's)
             response_b = client_b.get(self.PROFILE_URL)
 
-        # User B should get their own (empty) profile, not user A's data
         if response_b.status_code == 200:
             self.assertNotEqual(response_b.data["profile"].get("age"), 22)
         else:
-            # 404 is also acceptable — user B has no profile yet
             self.assertEqual(response_b.status_code, 404)
 
-    # 10. Invalid age → 400
     def test_invalid_age_returns_400(self):
         client, _, _ = self._auth_client()
         with _jwks_patch():
@@ -230,7 +199,6 @@ class PatientProfileAPITests(TestCase):
             )
         self.assertEqual(response.status_code, 400)
 
-    # 11. Invalid regularMedicines type → 400
     def test_invalid_medicines_type_returns_400(self):
         client, _, _ = self._auth_client()
         with _jwks_patch():
@@ -241,7 +209,6 @@ class PatientProfileAPITests(TestCase):
             )
         self.assertEqual(response.status_code, 400)
 
-    # 12. Valid complete profile → profile_completed = true
     def test_valid_profile_sets_profile_completed(self):
         client, sub, _ = self._auth_client()
         with _jwks_patch():
@@ -253,7 +220,6 @@ class PatientProfileAPITests(TestCase):
             response = client.get(self.PROFILE_URL)
         self.assertTrue(response.data["profile"]["profileCompleted"])
 
-    # 13. Profile with empty medicalConditions → profile_completed stays false
     def test_empty_conditions_profile_not_completed(self):
         client, sub, _ = self._auth_client()
         with _jwks_patch():
@@ -264,3 +230,59 @@ class PatientProfileAPITests(TestCase):
             )
             response = client.get(self.PROFILE_URL)
         self.assertFalse(response.data["profile"]["profileCompleted"])
+
+
+class PatientSafetyAPITestCase(TestCase):
+    def setUp(self):
+        self.med_a = Medicine.objects.create(
+            rxcui="161",
+            rxnorm_name="acetaminophen",
+            tty="IN",
+        )
+        self.med_b = Medicine.objects.create(
+            rxcui="11289",
+            rxnorm_name="warfarin",
+            tty="IN",
+        )
+        self.med_aspirin = Medicine.objects.create(
+            rxcui="1191",
+            rxnorm_name="aspirin",
+            tty="IN",
+        )
+        a_id, b_id = (self.med_a.id, self.med_b.id) if self.med_a.id < self.med_b.id else (self.med_b.id, self.med_a.id)
+        m_a, m_b = (self.med_a, self.med_b) if self.med_a.id < self.med_b.id else (self.med_b, self.med_a)
+
+        DrugInteraction.objects.create(
+            medicine_a=m_a,
+            medicine_b=m_b,
+            level="Moderate",
+        )
+
+        self.user = User.objects.create_user(
+            username="patient_user",
+            email="patient@example.com",
+            password="Password123",
+        )
+        self.user.profile.medical_conditions = "Asthma"
+        self.user.profile.regular_medicines = ["acetaminophen", "warfarin"]
+        self.user.profile.save()
+
+    def test_dashboard_overview_api(self):
+        response = self.client.get("/api/dashboard/overview/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data["success"])
+        self.assertIn("safety_overview", response.data)
+
+    def test_personalized_safety_check_api(self):
+        response = self.client.post(
+            "/api/patients/safety-check/",
+            data={
+                "medicines": ["acetaminophen", "warfarin", "aspirin"],
+                "medicalConditions": "Asthma",
+            },
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data["success"])
+        self.assertTrue(response.data["has_warnings"])
+        self.assertGreaterEqual(len(response.data["patient_condition_warnings"]), 1)

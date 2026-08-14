@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../../components/common/Button';
 import MedicineListItem from '../../components/medicines/MedicineListItem';
-import mockMedicines from '../../data/mockMedicines';
+import { checkPersonalizedSafety } from '../../services/interactions/interactionService';
+import { saveHistoryRecord } from '../../services/history/historyService';
 import './SafetyCheck.css';
-
-// Centralised mock data for summary counts
-// Easy to replace with API payloads in future commits
-const mockSummaryData = {
-  severe: 1,
-  moderate: 1,
-  safe: 1,
-};
 
 // Reusable severity indicator configurations
 const SEVERITY_CONFIG = {
   severe: {
     label: 'Severe',
+    colorClass: 'severe',
+    badgeClass: 'severity-severe-badge',
+    icon: '🔴',
+    colorHex: 'var(--color-error)',
+  },
+  major: {
+    label: 'Major',
     colorClass: 'severe',
     badgeClass: 'severity-severe-badge',
     icon: '🔴',
@@ -27,6 +27,13 @@ const SEVERITY_CONFIG = {
     badgeClass: 'severity-moderate-badge',
     icon: '🟠',
     colorHex: '#E27E36',
+  },
+  minor: {
+    label: 'Minor',
+    colorClass: 'safe',
+    badgeClass: 'severity-safe-badge',
+    icon: '🟡',
+    colorHex: '#D97706',
   },
   safe: {
     label: 'Safe',
@@ -50,100 +57,106 @@ const getSeverityConfig = (severity) => {
   return SEVERITY_CONFIG[key] || SEVERITY_CONFIG.fallback;
 };
 
-// Centralised mock data for interaction cards
-const mockInteractions = [
-  {
-    id: 1,
-    drugA: 'Warfarin',
-    drugB: 'Aspirin',
-    severity: 'Severe',
-    description: 'Increased risk of bleeding.',
-  },
-  {
-    id: 2,
-    drugA: 'Amlodipine',
-    drugB: 'Simvastatin',
-    severity: 'Moderate',
-    description: 'Simvastatin may increase the blood levels of Amlodipine.',
-  },
-  {
-    id: 3,
-    drugA: 'Amoxicillin',
-    drugB: 'Ibuprofen',
-    severity: 'Safe',
-    description: 'No known drug-drug interactions found.',
-  },
-  {
-    id: 4,
-    drugA: 'UnknownDrugA',
-    drugB: 'UnknownDrugB',
-    severity: 'Unknown',
-    description: 'Insufficient interaction evidence available.',
-  },
-];
-
 /**
  * SafetyCheck Page Component (Route: /safety-check)
  * Implements base Safety Check page, Safety Status Summary, and Interaction Result Cards.
  * - Displays active daily medicines of the user.
  * - Renders a Safety Status Summary box (Severe, Moderate, Safe categories).
- * - Displays individual medication interaction cards under the section "Interactions Found".
- * - Dynamically states an overall warning message based on mock counts.
+ * - Dynamically states an overall warning message based on interaction risk counts.
  */
 export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
-  // Extract user's active medicines or fall back to mockMedicines
-  const activeMedicines = (currentUser?.regularMedicines && currentUser.regularMedicines.length > 0)
+  // Extract user's active medicines directly from user profile
+  const activeMedicines = Array.isArray(currentUser?.regularMedicines)
     ? currentUser.regularMedicines
-    : (currentUser?.regular_medicines && currentUser.regular_medicines.length > 0)
+    : Array.isArray(currentUser?.regular_medicines)
     ? currentUser.regular_medicines
-    : mockMedicines;
+    : [];
+
+  const medicalConditions = currentUser?.medicalConditions || currentUser?.medical_conditions || '';
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [interactions, setInteractions] = useState(mockInteractions);
+  const [interactions, setInteractions] = useState([]);
 
   // Helper to dynamically calculate summary counts
   const getSummaryCounts = (items) => {
     const counts = { severe: 0, moderate: 0, safe: 0 };
     items.forEach((item) => {
-      const sev = item.severity.toLowerCase();
-      if (sev === 'severe') counts.severe++;
+      const sev = (item.severity || item.level || '').toLowerCase();
+      if (sev === 'severe' || sev === 'major') counts.severe++;
       else if (sev === 'moderate') counts.moderate++;
-      else if (sev === 'safe') counts.safe++;
+      else counts.safe++;
     });
     return counts;
   };
 
   const summaryData = getSummaryCounts(interactions);
 
-  // For testing purposes via browser subagent or url parameters
+  // Automatically perform initial check on load if medicines present
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const forceState = params.get('safetyState');
-    if (forceState === 'loading') {
-      setLoading(true);
-    } else if (forceState === 'empty') {
+    if (activeMedicines.length > 0) {
+      handleCheckMedicines();
+    } else {
       setInteractions([]);
-    } else if (forceState === 'error') {
-      setError(true);
     }
-  }, []);
+  }, [activeMedicines.join(',')]);
 
-  const handleCheckMedicines = () => {
+  const handleCheckMedicines = async () => {
+    if (activeMedicines.length === 0) {
+      setInteractions([]);
+      return;
+    }
+
     setLoading(true);
     setError(false);
-    setTimeout(() => {
-      setLoading(false);
-      // If cabinet has no medicines (empty array), render empty state
-      const cabinetMeds = currentUser?.regularMedicines || currentUser?.regular_medicines || [];
-      if (cabinetMeds.length === 0) {
-        setInteractions([]);
-      } else {
-        setInteractions(mockInteractions);
-      }
-    }, 1000);
-  };
 
+    try {
+      const res = await checkPersonalizedSafety(activeMedicines, medicalConditions);
+      if (res && res.success) {
+        const drugInts = res.drug_interactions?.interactions || res.interactions || [];
+        const condWarns = res.patient_condition_warnings || [];
+
+        const formattedDrugInts = drugInts.map((item, idx) => ({
+          id: item.id || `int-${idx}`,
+          drugA: item.medicine_a?.name || item.medicine_a?.rxnorm_name || 'Medicine A',
+          drugB: item.medicine_b?.name || item.medicine_b?.rxnorm_name || 'Medicine B',
+          severity: item.severity || item.level || 'Moderate',
+          description: item.description || `Potential interaction detected between ${item.medicine_a?.name || 'Medicine A'} and ${item.medicine_b?.name || 'Medicine B'}.`,
+        }));
+
+        const formattedCondWarns = condWarns.map((item, idx) => ({
+          id: `cond-${idx}`,
+          drugA: item.title || 'Condition Warning',
+          drugB: 'Medical Profile',
+          severity: item.severity || 'Moderate',
+          description: item.description || 'Caution recommended based on medical profile.',
+        }));
+
+        const allCards = [...formattedDrugInts, ...formattedCondWarns];
+        setInteractions(allCards);
+
+        // Record run to history service pipeline
+        const medNames = activeMedicines.map((med) => (typeof med === 'string' ? med : (med.name || med.rxnorm_name || 'Medicine')));
+        saveHistoryRecord({
+          id: `check-${Date.now()}`,
+          date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+          time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+          medicinesCount: medNames.length,
+          interactionsCount: allCards.length,
+          status: allCards.length > 0 ? 'Attention Required' : 'Safe',
+          medicines: medNames,
+          interactions: allCards,
+        });
+      } else {
+        setError(true);
+      }
+    } catch (err) {
+      console.error('Safety check failed:', err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Derive dynamic overall message based on summary data
   const getOverallMessage = (summary) => {
@@ -187,33 +200,51 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
             The screening check will run against the DDInter 2.0 interaction database.
           </p>
 
-          <ul className="safety-check-preview-list">
-            {activeMedicines.map((med, index) => {
-              const key = typeof med === 'string' ? `med-${index}` : (med?.id || `mock-${index}`);
-              return (
-                <MedicineListItem 
-                  key={key} 
-                  medicine={med} 
-                  className="safety-check-preview-item"
-                />
-              );
-            })}
-          </ul>
+          {activeMedicines.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '2rem 1rem', backgroundColor: '#FAF8F5', borderRadius: '8px', border: '1px dashed #CBD5E1', margin: '1rem 0' }}>
+              <p style={{ color: '#64748B', margin: '0 0 1rem', fontSize: '0.95rem' }}>
+                Your medication cabinet is currently empty. Add your daily medicines under <strong>My Medicines</strong> to screen for safety risks.
+              </p>
+              <Button
+                type="button"
+                variant="primary"
+                size="medium"
+                onClick={() => onNavigate && onNavigate('/medicines')}
+              >
+                + Add Medicines to Cabinet
+              </Button>
+            </div>
+          ) : (
+            <ul className="safety-check-preview-list">
+              {activeMedicines.map((med, index) => {
+                const key = typeof med === 'string' ? `med-${index}` : (med?.id || `med-${index}`);
+                return (
+                  <MedicineListItem 
+                    key={key} 
+                    medicine={med} 
+                    className="safety-check-preview-item"
+                  />
+                );
+              })}
+            </ul>
+          )}
         </div>
 
         {/* 4. Action Button Footer */}
-        <div className="safety-check-card-footer">
-          <Button
-            type="button"
-            variant="primary"
-            size="medium"
-            className="check-medicines-btn"
-            onClick={handleCheckMedicines}
-            disabled={loading}
-          >
-            {loading ? 'Checking...' : 'Check My Medicines'}
-          </Button>
-        </div>
+        {activeMedicines.length > 0 && (
+          <div className="safety-check-card-footer">
+            <Button
+              type="button"
+              variant="primary"
+              size="medium"
+              className="check-medicines-btn"
+              onClick={handleCheckMedicines}
+              disabled={loading}
+            >
+              {loading ? 'Checking...' : 'Check My Medicines'}
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* 5. Results Area Rendering */}
