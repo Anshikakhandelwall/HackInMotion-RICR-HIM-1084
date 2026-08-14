@@ -1,13 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Header.css';
 
 /**
  * Header Component
  * Top header bar for the MediGuard Dashboard application shell.
- * Includes mobile hamburger navigation trigger with dynamic aria-label and toggle state.
+ * Includes interactive Notification Bell 🔔 with unread count badge, dropdown panel, and outside-click handler.
  */
 export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMenu }) => {
   const userName = currentUser?.fullName || currentUser?.full_name || currentUser?.email || 'User';
+
+  const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
+  const [notifications, setNotifications] = useState([
+    { id: 'notif-1', medicineName: 'Paracetamol', time: '08:30 AM', read: false },
+    { id: 'notif-2', medicineName: 'Metformin', time: '01:00 PM', read: false },
+  ]);
+
+  const dropdownRef = useRef(null);
+
+  // Sync sample notifications if user medicines have reminder times
+  useEffect(() => {
+    const meds = currentUser?.regularMedicines || currentUser?.regular_medicines || [];
+    const reminderMeds = meds.filter((m) => typeof m === 'object' && (m?.reminderTime || m?.reminder_time));
+    if (reminderMeds.length > 0) {
+      const mapped = reminderMeds.map((m, index) => ({
+        id: `user-notif-${index}`,
+        medicineName: m.name || 'Medicine',
+        time: m.reminderTime || m.reminder_time || '08:30 AM',
+        read: false,
+      }));
+      setNotifications(mapped);
+    }
+  }, [currentUser]);
+
+  // Outside click listener to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsNotificationPanelOpen(false);
+      }
+    };
+    if (isNotificationPanelOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isNotificationPanelOpen]);
 
   // Extract initials for avatar badge
   const getInitials = (name) => {
@@ -17,6 +55,18 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
       return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
     }
     return name.slice(0, 2).toUpperCase();
+  };
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  const handleMarkAsRead = (id) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+    );
+  };
+
+  const handleMarkAllAsRead = () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
   return (
@@ -30,13 +80,11 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
           aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
         >
           {isMobileMenuOpen ? (
-            /* Close 'X' Icon */
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           ) : (
-            /* Hamburger Menu Icon */
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="3" y1="12" x2="21" y2="12" />
               <line x1="3" y1="6" x2="21" y2="6" />
@@ -50,15 +98,75 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
         </div>
       </div>
 
-      <div className="header-right">
+      <div className="header-right" ref={dropdownRef}>
         {/* Notification Icon Badge */}
-        <button type="button" className="header-icon-btn" aria-label="Notifications">
+        <button
+          type="button"
+          className={`header-icon-btn ${isNotificationPanelOpen ? 'active' : ''}`}
+          onClick={() => setIsNotificationPanelOpen((prev) => !prev)}
+          aria-label="Open notifications"
+        >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
           </svg>
-          <span className="notification-badge-dot" />
+          {unreadCount > 0 && (
+            <span className="notification-badge-count">{unreadCount}</span>
+          )}
         </button>
+
+        {/* Notification Dropdown Panel */}
+        {isNotificationPanelOpen && (
+          <div className="notification-panel-dropdown" role="dialog" aria-label="Notifications Panel">
+            <div className="notif-panel-header">
+              <h4 className="notif-panel-title">Notifications</h4>
+              {unreadCount > 0 && (
+                <button
+                  type="button"
+                  className="mark-all-read-btn"
+                  onClick={handleMarkAllAsRead}
+                >
+                  Mark all as read
+                </button>
+              )}
+            </div>
+
+            <div className="notif-panel-body">
+              {notifications.length === 0 ? (
+                <div className="notif-empty-state">
+                  <div className="empty-bell-icon">🔔</div>
+                  <p className="empty-title">No new notifications</p>
+                  <p className="empty-subtext">You&apos;re all caught up with your medicine reminders.</p>
+                </div>
+              ) : (
+                <ul className="notif-list">
+                  {notifications.map((notif) => (
+                    <li
+                      key={notif.id}
+                      className={`notif-card ${!notif.read ? 'unread' : 'read'}`}
+                      onClick={() => handleMarkAsRead(notif.id)}
+                    >
+                      <div className="notif-card-header">
+                        <span className="notif-category">
+                          <span className="notif-pill-emoji" aria-hidden="true">💊</span>
+                          Medicine Reminder
+                        </span>
+                        {!notif.read && <span className="unread-dot" title="Unread" />}
+                      </div>
+                      <p className="notif-message">
+                        It&apos;s time for your <strong>{notif.medicineName}</strong> reminder.
+                      </p>
+                      <div className="notif-card-footer">
+                        <span className="notif-time-badge">⏰ {notif.time}</span>
+                        {!notif.read && <span className="mark-read-hint">Click to mark read</span>}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* User Profile Avatar */}
         <div className="header-user-profile">

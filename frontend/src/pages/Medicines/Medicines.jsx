@@ -74,7 +74,10 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
     });
 
     if (!exists) {
-      saveUpdatedMedicines([...medicinesList, trimmed]);
+      const newMed = selectedReminderTime
+        ? { name: trimmed, reminderTime: selectedReminderTime }
+        : trimmed;
+      saveUpdatedMedicines([...medicinesList, newMed]);
     }
 
     setNewMedInput('');

@@ -28,11 +28,31 @@
 
 .medicine-item-details {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .medicine-item-name {
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--color-text-primary);
+}
+
+.medicine-reminder-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm, 6px);
+  background-color: rgba(166, 61, 53, 0.08);
+  border: 1px solid rgba(166, 61, 53, 0.2);
+  color: var(--color-primary, #A63D35);
+  font-size: 0.78125rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.reminder-icon {
+  font-size: 0.8rem;
 }

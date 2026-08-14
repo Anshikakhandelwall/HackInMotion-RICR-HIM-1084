@@ -5,13 +5,18 @@ import './MedicineListItem.css';
  * MedicineListItem Component
  * Reusable row item rendering a medicine entry with a clean icon and defensive name handling.
  */
-export const MedicineListItem = ({ medicine, onRemove, className = '' }) => {
+export const MedicineListItem = ({ medicine, onRemove, className = '', showReminder = true }) => {
   // Defensive extraction of medicine name
   const name = typeof medicine === 'string'
     ? medicine
     : (medicine && typeof medicine.name === 'string' && medicine.name.trim().length > 0)
     ? medicine.name
     : 'Unknown medicine';
+
+  // Extract reminder time if present and enabled
+  const reminderTime = (showReminder && typeof medicine === 'object' && medicine)
+    ? (medicine.reminderTime || medicine.reminder_time || medicine.reminder)
+    : null;
 
   return (
     <li className={`medicine-list-item ${className}`}>
@@ -23,6 +28,12 @@ export const MedicineListItem = ({ medicine, onRemove, className = '' }) => {
       </div>
       <div className="medicine-item-details" style={{ flex: 1 }}>
         <span className="medicine-item-name">{name}</span>
+        {reminderTime && (
+          <span className="medicine-reminder-badge">
+            <span className="reminder-icon" aria-hidden="true">⏰</span>
+            {reminderTime}
+          </span>
+        )}
       </div>
       {onRemove && (
         <button
