@@ -2,10 +2,9 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.authtoken.models import Token
 from .models import UserProfile
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
-from .supabase_auth import SupabaseAuthentication
+from .jwt_auth import generate_tokens_for_user, verify_refresh_token, JWTAuthentication
 
 
 class RegisterView(APIView):
@@ -19,13 +18,14 @@ class RegisterView(APIView):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            token, _ = Token.objects.get_or_create(user=user)
+            tokens = generate_tokens_for_user(user)
             user_data = UserSerializer(user).data
             return Response(
                 {
                     "success": True,
                     "message": "Account created successfully",
-                    "token": token.key,
+                    "tokens": tokens,
+                    "token": tokens["access"],
                     "user": user_data,
                 },
                 status=status.HTTP_201_CREATED,
@@ -61,13 +61,14 @@ class LoginView(APIView):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data["user"]
-            token, _ = Token.objects.get_or_create(user=user)
+            tokens = generate_tokens_for_user(user)
             user_data = UserSerializer(user).data
             return Response(
                 {
                     "success": True,
                     "message": "Login successful",
-                    "token": token.key,
+                    "tokens": tokens,
+                    "token": tokens["access"],
                     "user": user_data,
                 },
                 status=status.HTTP_200_OK,
@@ -92,31 +93,59 @@ class LoginView(APIView):
         )
 
 
+class RefreshTokenView(APIView):
+    """
+    API view to refresh JWT access token using a valid refresh token.
+    Endpoint: POST /api/auth/refresh/
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        refresh_token = request.data.get("refresh")
+        if not refresh_token:
+            return Response(
+                {"success": False, "message": "Refresh token is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            user = verify_refresh_token(refresh_token)
+            tokens = generate_tokens_for_user(user)
+            user_data = UserSerializer(user).data
+            return Response(
+                {
+                    "success": True,
+                    "tokens": tokens,
+                    "token": tokens["access"],
+                    "user": user_data,
+                },
+                status=status.HTTP_200_OK,
+            )
+        except Exception as exc:
+            return Response(
+                {"success": False, "message": str(exc)},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+
 class LogoutView(APIView):
     """
-    API view to handle user logout by deleting authentication token.
+    API view to handle user logout.
     Endpoint: POST /api/auth/logout/
     """
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        try:
-            Token.objects.filter(user=request.user).delete()
-            return Response(
-                {"success": True, "message": "Successfully logged out."},
-                status=status.HTTP_200_OK,
-            )
-        except Exception as e:
-            return Response(
-                {"success": False, "message": f"Logout error: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        return Response(
+            {"success": True, "message": "Successfully logged out."},
+            status=status.HTTP_200_OK,
+        )
 
 
 class UserProfileView(APIView):
     """
-    Legacy profile view — uses DRF TokenAuthentication (pre-Supabase).
-    Endpoint: GET /api/auth/me/  (kept for backward compatibility)
+    API view to fetch currently authenticated user data.
+    Endpoint: GET /api/auth/me/
     """
     permission_classes = [IsAuthenticated]
 
@@ -126,34 +155,6 @@ class UserProfileView(APIView):
             {
                 "success": True,
                 "user": serializer.data,
-            },
-            status=status.HTTP_200_OK,
-        )
-
-
-class SupabaseMeView(APIView):
-    """
-    Protected test endpoint — verifies Supabase JWT authentication end-to-end.
-    Endpoint: GET /api/auth/supabase/me/
-
-    Returns the authenticated Supabase identity from verified JWT claims.
-    - 401 when no valid Supabase token is supplied.
-    - 200 with identity information when a valid Supabase token is supplied.
-
-    Only safe, non-sensitive identity fields are returned.
-    """
-    authentication_classes = [SupabaseAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        # request.auth is the verified JWT payload dict.
-        payload = request.auth or {}
-        return Response(
-            {
-                "authenticated": True,
-                "supabase_user_id": payload.get("sub"),
-                "email": payload.get("email"),
-                "django_user_id": request.user.pk,
             },
             status=status.HTTP_200_OK,
         )

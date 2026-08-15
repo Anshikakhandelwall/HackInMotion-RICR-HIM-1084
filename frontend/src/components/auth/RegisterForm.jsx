@@ -174,17 +174,9 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
     }
 
 
-    // Email confirmation required: user record exists but no active session yet.
-    if (data.user && !data.session) {
-      setSubmitSuccess(true);
-      // Stay on the signup page showing the confirmation message; do not navigate.
-      return;
-    }
-
-    // Immediate session (email confirmation disabled in Supabase project settings).
     setSubmitSuccess(true);
     if (onSuccess) {
-      onSuccess({ user: data.session?.user ?? null });
+      onSuccess({ user: data.user });
     } else if (onNavigateToLogin) {
       onNavigateToLogin();
     }
