@@ -12,6 +12,19 @@ const TOKEN_KEY = 'mediguard_access_token';
 const REFRESH_KEY = 'mediguard_refresh_token';
 const USER_KEY = 'mediguard_user';
 
+const safeJsonParse = async (response) => {
+  const text = await response.text();
+  if (!text || !text.trim()) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {
+      success: false,
+      message: `Server returned unexpected response (${response.status} ${response.statusText || ''}). Please try again later.`,
+    };
+  }
+};
+
 export const getStoredAccessToken = () => localStorage.getItem(TOKEN_KEY);
 export const getStoredRefreshToken = () => localStorage.getItem(REFRESH_KEY);
 
@@ -58,7 +71,7 @@ export const signUp = async (email, password, metadata = {}) => {
       }),
     });
 
-    const data = await response.json();
+    const data = await safeJsonParse(response);
     if (!response.ok || !data.success) {
       return {
         data: { user: null, session: null },
@@ -95,7 +108,7 @@ export const signIn = async (email, password) => {
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await response.json();
+    const data = await safeJsonParse(response);
     if (!response.ok || !data.success) {
       return {
         data: { user: null, session: null },
@@ -155,7 +168,7 @@ export const refreshAccessToken = async () => {
       body: JSON.stringify({ refresh }),
     });
 
-    const data = await response.json();
+    const data = await safeJsonParse(response);
     if (response.ok && data.success) {
       storeAuthData(data);
       return data.tokens?.access || data.token;
@@ -191,7 +204,7 @@ export const fetchMe = async () => {
     }
 
     if (response.ok) {
-      const data = await response.json();
+      const data = await safeJsonParse(response);
       if (data.user) {
         localStorage.setItem(USER_KEY, JSON.stringify(data.user));
         return data.user;

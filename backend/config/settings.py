@@ -50,6 +50,11 @@ DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1')
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
+# Production Security Headers
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+
 
 # Application definition
 
