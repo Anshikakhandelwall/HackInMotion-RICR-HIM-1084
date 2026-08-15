@@ -10,7 +10,7 @@ Divya
 Anshul Sharma
 Shivendra Chauhan
 Documentation Focus: Dedicated Frontend Architectural & Technical Contribution Documentation
----
+
 📑 Table of Contents
 Frontend Overview
 Frontend Tech Stack
@@ -32,7 +32,7 @@ Frontend Build & Development
 Frontend Contribution Summary
 Combined Architecture & Workflow Visual
 Frontend Screens Preview
----
+
 1. 🔍 Frontend Overview
 The MediGuard frontend is a single-page application (SPA) crafted with React 19 and Vite 8. It serves as the primary visual interface for users to monitor their prescription routines and review medication safety evaluations.
 Key Workflows Delivered:
