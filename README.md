@@ -647,7 +647,7 @@ User identity derived from verified JWT
 No user IDs accepted for profile ownership
 External API keys never exposed to frontend responses
 🖥️ Frontend Architecture
-```mermaid
+
 flowchart TD
 
     App[App.jsx]
@@ -672,7 +672,6 @@ flowchart TD
     Services --> APIClient
 
     APIClient --> Django[Django REST API]
-```
 
 
 
