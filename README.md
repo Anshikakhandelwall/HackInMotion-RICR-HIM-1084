@@ -73,7 +73,6 @@ MediGuard provides a medication safety workflow where users can:
 
 # 🏗️ System Architecture
 
-```mermaid
 flowchart TD
 
     User([👤 Patient / Caregiver / Pharmacist])
@@ -178,7 +177,7 @@ Current Dataset
 1,405 DDInter-to-RxNorm mappings
 1,400+ normalized medicines
 🔬 Drug Interaction Pipeline
-```mermaid
+
 flowchart LR
 
     A[User Medicine Input]
@@ -286,7 +285,7 @@ flowchart LR
     D --> E
     D --> F
     F --> G
-```
+
 
 
 
