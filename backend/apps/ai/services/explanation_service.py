@@ -62,8 +62,17 @@ def generate_explanation(
     what_to_watch_for = ""
     what_should_you_do = ""
 
+    cleaned_text = text.strip()
+    if cleaned_text.startswith("```"):
+        lines = cleaned_text.splitlines()
+        if lines[0].startswith("```"):
+            lines = lines[1:]
+        if lines and lines[-1].startswith("```"):
+            lines = lines[:-1]
+        cleaned_text = "\n".join(lines).strip()
+
     try:
-        data = json.loads(text)
+        data = json.loads(cleaned_text)
         if isinstance(data, dict):
             what_does_this_mean = data.get("what_does_this_mean", text)
             what_to_watch_for = data.get("what_to_watch_for", "")

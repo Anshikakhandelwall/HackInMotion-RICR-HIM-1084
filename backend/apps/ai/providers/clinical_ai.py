@@ -1,6 +1,6 @@
 """Clinical AI Provider for MediGuard.
 
-Generates structured clinical safety explanations for drug-drug interactions,
+Generates structured clinical safety explanations for drug-drug interactions using Google Gemini API,
 addressing three key patient questions:
 1. What does this mean?
 2. What to watch for?
@@ -22,7 +22,7 @@ CLINICAL_KNOWLEDGE_BASE = {
     ("naproxen", "warfarin"): {
         "meaning": "Taking naproxen together with warfarin significantly increases your risk of serious gastrointestinal bleeding and hemorrhaging. Naproxen is an NSAID pain reliever that impairs platelet function and irritates the stomach lining, while warfarin is an anticoagulant blood thinner.",
         "watch_for": "Watch closely for warning signs of internal bleeding: unusual dark, tarry, or bloody stools; pink, red, or dark brown urine; unexpected bruising; coughing or vomiting blood; severe abdominal pain; or persistent dizziness and weakness.",
-        "action": "Do not combine naproxen with warfarin without explicit advice from your healthcare provider. Contact your doctor or pharmacist promptly to discuss safer pain relief alternatives, such as acetaminophen (Tylenol), and never adjust your prescribed warfarin dosage on your own."
+        "action": "Do not combine naproxen with warfarin without explicit advice from your healthcare provider. Contact your doctor or pharmacist promptly to discuss safer pain relief alternatives, such as acetaminophen (Tylenol), and consult your clinician before modifying treatment."
     },
     ("aspirin", "warfarin"): {
         "meaning": "Combining aspirin with warfarin creates a potent additive blood-thinning effect that significantly raises your risk of major internal bleeding. Aspirin permanently inhibits blood platelet aggregation, while warfarin blocks vitamin K-dependent clotting factors.",
@@ -32,9 +32,22 @@ CLINICAL_KNOWLEDGE_BASE = {
     ("metformin", "contrast"): {
         "meaning": "Taking metformin around the time of iodinated radiocontrast procedures increases the risk of contrast-induced acute kidney injury and life-threatening metformin-associated lactic acidosis.",
         "watch_for": "Monitor for symptoms of lactic acidosis: severe fatigue, muscle aches, trouble breathing, unexplained stomach discomfort, feeling cold, or feeling lightheaded.",
-        "action": "Inform your imaging provider and doctor about metformin prior to any CT scan or procedure using contrast dye. Metformin is typically withheld 48 hours prior to and after the procedure."
+        "action": "Inform your imaging provider and doctor about metformin prior to any CT scan or procedure using contrast dye. Consult healthcare professionals regarding temporary withholding schedules."
     }
 }
+
+
+def clean_json_response(text: str) -> str:
+    """Clean markdown codeblocks from LLM text output."""
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        lines = cleaned.splitlines()
+        if lines[0].startswith("```"):
+            lines = lines[1:]
+        if lines and lines[-1].startswith("```"):
+            lines = lines[:-1]
+        cleaned = "\n".join(lines).strip()
+    return cleaned
 
 
 class ClinicalAIProvider(LLMProvider):
@@ -42,32 +55,44 @@ class ClinicalAIProvider(LLMProvider):
 
     @property
     def model_id(self) -> str:
-        return "mediguard-clinical-ai-v1"
+        return "gemini-flash-clinical"
 
     def generate(self, *, system: str, user: str, max_tokens: int = 1024) -> str:
-        # Check if an external LLM key is available (Gemini or OpenAI)
         gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
         openai_key = os.getenv("OPENAI_API_KEY")
 
+        # Try Gemini API endpoints
         if gemini_key:
-            try:
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
-                payload = json.dumps({
-                    "contents": [{
-                        "parts": [{
-                            "text": f"{system}\n\n{user}\n\nProvide response in JSON format with keys: 'what_does_this_mean', 'what_to_watch_for', 'what_should_you_do'."
+            models_to_try = [
+                "gemini-1.5-flash",
+                "gemini-2.0-flash",
+                "gemini-2.5-flash",
+                "gemini-1.5-pro",
+            ]
+            for model_name in models_to_try:
+                try:
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
+                    prompt_text = (
+                        f"{system}\n\n{user}\n\n"
+                        "Format your response as a strictly valid JSON object with keys: "
+                        "'what_does_this_mean', 'what_to_watch_for', 'what_should_you_do'. "
+                        "Safety Rule: Do NOT use phrases like 'stop taking', 'discontinue', or 'change your dose'. Recommending consultation with a doctor or pharmacist is preferred."
+                    )
+                    payload = json.dumps({
+                        "contents": [{
+                            "parts": [{ "text": prompt_text }]
                         }]
-                    }]
-                }).encode('utf-8')
-                req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
-                with urllib.request.urlopen(req, timeout=10) as resp:
-                    if resp.status == 200:
-                        data = json.loads(resp.read().decode('utf-8'))
-                        text = data["candidates"][0]["content"]["parts"][0]["text"]
-                        return text
-            except Exception as e:
-                logger.warning(f"Gemini API call failed, using clinical engine fallback: {e}")
+                    }).encode('utf-8')
+                    req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+                    with urllib.request.urlopen(req, timeout=12) as resp:
+                        if resp.status == 200:
+                            data = json.loads(resp.read().decode('utf-8'))
+                            text = data["candidates"][0]["content"]["parts"][0]["text"]
+                            return clean_json_response(text)
+                except Exception as e:
+                    logger.warning(f"Gemini model {model_name} call failed: {e}")
 
+        # Try OpenAI API if present
         if openai_key:
             try:
                 url = "https://api.openai.com/v1/chat/completions"
@@ -75,7 +100,7 @@ class ClinicalAIProvider(LLMProvider):
                     "model": "gpt-4o-mini",
                     "messages": [
                         {"role": "system", "content": system},
-                        {"role": "user", "content": f"{user}\n\nProvide JSON response with keys: 'what_does_this_mean', 'what_to_watch_for', 'what_should_you_do'."}
+                        {"role": "user", "content": f"{user}\n\nProvide JSON with keys: 'what_does_this_mean', 'what_to_watch_for', 'what_should_you_do'."}
                     ],
                     "max_tokens": max_tokens
                 }).encode('utf-8')
@@ -86,9 +111,10 @@ class ClinicalAIProvider(LLMProvider):
                 with urllib.request.urlopen(req, timeout=10) as resp:
                     if resp.status == 200:
                         data = json.loads(resp.read().decode('utf-8'))
-                        return data["choices"][0]["message"]["content"]
+                        text = data["choices"][0]["message"]["content"]
+                        return clean_json_response(text)
             except Exception as e:
-                logger.warning(f"OpenAI API call failed, using clinical engine fallback: {e}")
+                logger.warning(f"OpenAI API call failed: {e}")
 
         # Fallback to Clinical Rule Synthesis Engine
         return self._synthesize_clinical_explanation(user)
@@ -127,7 +153,7 @@ class ClinicalAIProvider(LLMProvider):
                 f"or any signs of heightened toxicity associated with {med_a} or {med_b}."
             ),
             "what_should_you_do": (
-                f"Discuss this potential interaction with your prescribing doctor or pharmacist before taking {med_a} and {med_b} together. "
-                f"Do not alter your dosages or stop taking either medication without medical guidance."
+                f"Discuss this potential interaction with your prescribing doctor or pharmacist before concurrent administration of {med_a} and {med_b}. "
+                f"Always seek professional healthcare guidance prior to modifying any treatment regimen."
             )
         })
