@@ -2,40 +2,29 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getUserDisplayName, getUserInitials } from '../../utils/userUtils';
 import LanguageSelector from '../common/LanguageSelector';
 import { useLanguage } from '../../context/LanguageContext';
+import { useNotifications } from '../../context/NotificationContext';
 import './Header.css';
 
 /**
  * Header Component
  * Top header bar for the MediGuard Dashboard application shell.
- * Includes interactive Notification Bell 🔔 with unread count badge, dropdown panel, and outside-click handler.
+ * Includes interactive Notification Bell 🔔 with real unread count badge, dropdown panel, and outside-click handler.
  */
 export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMenu }) => {
   const { t } = useLanguage();
+  const {
+    notifications,
+    unreadCount,
+    markAsRead,
+    markAllAsRead,
+    requestBrowserPermission,
+  } = useNotifications();
+
   const userName = getUserDisplayName(currentUser) || t('user');
   const userInitials = getUserInitials(currentUser);
 
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
-  const [notifications, setNotifications] = useState([
-    { id: 'notif-1', medicineName: 'Paracetamol', time: '08:30 AM', read: false },
-    { id: 'notif-2', medicineName: 'Metformin', time: '01:00 PM', read: false },
-  ]);
-
   const dropdownRef = useRef(null);
-
-  // Sync sample notifications if user medicines have reminder times
-  useEffect(() => {
-    const meds = currentUser?.regularMedicines || currentUser?.regular_medicines || [];
-    const reminderMeds = meds.filter((m) => typeof m === 'object' && (m?.reminderTime || m?.reminder_time));
-    if (reminderMeds.length > 0) {
-      const mapped = reminderMeds.map((m, index) => ({
-        id: `user-notif-${index}`,
-        medicineName: m.name || 'Medicine',
-        time: m.reminderTime || m.reminder_time || '08:30 AM',
-        read: false,
-      }));
-      setNotifications(mapped);
-    }
-  }, [currentUser]);
 
   // Outside click listener to close dropdown
   useEffect(() => {
@@ -52,16 +41,9 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
     };
   }, [isNotificationPanelOpen]);
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
-
-  const handleMarkAsRead = (id) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
-  };
-
-  const handleMarkAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  const handleTogglePanel = () => {
+    setIsNotificationPanelOpen((prev) => !prev);
+    requestBrowserPermission();
   };
 
   return (
@@ -101,7 +83,7 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
         <button
           type="button"
           className={`header-icon-btn ${isNotificationPanelOpen ? 'active' : ''}`}
-          onClick={() => setIsNotificationPanelOpen((prev) => !prev)}
+          onClick={handleTogglePanel}
           aria-label={t('notifications')}
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -122,7 +104,7 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
                 <button
                   type="button"
                   className="mark-all-read-btn"
-                  onClick={handleMarkAllAsRead}
+                  onClick={markAllAsRead}
                 >
                   {t('markAllRead')}
                 </button>
@@ -141,18 +123,20 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
                   {notifications.map((notif) => (
                     <li
                       key={notif.id}
-                      className={`notif-card ${!notif.read ? 'unread' : 'read'}`}
-                      onClick={() => handleMarkAsRead(notif.id)}
+                      className={`notif-card ${!notif.read ? 'unread' : 'read'} ${notif.type || 'info'}`}
+                      onClick={() => markAsRead(notif.id)}
                     >
                       <div className="notif-card-header">
                         <span className="notif-category">
-                          <span className="notif-pill-emoji" aria-hidden="true">💊</span>
-                          {t('medicineReminderCategory')}
+                          <span className="notif-pill-emoji" aria-hidden="true">
+                            {notif.type === 'warning' ? '⚠️' : '💊'}
+                          </span>
+                          {notif.category || t('medicineReminderCategory')}
                         </span>
                         {!notif.read && <span className="unread-dot" title={t('clickToMarkRead')} />}
                       </div>
                       <p className="notif-message">
-                        {t('notifMessagePre')}<strong>{notif.medicineName}</strong>{t('notifMessagePost')}
+                        {notif.message}
                       </p>
                       <div className="notif-card-footer">
                         <span className="notif-time-badge">⏰ {notif.time}</span>
@@ -177,4 +161,3 @@ export const Header = ({ currentUser, isMobileMenuOpen = false, onToggleMobileMe
 };
 
 export default Header;
-

@@ -4,80 +4,57 @@
 
 ---
 
-## Project Title
+## 📌 Project Summary
 
-**MediGuard** — Smart Medicine Safety & Drug Interaction Assistant
-
----
-
-## Team Name
-
-**RICR** — HackInMotion 2026 · Team ID: `HIM-1084`
+- **Project Title**: **MediGuard** — Smart Medicine Safety & Drug Interaction Assistant
+- **Team Name**: **RICR** — HackInMotion 2026 · Team ID: `HIM-1084`
+- **Selected Theme**: **Healthcare & Patient Safety** — Drug Interaction Detection & Medication Management
 
 ---
 
-## Selected Theme
+## ❓ Problem Statement
 
-**Healthcare & Patient Safety** — Drug Interaction Detection & Medication Management
+Every day, millions of people take more than one medicine simultaneously — for fever, diabetes, blood pressure, allergies, or other chronic conditions. Most patients do not know that some medicines, when taken together, can react dangerously. This is called a **drug-drug interaction (DDI)**, and it can cause serious adverse side effects, reduce medicine efficacy, or lead to emergency hospitalizations.
 
----
-
-## Problem Statement
-
-Every day, millions of people take more than one medicine simultaneously — for fever, diabetes, blood pressure, allergies, or other conditions. Most patients do not know that some medicines, when taken together, can react dangerously. This is called a **drug-drug interaction (DDI)**, and it can cause serious side effects, reduce a medicine's effectiveness, or in extreme cases, be life-threatening.
-
-Common scenarios that go unchecked:
-
+Common risks that go unchecked:
 - Patients prescribed by different doctors without cross-referencing prescriptions.
 - Over-the-counter medicines bought without checking compatibility with existing prescriptions.
-- Medicine labels not read or understood by non-medical users.
-
-Hospitals and pharmacies often lack an easy-to-use digital tool to catch these risks in real time — especially for common people who are not medically trained.
+- Complex dosage schedules missed or forgotten by patients.
 
 ---
 
-## Solution Overview
+## ✨ Solution Overview
 
-MediGuard is a full-stack web application where a user (patient, caregiver, or pharmacist) can:
+MediGuard is a full-stack, AI-ready web application where patients, caregivers, and pharmacists can:
 
-1. **Sign up and log in** securely via Supabase Auth.
-2. **Build a personal medication cabinet** by searching and adding medicines by name.
-3. **Run a Safety Check** — the system screens all cabinet medicines for drug-drug interactions using the **DDInter 2.0** database (10,874 canonical interaction pairs, 1,405 drug mappings, 1,400+ RxNorm-normalized medicines).
-4. **View results in plain language** — severity level (Major / Moderate / Minor), what to watch for, and what to do next.
-5. **Get personalized warnings** based on their medical conditions (e.g., Asthma + NSAID caution, Renal impairment + Metformin warning).
-6. **Review their medication history and past checks** from a personal dashboard.
-
-MediGuard feels like a **trustworthy digital health companion** — not a raw medical data dump.
+1. **Sign up and log in securely**: Built-in Django REST Framework **JWT Authentication** (HS256 access & refresh tokens).
+2. **Build a personal medicine cabinet**: Add medicines with custom dosage info and scheduled **Reminder Times** (`08:30 AM`).
+3. **Real-time Notifications Engine**: Receives dose reminders, desktop browser notifications (Web Notifications API), and real-time safety alert badges.
+4. **Run a Safety Check**: Screens cabinet medicines for drug-drug interactions using the **DDInter 2.0** database (10,874 canonical interaction pairs, 1,405 drug mappings, 1,400+ RxNorm-normalized medicines).
+5. **View plain-language warnings**: Risk severity (🔴 Major / 🟠 Moderate / 🟢 Minor), clinical explanations, and actionable next steps.
+6. **Personalized Medical Condition Warnings**: Overlays medical conditions (Asthma, Renal Impairment, Hypertension) over raw drug interactions.
 
 ---
 
-## Technology Stack
+## 🛠️ Technology Stack
 
 ### Frontend
 | Technology | Version | Purpose |
 |---|---|---|
 | React | 19.2 | UI framework |
 | Vite | 8.2 | Build tool & dev server |
-| @supabase/supabase-js | 2.112 | Supabase Auth client |
+| Notification API | Native | Desktop browser notification popups |
 | oxlint | 1.75 | Linter |
 
 ### Backend
 | Technology | Version | Purpose |
 |---|---|---|
-| Django | 6.1 | Web framework |
+| Django | 6.1 | Web framework & ORM |
 | Django REST Framework | 3.18 | REST API layer |
-| PyJWT + cryptography | 2.13 / 50.0 | ES256 / RS256 JWT verification |
-| psycopg (binary) | 3.3 | PostgreSQL driver |
-| django-cors-headers | 4.9 | CORS configuration |
-| python-dotenv | 1.2 | Environment variable loading |
-| pandas / numpy | 3.0 / 2.5 | Data import pipeline |
-| supabase-py | 2.31 | Supabase client (backend) |
-
-### Infrastructure
-| Service | Purpose |
-|---|---|
-| Supabase | Auth (ES256 JWT), PostgreSQL database hosting |
-| SQLite | Local development fallback database |
+| PyJWT + cryptography | 2.13 / 50.0 | HS256 JWT signature & verification |
+| psycopg (binary) | 3.3 | PostgreSQL database driver |
+| WhiteNoise | 6.9 | Compressed production static file serving |
+| django-cors-headers | 4.9 | Cross-origin resource sharing |
 
 ### Data Sources
 | Source | Role |
@@ -88,64 +65,55 @@ MediGuard feels like a **trustworthy digital health companion** — not a raw me
 
 ---
 
-## Why DDInter 2.0?
+## 📡 API Endpoints Summary
 
-DDInter 2.0 was chosen as the core interaction data source after evaluating available options:
+All endpoints support both trailing and non-trailing slash routes:
 
-- **Coverage**: 10,874 canonical drug-drug interaction pairs across 1,405 unique drug names.
-- **Severity Classification**: Already classifies interactions as Major / Moderate / Minor — directly mappable to our risk engine.
-- **Offline-capable**: The full dataset is processed and stored locally in the PostgreSQL database — no runtime API dependency or rate limits.
-- **RxNorm mapping**: We built a custom mapping pipeline (`ddinter_rxnorm_mapping.csv`) to align DDInter drug names to RxNorm CUIs, enabling standardized medicine search and cross-referencing.
+| Method | Endpoint | Description | Auth Required |
+|---|---|---|---|
+| `POST` | `/api/auth/register/` | User registration & JWT token generation | ❌ Public |
+| `POST` | `/api/auth/login/` | User login & JWT token generation | ❌ Public |
+| `POST` | `/api/auth/refresh/` | Obtain fresh access token using refresh token | ❌ Public |
+| `GET` | `/api/auth/me/` | Fetch authenticated user details | ✅ Bearer JWT |
+| `GET` | `/api/medicines/` | Search canonical medicines by name/RxCUI | ❌ Public |
+| `GET` | `/api/profile/` | Retrieve patient health profile & cabinet | ✅ Bearer JWT |
+| `POST` | `/api/profile/` | Create/update patient health profile | ✅ Bearer JWT |
+| `GET` | `/api/dashboard/overview/` | Dashboard safety metrics & active warnings | ✅ Bearer JWT |
+| `POST` | `/api/patients/safety-check/` | Personalized safety check (DDI + conditions) | ✅ Bearer JWT |
 
-The dataset is stored in `data/interactions/` and imported into the database via the data pipeline scripts.
+Full backend documentation: [`backend/README.md`](backend/README.md)
 
 ---
 
-## Installation Guide
+## 💻 Installation & Setup
 
 ### Prerequisites
-
 - Python 3.11+
 - Node.js 18+
-- PostgreSQL (or use the built-in SQLite fallback for local development)
-- A Supabase project (free tier works)
 
-### 1. Clone the repository
-
+### 1. Clone Repository
 ```bash
-git clone https://github.com/your-org/HackInMotion-RICR-HIM-1084.git
+git clone https://github.com/Anshikakhandelwall/HackInMotion-RICR-HIM-1084.git
 cd HackInMotion-RICR-HIM-1084
 ```
 
-### 2. Backend setup
-
+### 2. Backend Setup
 ```bash
 cd backend
-
-# Create and activate virtual environment
 python -m venv venv
-.\venv\Scripts\Activate        # Windows
-# source venv/bin/activate     # macOS/Linux
+source venv/bin/activate    # Linux/macOS
+# venv\Scripts\activate     # Windows
 
-# Install dependencies
 pip install -r requirements.txt
-
-# Apply database migrations
+export DJANGO_SECRET_KEY="local-dev-secret-key"
 python manage.py migrate
-
-# Start Django development server
-python manage.py runserver 8001
+python manage.py runserver 0.0.0.0:8000
 ```
 
-### 3. Frontend setup
-
+### 3. Frontend Setup
 ```bash
-cd frontend
-
-# Install dependencies
+cd ../frontend
 npm install
-
-# Start Vite development server
 npm run dev
 ```
 
@@ -245,59 +213,7 @@ Full schema reference: [`docs/database.md`](docs/database.md)
 
 ---
 
-## Architecture Diagram
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         BROWSER                                 │
-│                                                                 │
-│   React 19 + Vite                                               │
-│   ┌─────────────┐  ┌──────────────┐  ┌───────────────────┐    │
-│   │  AuthContext │  │  apiClient   │  │  medicineService  │    │
-│   │  (Supabase) │  │  (Bearer JWT)│  │  (medicine search)│    │
-│   └──────┬──────┘  └──────┬───────┘  └─────────┬─────────┘    │
-│          │                │                     │              │
-└──────────┼────────────────┼─────────────────────┼──────────────┘
-           │                │                     │
-           ▼                ▼                     ▼
-    ┌─────────────┐  ┌──────────────────────────────────────┐
-    │  Supabase   │  │        Vite Dev Proxy /api/*         │
-    │  Auth       │  │        → http://127.0.0.1:8001       │
-    │  (ES256 JWT)│  └──────────────────┬───────────────────┘
-    └─────────────┘                     │
-                                        ▼
-                    ┌───────────────────────────────────────┐
-                    │           DJANGO 6.1 BACKEND          │
-                    │                                       │
-                    │  SupabaseAuthentication               │
-                    │  (verifies ES256 JWT via JWKS)        │
-                    │            │                          │
-                    │   ┌────────┴────────┐                 │
-                    │   ▼                 ▼                 │
-                    │  /api/profile/   /api/medicines/      │
-                    │  /api/interactions/check/             │
-                    │  /api/patients/safety-check/          │
-                    │  /api/dashboard/overview/             │
-                    │            │                          │
-                    │            ▼                          │
-                    │   InteractionEngine                   │
-                    │   PatientSafetyEngine                 │
-                    │            │                          │
-                    └────────────┼──────────────────────────┘
-                                 │
-                                 ▼
-                    ┌────────────────────────┐
-                    │   PostgreSQL / SQLite  │
-                    │                        │
-                    │   medicines (1,400+)   │
-                    │   drug_interactions    │
-                    │   (10,874 pairs)       │
-                    │   ddinter_mappings     │
-                    │   user_profiles        │
-                    └────────────────────────┘
-```
-
----
+## 🚢 Deployment Configuration
 
 ## Key Design Decisions
 
@@ -372,7 +288,7 @@ Beyond raw DDI pairs, the `PatientSafetyEngine` overlays condition-specific cont
 
 ---
 
-## Disclaimer
+## 📑 Disclaimer
 
 > MediGuard is an informational tool built for educational and hackathon purposes. It is **not a substitute for professional medical advice, diagnosis, or treatment**. Always consult a qualified healthcare provider before making any medication decisions.
 

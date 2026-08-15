@@ -14,7 +14,20 @@ import {
   clearStoredAuthData,
 } from '../auth/authService';
 
-const API_BASE = '';
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
+/**
+ * Safely parse JSON response without throwing SyntaxError on empty/HTML/non-JSON bodies.
+ */
+const safeJsonParse = async (response) => {
+  const text = await response.text();
+  if (!text || !text.trim()) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { message: text.slice(0, 300) };
+  }
+};
 
 /**
  * Fetch wrapper that attaches the JWT Bearer token and handles auto-refresh on 401.
@@ -36,22 +49,33 @@ export const apiFetch = async (path, options = {}) => {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  let response = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers,
-  });
+  let response;
+  try {
+    response = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers,
+    });
+  } catch (netErr) {
+    throw new Error('Network error. Unable to reach backend server.');
+  }
 
   // If 401 Unauthorized, attempt to refresh access token silently
   if (response.status === 401 && token) {
     const newToken = await refreshAccessToken();
     if (newToken) {
       headers['Authorization'] = `Bearer ${newToken}`;
-      response = await fetch(`${API_BASE}${path}`, {
-        ...options,
-        headers,
-      });
+      try {
+        response = await fetch(`${API_BASE}${path}`, {
+          ...options,
+          headers,
+        });
+      } catch (netErr) {
+        throw new Error('Network error during retry.');
+      }
     }
   }
+
+  const data = await safeJsonParse(response);
 
   if (!response.ok) {
     if (response.status === 401) {
@@ -59,16 +83,9 @@ export const apiFetch = async (path, options = {}) => {
       window.dispatchEvent(new CustomEvent('auth:unauthorized'));
     }
 
-    let message = `Request failed: ${response.status} ${response.statusText}`;
-    try {
-      const body = await response.json();
-      if (body?.detail) message = body.detail;
-      else if (body?.message) message = body.message;
-    } catch {
-      // Non-JSON error body — keep default message
-    }
+    let message = data?.detail || data?.message || `Request failed (${response.status} ${response.statusText || ''})`;
     throw new Error(message);
   }
 
-  return response.json();
+  return data;
 };
