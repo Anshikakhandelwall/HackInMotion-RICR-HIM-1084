@@ -12,6 +12,21 @@ const TOKEN_KEY = 'mediguard_access_token';
 const REFRESH_KEY = 'mediguard_refresh_token';
 const USER_KEY = 'mediguard_user';
 
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
+const safeJsonParse = async (response) => {
+  const text = await response.text();
+  if (!text || !text.trim()) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {
+      success: false,
+      message: `Server returned unexpected response (${response.status} ${response.statusText || ''}). Please try again later.`,
+    };
+  }
+};
+
 export const getStoredAccessToken = () => localStorage.getItem(TOKEN_KEY);
 export const getStoredRefreshToken = () => localStorage.getItem(REFRESH_KEY);
 
@@ -48,7 +63,7 @@ export const getStoredUser = () => {
  */
 export const signUp = async (email, password, metadata = {}) => {
   try {
-    const response = await fetch('/api/auth/register/', {
+    const response = await fetch(`${API_BASE}/api/auth/register/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -58,7 +73,7 @@ export const signUp = async (email, password, metadata = {}) => {
       }),
     });
 
-    const data = await response.json();
+    const data = await safeJsonParse(response);
     if (!response.ok || !data.success) {
       return {
         data: { user: null, session: null },
@@ -89,13 +104,13 @@ export const signUp = async (email, password, metadata = {}) => {
  */
 export const signIn = async (email, password) => {
   try {
-    const response = await fetch('/api/auth/login/', {
+    const response = await fetch(`${API_BASE}/api/auth/login/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await response.json();
+    const data = await safeJsonParse(response);
     if (!response.ok || !data.success) {
       return {
         data: { user: null, session: null },
@@ -126,7 +141,7 @@ export const signOut = async () => {
   const token = getStoredAccessToken();
   if (token) {
     try {
-      await fetch('/api/auth/logout/', {
+      await fetch(`${API_BASE}/api/auth/logout/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -149,13 +164,13 @@ export const refreshAccessToken = async () => {
   if (!refresh) return null;
 
   try {
-    const response = await fetch('/api/auth/refresh/', {
+    const response = await fetch(`${API_BASE}/api/auth/refresh/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh }),
     });
 
-    const data = await response.json();
+    const data = await safeJsonParse(response);
     if (response.ok && data.success) {
       storeAuthData(data);
       return data.tokens?.access || data.token;
@@ -176,7 +191,7 @@ export const fetchMe = async () => {
   if (!token) return null;
 
   try {
-    let response = await fetch('/api/auth/me/', {
+    let response = await fetch(`${API_BASE}/api/auth/me/`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -185,13 +200,13 @@ export const fetchMe = async () => {
       const newToken = await refreshAccessToken();
       if (!newToken) return null;
 
-      response = await fetch('/api/auth/me/', {
+      response = await fetch(`${API_BASE}/api/auth/me/`, {
         headers: { Authorization: `Bearer ${newToken}` },
       });
     }
 
     if (response.ok) {
-      const data = await response.json();
+      const data = await safeJsonParse(response);
       if (data.user) {
         localStorage.setItem(USER_KEY, JSON.stringify(data.user));
         return data.user;

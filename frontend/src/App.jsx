@@ -14,6 +14,7 @@ import InteractionDetails from './pages/SafetyCheck/InteractionDetails';
 import ForgotPasswordPage from './pages/ForgotPassword/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPassword/ResetPasswordPage';
 import LandingPage from './pages/Landing/LandingPage';
+import { NotificationProvider } from './context/NotificationContext';
 import useAuth from './hooks/useAuth';
 import { getProfile, updateProfile } from './services/profile/profileService';
 import { getUserDisplayName } from './utils/userUtils';
@@ -192,115 +193,117 @@ function App() {
   }
 
   return (
-    <div className="app-root">
-      {/* 0. Landing Page — public */}
-      {currentView === 'landing' && (
-        <LandingPage
-          onNavigateToLogin={handleNavigateToLogin}
-          onNavigateToSignup={handleNavigateToSignup}
-        />
-      )}
-
-      {/* 1. Register View — public */}
-      {currentView === 'signup' && (
-        <Signup
-          onNavigateToLogin={handleNavigateToLogin}
-          onSuccess={handleRegisterSuccess}
-        />
-      )}
-
-      {/* 2. Login View — public */}
-      {currentView === 'login' && (
-        <Login
-          onNavigateToSignup={handleNavigateToSignup}
-          onForgotPassword={handleNavigateToForgotPassword}
-          onSuccess={handleLoginSuccess}
-        />
-      )}
-
-      {/* 3. Forgot password — public */}
-      {currentView === 'forgot_password' && (
-        <ForgotPasswordPage
-          onBackToLogin={handleNavigateToLogin}
-          onSuccess={handleForgotPasswordSuccess}
-        />
-      )}
-
-      {/* 4. Reset password — RECOVERY session */}
-      {currentView === 'reset_password' && (
-        <ResetPasswordPage onSuccess={handleResetPasswordSuccess} />
-      )}
-
-      {/* 5. Health Profile Onboarding — authenticated, profile incomplete */}
-      {currentView === 'onboarding' && (
-        <HealthProfilePage onSuccess={handleOnboardingSuccess} />
-      )}
-
-      {/* 6. Dashboard Application Shell — authenticated, profile complete */}
-      {currentView === 'dashboard_shell' && (
-        <div style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: '#FFFDFC' }}>
-          <Sidebar
-            activeRoute={dashboardRoute}
-            onNavigate={handleDashboardNavigate}
-            onLogout={handleLogout}
-            isOpen={isMobileMenuOpen}
-            onClose={() => setIsMobileMenuOpen(false)}
+    <NotificationProvider currentUser={fullUser}>
+      <div className="app-root">
+        {/* 0. Landing Page — public */}
+        {currentView === 'landing' && (
+          <LandingPage
+            onNavigateToLogin={handleNavigateToLogin}
+            onNavigateToSignup={handleNavigateToSignup}
           />
+        )}
 
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-            <Header
-              currentUser={fullUser}
-              isMobileMenuOpen={isMobileMenuOpen}
-              onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
+        {/* 1. Register View — public */}
+        {currentView === 'signup' && (
+          <Signup
+            onNavigateToLogin={handleNavigateToLogin}
+            onSuccess={handleRegisterSuccess}
+          />
+        )}
+
+        {/* 2. Login View — public */}
+        {currentView === 'login' && (
+          <Login
+            onNavigateToSignup={handleNavigateToSignup}
+            onForgotPassword={handleNavigateToForgotPassword}
+            onSuccess={handleLoginSuccess}
+          />
+        )}
+
+        {/* 3. Forgot password — public */}
+        {currentView === 'forgot_password' && (
+          <ForgotPasswordPage
+            onBackToLogin={handleNavigateToLogin}
+            onSuccess={handleForgotPasswordSuccess}
+          />
+        )}
+
+        {/* 4. Reset password — RECOVERY session */}
+        {currentView === 'reset_password' && (
+          <ResetPasswordPage onSuccess={handleResetPasswordSuccess} />
+        )}
+
+        {/* 5. Health Profile Onboarding — authenticated, profile incomplete */}
+        {currentView === 'onboarding' && (
+          <HealthProfilePage onSuccess={handleOnboardingSuccess} />
+        )}
+
+        {/* 6. Dashboard Application Shell — authenticated, profile complete */}
+        {currentView === 'dashboard_shell' && (
+          <div style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: '#FFFDFC' }}>
+            <Sidebar
+              activeRoute={dashboardRoute}
+              onNavigate={handleDashboardNavigate}
+              onLogout={handleLogout}
+              isOpen={isMobileMenuOpen}
+              onClose={() => setIsMobileMenuOpen(false)}
             />
 
-            <main style={{ flex: 1, padding: '1.75rem 2rem', overflowY: 'auto' }}>
-              {dashboardRoute === '/dashboard' && (
-                <Dashboard currentUser={fullUser} onNavigate={handleDashboardNavigate} />
-              )}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+              <Header
+                currentUser={fullUser}
+                isMobileMenuOpen={isMobileMenuOpen}
+                onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
+              />
 
-              {dashboardRoute === '/medicines' && (
-                <Medicines
-                  currentUser={fullUser}
-                  onUpdateProfile={handleUpdateProfileData}
-                  onNavigate={handleDashboardNavigate}
-                />
-              )}
+              <main style={{ flex: 1, padding: '1.75rem 2rem', overflowY: 'auto' }}>
+                {dashboardRoute === '/dashboard' && (
+                  <Dashboard currentUser={fullUser} onNavigate={handleDashboardNavigate} />
+                )}
 
-              {dashboardRoute === '/safety-check' && (
-                <SafetyCheck
-                  currentUser={fullUser}
-                  onNavigate={handleDashboardNavigate}
-                  onViewDetails={(interaction) => {
-                    setSelectedInteraction(interaction);
-                    setDashboardRoute('/interaction-details');
-                  }}
-                />
-              )}
+                {dashboardRoute === '/medicines' && (
+                  <Medicines
+                    currentUser={fullUser}
+                    onUpdateProfile={handleUpdateProfileData}
+                    onNavigate={handleDashboardNavigate}
+                  />
+                )}
 
-              {dashboardRoute === '/interaction-details' && (
-                <InteractionDetails
-                  interaction={selectedInteraction}
-                  onBack={() => setDashboardRoute('/safety-check')}
-                />
-              )}
+                {dashboardRoute === '/safety-check' && (
+                  <SafetyCheck
+                    currentUser={fullUser}
+                    onNavigate={handleDashboardNavigate}
+                    onViewDetails={(interaction) => {
+                      setSelectedInteraction(interaction);
+                      setDashboardRoute('/interaction-details');
+                    }}
+                  />
+                )}
 
-              {dashboardRoute === '/history' && (
-                <History onNavigate={handleDashboardNavigate} />
-              )}
+                {dashboardRoute === '/interaction-details' && (
+                  <InteractionDetails
+                    interaction={selectedInteraction}
+                    onBack={() => setDashboardRoute('/safety-check')}
+                  />
+                )}
 
-              {dashboardRoute === '/profile' && (
-                <Profile currentUser={fullUser} onUpdateProfile={handleUpdateProfileData} />
-              )}
+                {dashboardRoute === '/history' && (
+                  <History onNavigate={handleDashboardNavigate} />
+                )}
 
-              {dashboardRoute === '/settings' && (
-                <SettingsPage />
-              )}
-            </main>
+                {dashboardRoute === '/profile' && (
+                  <Profile currentUser={fullUser} onUpdateProfile={handleUpdateProfileData} />
+                )}
+
+                {dashboardRoute === '/settings' && (
+                  <SettingsPage />
+                )}
+              </main>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </NotificationProvider>
   );
 }
 
