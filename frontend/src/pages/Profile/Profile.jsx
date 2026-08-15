@@ -1,3 +1,7 @@
+import React, { useState, useEffect } from 'react';
+import useAuth from '../../hooks/useAuth';
+import Button from '../../components/common/Button';
+import { getProfile, updateProfile } from '../../services/profile/profileService';
 import { getUserDisplayName, getUserInitials } from '../../utils/userUtils';
 import { useLanguage } from '../../context/LanguageContext';
 import './Profile.css';

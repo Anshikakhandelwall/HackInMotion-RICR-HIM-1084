@@ -12,7 +12,7 @@ import logging
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 
 from apps.authentication.supabase_auth import SupabaseAuthentication
 from apps.authentication.models import UserProfile
@@ -127,25 +127,38 @@ class DashboardOverviewView(APIView):
     """
     GET /api/dashboard/overview/
     Provides aggregated dashboard metrics: active medicines count, safety overview summary,
-    and recent interaction check highlights for the authenticated or session user.
+    and recent interaction check highlights for the authenticated user.
     """
     authentication_classes = [SupabaseAuthentication]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
-        regular_meds = []
-        medical_conditions = ""
+        profile = getattr(request.user, 'profile', None)
+        regular_meds = (profile.regular_medicines or []) if profile else []
+        medical_conditions = (profile.medical_conditions or "") if profile else ""
 
-        if user.is_authenticated and hasattr(user, "profile"):
-            regular_meds = user.profile.regular_medicines or []
-            medical_conditions = user.profile.medical_conditions or ""
-
-        # Default fallback sample meds for preview if user profile is unpopulated
-        sample_meds = regular_meds if regular_meds else ["acetaminophen", "warfarin"]
+        if not regular_meds:
+            return Response(
+                {
+                    "success": True,
+                    "safety_overview": {
+                        "title": "Safety Overview",
+                        "mainValue": "No Medicines",
+                        "supportingText": "Add your regular medicines in your profile to see safety insights.",
+                        "lastChecked": "Today",
+                        "hasWarnings": False,
+                        "majorCount": 0,
+                        "moderateCount": 0,
+                    },
+                    "active_medicines_count": 0,
+                    "regular_medicines": [],
+                    "medical_conditions": medical_conditions,
+                },
+                status=status.HTTP_200_OK,
+            )
 
         safety_report = PatientSafetyEngine.evaluate_patient_safety(
-            medicines=sample_meds,
+            medicines=regular_meds,
             medical_conditions=medical_conditions,
         )
 
@@ -177,19 +190,21 @@ class PersonalizedSafetyCheckView(APIView):
     """
     POST /api/patients/safety-check/
     Combines canonical drug-drug interactions with patient medical conditions to return
-    personalized safety warnings.
+    personalized safety warnings.  Requires authentication.
     """
     authentication_classes = [SupabaseAuthentication]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         medicines = request.data.get("medicines", [])
         medical_conditions = request.data.get("medicalConditions", "")
 
-        if not medicines and request.user.is_authenticated and hasattr(request.user, "profile"):
-            medicines = request.user.profile.regular_medicines or []
+        # Fall back to authenticated user's profile data when not supplied in body
+        profile = getattr(request.user, 'profile', None)
+        if not medicines and profile:
+            medicines = profile.regular_medicines or []
             if not medical_conditions:
-                medical_conditions = request.user.profile.medical_conditions or ""
+                medical_conditions = profile.medical_conditions or ""
 
         if not medicines:
             return Response(
