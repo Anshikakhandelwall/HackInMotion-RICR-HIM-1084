@@ -251,6 +251,7 @@ Potential blood-pressure warning
 Renal Impairment + NSAID
         ↓
 Potential kidney-related warning
+
 💊 Medicine Management
 MediGuard provides a personal medication cabinet.
 Users can:
@@ -823,6 +824,8 @@ Responsive layouts
 Consistent cards and controls
 Accessible interaction states
 Patient-friendly terminology
+
+
 📱 Responsive Design
 The frontend supports:
 Desktop
@@ -843,6 +846,8 @@ Stacked layouts
 Full-width safety cards
 Mobile-friendly time picker
 Constrained notification panel
+>
+> 
 🧪 Development & Quality
 The frontend uses Oxlint for static analysis.
 Development checks
@@ -885,6 +890,7 @@ npm install
 npm run dev
 Frontend:
 http://localhost:5173
+
 🔑 Environment Variables
 Backend
 Create:
@@ -896,8 +902,6 @@ DB_PASSWORD=
 DB_HOST=
 DB_PORT=5432
 
-SUPABASE_URL=https://<your-project-ref>.supabase.co
-SUPABASE_KEY=<your-anon-key>
 
 OPENFDA_API_KEY=<your-openfda-api-key>
 Important
@@ -907,9 +911,9 @@ to the frontend.
 Frontend
 Create:
 frontend/.env.local
-VITE_SUPABASE_URL=https://<your-project-ref>.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=<your-anon-key>
 Never place the Supabase service-role key in frontend environment variables.
+
+
 🐳 Deployment
 MediGuard can be deployed using Docker-compatible platforms such as:
 Render
@@ -933,6 +937,8 @@ Render / Railway
 Database
    ↓
 Supabase PostgreSQL
+
+
 🧩 Key Design Decisions
 1. Offline-First DDI Engine
 DDInter data is stored locally rather than queried from an external service for every safety check.
@@ -986,6 +992,7 @@ Medication reminders and clinical safety calculations are independent systems.
                               ↓
                        Clinical Results
 A reminder time such as 08:30 AM cannot modify interaction severity or safety calculations.
+
 📊 Feature Overview
 Feature	Status
 User Authentication	✅
@@ -1024,11 +1031,16 @@ Advanced AI Explanations
 Generate more contextual explanations while maintaining clear safety boundaries.
 Interaction History
 Persist every safety check for longitudinal medication-safety tracking.
+
 ⚠️ Medical Disclaimer
 MediGuard is an educational and informational medication-safety tool developed for hackathon purposes.
 It is not a substitute for professional medical advice, diagnosis, or treatment.
 Interaction results should not be used to independently start, stop, or modify medication.
 Users should always consult a qualified healthcare professional or pharmacist before making medication-related decisions.
+
+project live link :
+https://hack-in-motion-ricr-him-1084.vercel.app/
+
 ❤️ Built For
 HackInMotion 2026
 Team RICR — HIM-1084
