@@ -105,7 +105,7 @@ export const LoginForm = ({ onNavigateToSignup, onForgotPassword, onSuccess }) =
     const { data, error } = await signIn(formData.email, formData.password);
 
     if (error) {
-      setSubmitError(t('loginFailed'));
+      setSubmitError(error.message || t('loginFailed'));
       setIsSubmitting(false);
       return;
     }

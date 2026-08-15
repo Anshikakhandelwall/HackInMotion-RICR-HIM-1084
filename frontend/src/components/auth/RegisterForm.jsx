@@ -169,7 +169,7 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
     setIsSubmitting(false);
 
     if (error) {
-      setSubmitError(t('registerFailed'));
+      setSubmitError(friendlySignupError(error.message));
       return;
     }
 

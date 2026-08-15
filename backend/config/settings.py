@@ -23,6 +23,7 @@ load_dotenv(BASE_DIR.parent / '.env')
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_KEY')
 SUPABASE_PUBLISHABLE_KEY = os.getenv('SUPABASE_PUBLISHABLE_KEY', SUPABASE_KEY)
+SUPABASE_JWT_SECRET = os.getenv('SUPABASE_JWT_SECRET')
 
 # Supabase JWT verification — backend only, never exposed to the frontend
 # Derived from SUPABASE_URL when not explicitly set, so only SUPABASE_URL

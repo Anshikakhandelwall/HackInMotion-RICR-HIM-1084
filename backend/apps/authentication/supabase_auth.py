@@ -261,6 +261,9 @@ class SupabaseAuthentication(BaseAuthentication):
         # Therefore we ask Supabase Auth itself to validate the token.
         #
         if algorithm == "HS256":
+            jwt_secret = getattr(settings, "SUPABASE_JWT_SECRET", None)
+            if jwt_secret:
+                return self._verify_hs256_locally(raw_token, jwt_secret)
             return self._verify_hs256_with_supabase(
                 raw_token
             )
@@ -418,6 +421,30 @@ class SupabaseAuthentication(BaseAuthentication):
     # ===================================================================
     # HS256 TOKEN VERIFICATION
     # ===================================================================
+
+    def _verify_hs256_locally(self, raw_token: str, secret: str) -> dict:
+        """
+        Verify an HS256 token using the local SUPABASE_JWT_SECRET.
+        """
+        try:
+            payload = jwt.decode(
+                raw_token,
+                secret,
+                algorithms=["HS256"],
+                options={
+                    "verify_exp": True,
+                    "verify_aud": False,
+                },
+            )
+            sub = payload.get("sub")
+            if not sub:
+                raise AuthenticationFailed("Authentication token is missing the sub claim.")
+            return payload
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed("Authentication token has expired.")
+        except InvalidTokenError as exc:
+            logger.warning("SupabaseAuthentication: local HS256 validation failed: %s", type(exc).__name__)
+            raise AuthenticationFailed("Invalid authentication token.")
 
     def _verify_hs256_with_supabase(
         self,
