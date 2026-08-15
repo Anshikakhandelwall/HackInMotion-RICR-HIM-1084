@@ -1,12 +1,5 @@
 🛡️ MediGuard — Frontend Documentation
-An intuitive, responsive, patient-centric web interface for MediGuard, built to simplify medication cabinet management, display interactive reminder schedules, present clear drug-drug interaction safety insights, and support bilingual English/Hindi localization.
-![React 19](https://img.shields.io/badge/React-19.2.8-61DAFB?style=flat-square&logo=react&logoColor=black)
-![Vite 8](https://img.shields.io/badge/Vite-8.2.0-646CFF?style=flat-square&logo=vite&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
-![CSS3](https://img.shields.io/badge/CSS3-Vanilla_Design_System-1572B6?style=flat-square&logo=css3&logoColor=white)
-![Supabase Auth](https://img.shields.io/badge/Supabase-Auth_JS_SDK-3ECF8E?style=flat-square&logo=supabase&logoColor=white)
-![i18n](https://img.shields.io/badge/Localization-English_%7C_%E0%A4%B9%E0%A4%BF%E0%A4%A8%E0%A5%8D%E0%A4%A6%E0%A5%80-FF6B6B?style=flat-square)
----
+
 📌 Project & Team Information
 Project Name: MediGuard
 Event: HackInMotion — RICR
