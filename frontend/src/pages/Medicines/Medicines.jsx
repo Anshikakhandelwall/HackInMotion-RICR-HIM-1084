@@ -4,15 +4,18 @@ import MedicineListItem from '../../components/medicines/MedicineListItem';
 import MedicineSearch from '../../components/medicines/MedicineSearch';
 import TimePickerModal from '../../components/common/TimePickerModal';
 import { useLanguage } from '../../context/LanguageContext';
+import { useNotifications } from '../../context/NotificationContext';
 import './Medicines.css';
 
 /**
  * Medicines Page Component (Route: /medicines)
  * Dedicated view displaying user's current medication cabinet, search bar, and state logic
- * for loading skeleton, empty state, and active medicine list.
+ * for loading skeleton, empty state, and active medicine list with real reminder times and notifications.
  */
 export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) => {
   const { t } = useLanguage();
+  const { addNotification } = useNotifications();
+
   const initialMeds = currentUser?.regularMedicines || currentUser?.regular_medicines || [];
   const [medicineList, setMedicineList] = useState(initialMeds);
   const [newMedInput, setNewMedInput] = useState('');
@@ -28,19 +31,30 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
     setMedicineList(userMeds);
   }, [currentUser?.regularMedicines, currentUser?.regular_medicines]);
 
-  // Normalize list to array of string names
   const medicinesList = Array.isArray(medicineList) ? medicineList : [];
   const hasMedicines = medicinesList.length > 0;
 
   // Persist updated list to Django backend via profile API
   const saveUpdatedMedicines = async (newList) => {
-    const cleanedNames = newList.map((item) => (typeof item === 'string' ? item : (item?.name || item?.rxnorm_name || ''))).filter(Boolean);
-    setMedicineList(cleanedNames);
+    const formattedList = newList
+      .map((item) => {
+        if (typeof item === 'string') {
+          return { name: item, reminderTime: '08:00 AM' };
+        }
+        return {
+          name: item?.name || item?.rxnorm_name || '',
+          dosage: item?.dosage || '',
+          reminderTime: item?.reminderTime || item?.reminder_time || '08:00 AM',
+        };
+      })
+      .filter((m) => m.name);
+
+    setMedicineList(formattedList);
 
     if (onUpdateProfile) {
       setIsSaving(true);
       try {
-        await onUpdateProfile({ regularMedicines: cleanedNames });
+        await onUpdateProfile({ regularMedicines: formattedList });
       } catch (err) {
         console.error('Failed to sync medicines with backend profile:', err);
       } finally {
@@ -60,7 +74,16 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
     });
 
     if (!exists) {
-      saveUpdatedMedicines([...medicinesList, medName]);
+      const newObj = { name: medName, reminderTime: '08:00 AM' };
+      saveUpdatedMedicines([...medicinesList, newObj]);
+      addNotification({
+        title: 'Medicine Added',
+        message: `Added ${medName} to cabinet. Reminder set for 08:00 AM.`,
+        medicineName: medName,
+        time: '08:00 AM',
+        category: 'Medicine Reminder',
+        type: 'info',
+      });
     }
   };
 
@@ -75,11 +98,25 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
       return String(existingName || '').toLowerCase().trim() === trimmed.toLowerCase();
     });
 
+    const reminderTime = selectedReminderTime || '08:00 AM';
+    const dosage = dosageInput.trim();
+
     if (!exists) {
-      const newMed = selectedReminderTime
-        ? { name: trimmed, reminderTime: selectedReminderTime }
-        : trimmed;
+      const newMed = {
+        name: trimmed,
+        dosage: dosage,
+        reminderTime: reminderTime,
+      };
       saveUpdatedMedicines([...medicinesList, newMed]);
+
+      addNotification({
+        title: 'Dose Reminder Created',
+        message: `Time to take ${trimmed}${dosage ? ` (${dosage})` : ''} - Scheduled for ${reminderTime}.`,
+        medicineName: trimmed,
+        time: reminderTime,
+        category: 'Medicine Reminder',
+        type: 'info',
+      });
     }
 
     setNewMedInput('');
@@ -294,6 +331,4 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
   );
 };
 
-
 export default Medicines;
-
