@@ -84,6 +84,7 @@ MediGuard feels like a **trustworthy digital health companion** — not a raw me
 |---|---|
 | **DDInter 2.0** | Primary drug-drug interaction database (10,874 pairs) |
 | **RxNorm (NLM)** | Medicine normalization & canonical identification (1,400+ medicines) |
+| **openFDA Drug Label API** | Supporting FDA-approved drug label evidence (warnings, precautions, interactions, adverse reactions) |
 
 ---
 
@@ -200,7 +201,9 @@ Full API reference: [`docs/api-documentation.md`](docs/api-documentation.md)
 | `GET` | `/api/profile/` | Get authenticated user profile | ✅ Yes |
 | `POST` | `/api/profile/` | Create / upsert user health profile | ✅ Yes |
 | `PATCH` | `/api/profile/` | Partial update user health profile | ✅ Yes |
-| `POST` | `/api/interactions/check/` | Pairwise drug interaction check | No |
+| `POST` | `/api/interactions/check/` | Unified interaction check (DDInter + openFDA) | ✅ Yes |
+| `GET` | `/api/interactions/openfda/` | Standalone openFDA drug label lookup | ✅ Yes |
+| `POST` | `/api/interactions/explain/` | AI clinical explanation for a drug pair | ✅ Yes |
 | `GET` | `/api/dashboard/overview/` | Dashboard safety metrics | Optional |
 | `POST` | `/api/patients/safety-check/` | Personalized safety check (DDI + conditions) | Optional |
 | `GET` | `/api/auth/supabase/me/` | Verify Supabase JWT, return Django user | ✅ Yes |
@@ -303,7 +306,24 @@ The frontend uses Supabase Auth directly (no custom auth server). Django verifie
 ### 3. RxNorm normalization layer
 User inputs (medicine names, brand names, partial matches) are resolved through a four-step pipeline: exact RxCUI → database PK → case-insensitive name → DDInter mapping. This means "paracetamol", "Paracetamol", "PARACETAMOL", and the DDInter alias all resolve to the same canonical medicine record.
 
-### 4. Personalized safety engine
+### 4. openFDA as supporting evidence — not the primary source
+openFDA is integrated as a best-effort enrichment step in the unified interaction pipeline. After DDInter determines interaction severity, the backend queries the openFDA Drug Label API to fetch FDA-approved label information (warnings, precautions, drug interactions text, adverse reactions) for each resolved medicine. If openFDA is unavailable or times out, the DDInter interaction result is still returned — the failure is surfaced in the response as `"available": false` per affected medicine, without crashing the request. The openFDA API key is stored exclusively in backend environment variables and is never included in any response, log, or exception.
+
+```
+User input
+      ↓
+Input cleanup (strip, deduplicate)
+      ↓
+RxNorm resolution (RxCUI → DB PK → name → DDInter alias)
+      ↓
+DDInter pairwise interaction check (primary source)
+      ↓
+openFDA drug label lookup per resolved medicine (supporting evidence)
+      ↓
+Combined normalized response
+```
+
+### 5. Personalized safety engine
 Beyond raw DDI pairs, the `PatientSafetyEngine` overlays condition-specific contraindication rules (Asthma + NSAIDs, Renal impairment + Metformin/NSAIDs, Hypertension + decongestants) to generate warnings tailored to the user's health profile.
 
 ---
@@ -343,7 +363,7 @@ Beyond raw DDI pairs, the `PatientSafetyEngine` overlays condition-specific cont
 | **Doctor / Pharmacist Mode** | Separate view with full clinical data and interaction mechanism detail |
 | **AI Symptom Explainer** | Use an LLM to generate plain-language explanations for complex interactions |
 | **Allergy Cross-Check** | Warn when a searched medicine conflicts with user-marked known allergies |
-| **Expanded Data Sources** | Integrate openFDA and DailyMed for richer interaction evidence and drug labels |
+| **DailyMed Integration** | Add DailyMed as an additional label evidence source alongside openFDA |
 | **Interaction History Persistence** | Store each safety check in the database for full longitudinal history |
 
 ---

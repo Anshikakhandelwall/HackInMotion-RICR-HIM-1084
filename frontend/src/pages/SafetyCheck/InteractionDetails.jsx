@@ -52,7 +52,9 @@ export const InteractionDetails = ({ interaction, onBack }) => {
     drugA: 'naproxen',
     drugB: 'warfarin',
     severity: 'Major',
-    description: 'Potential major interaction identified between naproxen and warfarin.'
+    description: 'Potential major interaction identified between naproxen and warfarin.',
+    evidenceA: null,
+    evidenceB: null,
   };
 
   const config = getSeverityConfig(displayInteraction.severity);
@@ -88,6 +90,9 @@ export const InteractionDetails = ({ interaction, onBack }) => {
 
     return () => { cancelled = true; };
   }, [displayInteraction.drugA, displayInteraction.drugB, displayInteraction.severity]);
+
+  // Collect openFDA supporting evidence entries for this interaction pair.
+  const fdaEvidenceEntries = [displayInteraction.evidenceA, displayInteraction.evidenceB].filter(Boolean);
 
   return (
     <div className="interaction-details-page-container">
@@ -191,9 +196,61 @@ export const InteractionDetails = ({ interaction, onBack }) => {
 
       {/* Evidence & Sources section */}
       <div className="evidence-sources-section">
-        <h2 className="evidence-sources-title">Evidence & Sources</h2>
+        <h2 className="evidence-sources-title">Evidence &amp; Sources</h2>
+
+        {/* openFDA drug-label supporting evidence (real data from backend when available) */}
+        {fdaEvidenceEntries.length > 0 && (
+          <div style={{ marginBottom: '1.25rem' }}>
+            {fdaEvidenceEntries.map((ev, idx) => (
+              ev.available ? (
+                <div key={idx} className="source-card" style={{ marginBottom: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                    <h4 className="source-name" style={{ margin: 0 }}>
+                      {ev.generic_name || ev.drug}{ev.brand_name ? ` (${ev.brand_name})` : ''}
+                    </h4>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#0E7490', backgroundColor: '#ECFEFF', padding: '0.15rem 0.4rem', borderRadius: '4px' }}>openFDA</span>
+                  </div>
+                  {ev.drug_interactions?.length > 0 && (
+                    <div style={{ marginBottom: '0.3rem' }}>
+                      <strong style={{ fontSize: '0.8rem', color: '#374151' }}>Drug Interactions: </strong>
+                      <span style={{ fontSize: '0.82rem', color: '#4B5563', lineHeight: 1.5 }}>{ev.drug_interactions[0]}</span>
+                    </div>
+                  )}
+                  {ev.warnings?.length > 0 && (
+                    <div style={{ marginBottom: '0.3rem' }}>
+                      <strong style={{ fontSize: '0.8rem', color: '#374151' }}>Warnings: </strong>
+                      <span style={{ fontSize: '0.82rem', color: '#4B5563', lineHeight: 1.5 }}>{ev.warnings[0]}</span>
+                    </div>
+                  )}
+                  {ev.precautions?.length > 0 && (
+                    <div style={{ marginBottom: '0.3rem' }}>
+                      <strong style={{ fontSize: '0.8rem', color: '#374151' }}>Precautions: </strong>
+                      <span style={{ fontSize: '0.82rem', color: '#4B5563', lineHeight: 1.5 }}>{ev.precautions[0]}</span>
+                    </div>
+                  )}
+                  {ev.adverse_reactions?.length > 0 && (
+                    <div>
+                      <strong style={{ fontSize: '0.8rem', color: '#374151' }}>Adverse Reactions: </strong>
+                      <span style={{ fontSize: '0.82rem', color: '#4B5563', lineHeight: 1.5 }}>{ev.adverse_reactions[0]}</span>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div key={idx} className="source-card" style={{ marginBottom: '0.75rem', opacity: 0.7 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <h4 className="source-name" style={{ margin: 0 }}>{ev.drug}</h4>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#0E7490', backgroundColor: '#ECFEFF', padding: '0.15rem 0.4rem', borderRadius: '4px' }}>openFDA</span>
+                  </div>
+                  <p style={{ fontSize: '0.82rem', color: '#9CA3AF', margin: '0.25rem 0 0' }}>{ev.reason || 'FDA label data not available for this drug.'}</p>
+                </div>
+              )
+            ))}
+          </div>
+        )}
+
+        {/* Static authoritative reference sources */}
         <div className="sources-container">
-          {MOCK_SOURCES.map((source, index) => (
+          {REFERENCE_SOURCES.map((source, index) => (
             <div key={index} className="source-card">
               <h4 className="source-name">{source.name}</h4>
               <p className="source-reference">{source.reference}</p>
@@ -208,21 +265,21 @@ export const InteractionDetails = ({ interaction, onBack }) => {
   );
 };
 
-const MOCK_SOURCES = [
+const REFERENCE_SOURCES = [
   {
-    name: 'National Institutes of Health (NIH) Drug Database',
-    reference: 'Supporting clinical reference and documentation regarding concomitant administration risks.',
-    indicator: 'Source'
+    name: 'DDInter 2.0 Database',
+    reference: 'Primary drug-drug interaction classification source (10,874 canonical pairs — Major / Moderate / Minor).',
+    indicator: 'Primary'
   },
   {
-    name: 'FDA Drug Safety Communication',
-    reference: 'Post-marketing surveillance and active safety communications database.',
-    indicator: 'Source'
+    name: 'openFDA Drug Label API',
+    reference: 'FDA-approved drug label information: warnings, precautions, drug interactions, and adverse reactions.',
+    indicator: 'Supporting'
   },
   {
-    name: 'Prescribers\' Digital Reference (PDR)',
-    reference: 'Official guidelines on drug-to-drug interactions classifications and outcomes.',
-    indicator: 'Source'
+    name: 'RxNorm (NLM)',
+    reference: 'Medicine normalization and canonical RxCUI identification used to resolve drug names.',
+    indicator: 'Normalization'
   }
 ];
 

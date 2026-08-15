@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../../components/common/Button';
 import MedicineListItem from '../../components/medicines/MedicineListItem';
-import { checkPersonalizedSafety } from '../../services/interactions/interactionService';
+import { checkInteractions, checkPersonalizedSafety } from '../../services/interactions/interactionService';
 import { saveHistoryRecord } from '../../services/history/historyService';
 import { useLanguage } from '../../context/LanguageContext';
 import './SafetyCheck.css';
@@ -118,18 +118,50 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
     setError(false);
 
     try {
-      const res = await checkPersonalizedSafety(activeMedicines, medicalConditions);
-      if (res && res.success) {
-        const drugInts = res.drug_interactions?.interactions || res.interactions || [];
-        const condWarns = res.patient_condition_warnings || [];
+      // Use the unified interaction endpoint (DDInter + openFDA supporting evidence).
+      // Falls back to personalized safety check if the unified call fails.
+      let res;
+      let usedPersonalized = false;
+      try {
+        res = await checkInteractions(activeMedicines);
+      } catch (unifiedErr) {
+        // Unified endpoint unavailable (e.g. network error) — fall back to personalized check.
+        console.warn('Unified interaction check failed, falling back to personalized safety check:', unifiedErr);
+        res = await checkPersonalizedSafety(activeMedicines, medicalConditions);
+        usedPersonalized = true;
+      }
 
-        const formattedDrugInts = drugInts.map((item, idx) => ({
-          id: item.id || `int-${idx}`,
-          drugA: item.medicine_a?.name || item.medicine_a?.rxnorm_name || 'Medicine A',
-          drugB: item.medicine_b?.name || item.medicine_b?.rxnorm_name || 'Medicine B',
-          severity: item.severity || item.level || 'Moderate',
-          description: item.description || `Potential interaction detected.`,
-        }));
+      if (res && res.success) {
+        // Supporting evidence indexed by drug name for O(1) lookup in InteractionDetails.
+        const evidenceByDrug = {};
+        if (!usedPersonalized && Array.isArray(res.supporting_evidence)) {
+          res.supporting_evidence.forEach((entry) => {
+            if (entry.drug) {
+              evidenceByDrug[entry.drug.toLowerCase()] = entry;
+            }
+          });
+        }
+
+        const drugInts = usedPersonalized
+          ? (res.drug_interactions?.interactions || res.interactions || [])
+          : (res.interactions || []);
+
+        const condWarns = usedPersonalized ? (res.patient_condition_warnings || []) : [];
+
+        const formattedDrugInts = drugInts.map((item, idx) => {
+          const nameA = item.medicine_a?.name || item.medicine_a?.rxnorm_name || 'Medicine A';
+          const nameB = item.medicine_b?.name || item.medicine_b?.rxnorm_name || 'Medicine B';
+          return {
+            id: item.id || `int-${idx}`,
+            drugA: nameA,
+            drugB: nameB,
+            severity: item.severity || item.level || 'Moderate',
+            description: item.description || `Potential interaction detected.`,
+            // Attach openFDA evidence for each drug in this pair (may be undefined).
+            evidenceA: evidenceByDrug[nameA.toLowerCase()] || null,
+            evidenceB: evidenceByDrug[nameB.toLowerCase()] || null,
+          };
+        });
 
         const formattedCondWarns = condWarns.map((item, idx) => ({
           id: `cond-${idx}`,
@@ -137,6 +169,8 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
           drugB: 'Medical Profile',
           severity: item.severity || 'Moderate',
           description: item.description || 'Caution recommended based on medical profile.',
+          evidenceA: null,
+          evidenceB: null,
         }));
 
         const allCards = [...formattedDrugInts, ...formattedCondWarns];
