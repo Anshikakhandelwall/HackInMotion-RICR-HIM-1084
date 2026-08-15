@@ -43,7 +43,12 @@ export const checkInteractions = async (medicines) => {
       }),
     });
 
-    return data;
+    // supporting_evidence is provided by the backend when openFDA is configured.
+    // It is always present in the response (may be an empty array).
+    return {
+      ...data,
+      supporting_evidence: data.supporting_evidence || [],
+    };
   } catch (error) {
     console.error('Error checking drug interactions:', error);
     throw error;
