@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
-from apps.authentication.supabase_auth import SupabaseAuthentication
+from apps.authentication.jwt_auth import JWTAuthentication
 from apps.authentication.models import UserProfile
 from apps.patients.serializers import PatientProfileSerializer
 from apps.patients.services import PatientSafetyEngine
@@ -28,7 +28,7 @@ class PatientProfileView(APIView):
     POST  /api/profile/  — create (idempotent: updates if already exists)
     PATCH /api/profile/  — partial update of the authenticated user's health profile
     """
-    authentication_classes = [SupabaseAuthentication]
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     # ── GET ───────────────────────────────────────────────────────────────────
@@ -129,7 +129,7 @@ class DashboardOverviewView(APIView):
     Provides aggregated dashboard metrics: active medicines count, safety overview summary,
     and recent interaction check highlights for the authenticated user.
     """
-    authentication_classes = [SupabaseAuthentication]
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -192,7 +192,7 @@ class PersonalizedSafetyCheckView(APIView):
     Combines canonical drug-drug interactions with patient medical conditions to return
     personalized safety warnings.  Requires authentication.
     """
-    authentication_classes = [SupabaseAuthentication]
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):

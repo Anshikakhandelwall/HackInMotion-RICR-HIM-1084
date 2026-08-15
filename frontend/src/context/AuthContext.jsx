@@ -12,15 +12,7 @@ import {
 const AuthContext = createContext(null);
 
 /**
- * Provides Supabase authentication state to the component tree.
- *
- * Exposes:
- *   user, session, loading, authEvent,
- *   signIn, signUp, signOut,
- *   resetPassword, updatePassword
- *
- * authEvent reflects the last Supabase auth event string, e.g. 'RECOVERY',
- * so consumers can respond to the password-reset redirect flow.
+ * Provides Django REST Framework JWT authentication state to the component tree.
  */
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -29,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   const [authEvent, setAuthEvent] = useState(null);
 
   useEffect(() => {
-    // 1. Hydrate from the existing session on mount.
+    // 1. Hydrate session from localStorage and /api/auth/me/ on mount.
     getSession()
       .then((res) => {
         const initialSession = res?.data?.session ?? null;
@@ -37,13 +29,13 @@ export const AuthProvider = ({ children }) => {
         setUser(initialSession?.user ?? null);
       })
       .catch((err) => {
-        console.warn('Supabase auth session error:', err);
+        console.warn('Auth session error:', err);
       })
       .finally(() => {
         setLoading(false);
       });
 
-    // 2. Subscribe to future auth state changes (sign-in, sign-out, RECOVERY, …).
+    // 2. Subscribe to auth state changes.
     const { data: { subscription } } = onAuthStateChange((event, updatedSession) => {
       setAuthEvent(event);
       setSession(updatedSession);
@@ -51,29 +43,44 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     });
 
-    // 3. Clean up on unmount.
     return () => subscription.unsubscribe();
   }, []);
+
+  const handleSignIn = async (email, password) => {
+    const result = await authSignIn(email, password);
+    if (!result.error && result.data?.user) {
+      setUser(result.data.user);
+      setSession(result.data.session);
+    }
+    return result;
+  };
+
+  const handleSignUp = async (email, password, metadata) => {
+    const result = await authSignUp(email, password, metadata);
+    if (!result.error && result.data?.user) {
+      setUser(result.data.user);
+      setSession(result.data.session);
+    }
+    return result;
+  };
+
+  const handleSignOut = async () => {
+    await authSignOut();
+    setUser(null);
+    setSession(null);
+    setAuthEvent('SIGNED_OUT');
+  };
 
   const value = {
     user,
     session,
     loading,
     authEvent,
-    signIn: (email, password) => authSignIn(email, password),
-    signUp: (email, password, metadata) => authSignUp(email, password, metadata),
-    signOut: () => authSignOut(),
-    /**
-     * Send a password-reset email.
-     * @param {string} email
-     * @param {string} [redirectTo] — defaults to the current origin
-     */
+    signIn: handleSignIn,
+    signUp: handleSignUp,
+    signOut: handleSignOut,
     resetPassword: (email, redirectTo = window.location.origin) =>
       authResetPassword(email, redirectTo),
-    /**
-     * Set a new password during a RECOVERY session.
-     * @param {string} newPassword
-     */
     updatePassword: (newPassword) => authUpdatePassword(newPassword),
   };
 

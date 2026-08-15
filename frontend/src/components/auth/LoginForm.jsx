@@ -113,7 +113,7 @@ export const LoginForm = ({ onNavigateToSignup, onForgotPassword, onSuccess }) =
     // Auth state is updated globally by AuthContext's onAuthStateChange listener.
     // Pass the session user to onSuccess so App.jsx can handle routing.
     if (onSuccess) {
-      onSuccess({ user: data.session?.user ?? null });
+      onSuccess({ user: data.user });
     }
 
     setIsSubmitting(false);

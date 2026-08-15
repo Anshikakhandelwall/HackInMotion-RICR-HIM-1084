@@ -192,9 +192,7 @@ CORS_ALLOW_CREDENTIALS = True
 # Django REST Framework Configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # Supabase JWT auth is first — it handles all frontend requests.
-        # Token and Session auth remain for the Django admin / legacy flows.
-        'apps.authentication.supabase_auth.SupabaseAuthentication',
+        'apps.authentication.jwt_auth.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],

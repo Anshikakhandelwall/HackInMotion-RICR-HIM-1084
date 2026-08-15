@@ -1,51 +1,61 @@
 /**
- * Central API client for Django backend requests.
+ * Central API client for Django REST Framework backend requests.
  *
- * Automatically attaches the current Supabase access token as:
+ * Automatically attaches the current Django JWT access token as:
  *   Authorization: Bearer <access_token>
  *
  * Behaviour on 401:
- *   Signs the user out of Supabase and dispatches a custom
- *   'auth:unauthorized' window event so the application can
- *   transition to the login view without importing the auth
- *   context here (avoids circular dependencies).
- *
- * Never stores or logs the access token.
+ *   Attempts silent refresh via refreshAccessToken().
+ *   If refresh fails, clears stored auth data and dispatches 'auth:unauthorized'.
  */
-import { supabase } from '../auth/supabaseClient';
+import {
+  getStoredAccessToken,
+  refreshAccessToken,
+  clearStoredAuthData,
+} from '../auth/authService';
 
-const API_BASE = '';  // Relative — relies on Vite dev proxy (/api → Django :8001)
+const API_BASE = '';
 
 /**
- * Fetch wrapper that attaches the Supabase Bearer token.
+ * Fetch wrapper that attaches the JWT Bearer token and handles auto-refresh on 401.
  *
- * @param {string} path      - API path, e.g. '/api/auth/supabase/me/'
+ * @param {string} path      - API path, e.g. '/api/profile/'
  * @param {RequestInit} [options] - Standard fetch options (method, body, etc.)
  * @returns {Promise<any>}   - Parsed JSON response body
  * @throws {Error}           - On HTTP errors or network failures
  */
 export const apiFetch = async (path, options = {}) => {
-  const { data: { session } } = await supabase.auth.getSession();
+  let token = getStoredAccessToken();
 
   const headers = {
     'Content-Type': 'application/json',
     ...(options.headers ?? {}),
   };
 
-  if (session?.access_token) {
-    headers['Authorization'] = `Bearer ${session.access_token}`;
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE}${path}`, {
+  let response = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers,
   });
 
+  // If 401 Unauthorized, attempt to refresh access token silently
+  if (response.status === 401 && token) {
+    const newToken = await refreshAccessToken();
+    if (newToken) {
+      headers['Authorization'] = `Bearer ${newToken}`;
+      response = await fetch(`${API_BASE}${path}`, {
+        ...options,
+        headers,
+      });
+    }
+  }
+
   if (!response.ok) {
-    // On 401 the session is invalid or expired. Sign out silently and
-    // notify the app so it can redirect to login without a stale state.
     if (response.status === 401) {
-      supabase.auth.signOut().catch(() => {});
+      clearStoredAuthData();
       window.dispatchEvent(new CustomEvent('auth:unauthorized'));
     }
 
@@ -53,8 +63,9 @@ export const apiFetch = async (path, options = {}) => {
     try {
       const body = await response.json();
       if (body?.detail) message = body.detail;
+      else if (body?.message) message = body.message;
     } catch {
-      // Non-JSON error body — keep the status message.
+      // Non-JSON error body — keep default message
     }
     throw new Error(message);
   }
