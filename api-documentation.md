@@ -203,76 +203,190 @@ Retrieves canonical medicine information using its standardized RxNorm Concept U
 
 ## 3. Drug Interaction APIs (`apps.interactions`)
 
-### 3.1 Pairwise Drug Interaction Check API
+### 3.1 Unified Drug Interaction Check API (DDInter + openFDA)
 
 - **Endpoint**: `POST /api/interactions/check/`
 - **Name**: `interactions:interaction-check`
 
 #### Initialization
-- **Serializer**: `InteractionCheckRequestSerializer` ([apps/interactions/serializers.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/apps/interactions/serializers.py))
-- **Service Engine**: `InteractionEngine` ([apps/interactions/services.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/apps/interactions/services.py))
-- **View**: `InteractionCheckView` ([apps/interactions/views.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/apps/interactions/views.py)) extending DRF `APIView`.
-- **Route**: `path("check/", InteractionCheckView.as_view(), name="interaction-check")` in [apps/interactions/urls.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/apps/interactions/urls.py), included under `/api/interactions/` in [config/urls.py](file:///home/lenovo/Documents/HackInMotion-RICR-HIM-1084/backend/config/urls.py).
+- **Serializer**: `InteractionCheckRequestSerializer` (`apps/interactions/serializers.py`)
+- **Service Engine**: `InteractionEngine` (`apps/interactions/services.py`)
+- **openFDA helper**: `_fetch_openfda_evidence()` (`apps/interactions/views.py`)
+- **View**: `InteractionCheckView` (`apps/interactions/views.py`) extending DRF `APIView`.
+- **Route**: `path("check/", ...)` in `apps/interactions/urls.py`, included under `/api/interactions/`.
+
+#### Authentication
+- **Authentication**: `SupabaseAuthentication` (Supabase JWT RS256 via JWKS)
+- **Permissions**: `IsAuthenticated` — unauthenticated requests receive `401 Unauthorized`.
 
 #### What It Does
-Screens a list of medicines against the 10,874 canonical drug interaction pairs database (`DrugInteraction`). It resolves raw medicine names, RxCUIs, or IDs to canonical Medicine records, generates all unique pairwise combinations $N(N-1)/2$, and evaluates interaction severity (`Major`, `Moderate`, `Minor`).
+Unified interaction pipeline:
+
+```
+medicines input
+      ↓
+Validation (serializer)
+      ↓
+RxNorm resolution  (RxCUI → DB PK → name → DDInter alias)
+      ↓
+DDInter pairwise interaction check  (primary source — offline DB)
+      ↓
+openFDA drug label lookup per medicine  (best-effort supporting evidence)
+      ↓
+Combined normalized response
+```
+
+1. **RxNorm resolution** (`InteractionEngine.resolve_medicines`): resolves each input to a canonical `Medicine` record via four fallback strategies (RxCUI → PK → case-insensitive name → DDInter alias).
+2. **DDInter pairwise check**: generates N(N-1)/2 unique pairs and executes a single optimized ORM query with combined `Q` filters.
+3. **openFDA enrichment** (`_fetch_openfda_evidence`): for each resolved medicine, queries the openFDA Drug Label API for warnings, precautions, drug interactions text, and adverse reactions. If openFDA is unavailable or times out, the DDInter result is still returned — the failure appears as `"available": false` in `supporting_evidence`. The API key is **never** included in any response.
 
 #### Request Specification
 - **HTTP Method**: `POST`
-- **Headers**: `Content-Type: application/json`
-- **Request Body Payload**:
+- **Headers**: `Content-Type: application/json`, `Authorization: Bearer <supabase_token>`
+- **Request Body**:
   ```json
   {
-    "medicines": ["161", "11289"]
+    "medicines": ["warfarin", "aspirin"]
   }
   ```
+  Accepts medicine names, RxCUIs, or database IDs.
 
-#### Provided Service
-- **Validation**: Ensures the `medicines` array is provided and not empty. Returns HTTP 400 Bad Request on invalid payloads.
-- **Canonical Resolution**: Maps RxCUIs, database primary keys, RxNorm names, and DDInter drug mappings to canonical `Medicine` objects.
-- **Pairwise Combination Logic**: Generates unique pairs and canonicalizes ordering `(medicine_a_id < medicine_b_id)`.
-- **Performance Optimization**: Executes a single optimized Django ORM query with combined `Q` filters and `select_related("medicine_a", "medicine_b")` to prevent N+1 queries.
-- **Success Response (200 OK)**:
-  ```json
-  {
-    "success": true,
-    "has_interactions": true,
-    "summary": {
-      "total_checked": 2,
-      "pairs_checked": 1,
-      "interactions_found": 1,
-      "major": 0,
-      "moderate": 1,
-      "minor": 0
+#### Success Response (200 OK)
+```json
+{
+  "success": true,
+  "has_interactions": true,
+  "summary": {
+    "total_checked": 2,
+    "pairs_checked": 1,
+    "interactions_found": 1,
+    "major": 1,
+    "moderate": 0,
+    "minor": 0
+  },
+  "checked_medicines": [
+    { "id": 1, "rxcui": "11289", "name": "warfarin", "rxnorm_name": "warfarin", "tty": "IN" },
+    { "id": 2, "rxcui": "1191",  "name": "aspirin",  "rxnorm_name": "aspirin",  "tty": "IN" }
+  ],
+  "interactions": [
+    {
+      "id": 42,
+      "medicine_a": { "id": 1, "rxcui": "11289", "name": "warfarin", "rxnorm_name": "warfarin" },
+      "medicine_b": { "id": 2, "rxcui": "1191",  "name": "aspirin",  "rxnorm_name": "aspirin"  },
+      "severity": "Major",
+      "level": "Major",
+      "description": "Potential major interaction identified between warfarin and aspirin."
+    }
+  ],
+  "supporting_evidence": [
+    {
+      "drug": "warfarin",
+      "source": "openFDA",
+      "available": true,
+      "generic_name": "warfarin",
+      "brand_name": "Coumadin",
+      "rxcui": "11289",
+      "drug_interactions": ["Aspirin may increase bleeding risk when used with warfarin."],
+      "warnings": ["Monitor INR closely."],
+      "precautions": ["Avoid concurrent NSAID use."],
+      "adverse_reactions": ["Bleeding, haemorrhage."]
     },
-    "checked_medicines": [
-      {
-        "id": 1,
-        "rxcui": "161",
-        "name": "acetaminophen",
-        "rxnorm_name": "acetaminophen",
-        "tty": "IN"
-      },
-      {
-        "id": 2,
-        "rxcui": "11289",
-        "name": "warfarin",
-        "rxnorm_name": "warfarin",
-        "tty": "IN"
-      }
-    ],
-    "interactions": [
-      {
-        "id": 10,
-        "medicine_a": {
-          "id": 1,
-        "severity": "Moderate",
-        "level": "Moderate",
-        "description": "Potential moderate interaction identified between acetaminophen and warfarin."
-      }
-    ]
+    {
+      "drug": "aspirin",
+      "source": "openFDA",
+      "available": false,
+      "reason": "No drug label found in openFDA."
+    }
+  ]
+}
+```
+
+#### Error Responses
+| Status | Condition |
+|--------|-----------|
+| `400 Bad Request` | `medicines` field missing or empty |
+| `401 Unauthorized` | Missing or invalid Supabase JWT |
+
+---
+
+### 3.2 openFDA Drug Label Lookup API
+
+- **Endpoint**: `GET /api/interactions/openfda/?drug=<name>`
+- **Name**: `interactions:openfda-label`
+
+#### Authentication
+- **Authentication**: `SupabaseAuthentication`
+- **Permissions**: `IsAuthenticated`
+
+#### What It Does
+Fetches and returns normalized drug label information from the openFDA Drug Label API for a single medicine. This is a standalone supporting evidence endpoint — it does **not** replace the DDInter interaction pipeline.
+
+The `OPENFDA_API_KEY` is stored exclusively in the backend environment and is never included in any response.
+
+#### Request Specification
+- **HTTP Method**: `GET`
+- **Query Parameters**: `drug` *(string, required)* — medicine name to look up.
+- **Example**: `GET /api/interactions/openfda/?drug=warfarin`
+
+#### Success Response (200 OK)
+```json
+{
+  "success": true,
+  "source": "openFDA",
+  "drug": {
+    "name": "warfarin",
+    "generic_name": "warfarin",
+    "brand_name": "Coumadin",
+    "rxcui": "11289"
+  },
+  "safety_information": {
+    "drug_interactions": ["Aspirin increases bleeding risk."],
+    "warnings": ["Monitor INR closely."],
+    "precautions": ["Avoid NSAIDs."],
+    "adverse_reactions": ["Bleeding."]
   }
-  ```
+}
+```
+
+#### Error Responses
+| Status | Condition |
+|--------|-----------|
+| `400 Bad Request` | `drug` query parameter missing |
+| `401 Unauthorized` | Missing or invalid Supabase JWT |
+| `404 Not Found` | Drug not found in openFDA |
+| `503 Service Unavailable` | API key not configured or openFDA unreachable/timeout |
+| `502 Bad Gateway` | openFDA returned an unexpected HTTP error |
+
+---
+
+### 3.3 AI Interaction Explanation API
+
+- **Endpoint**: `POST /api/interactions/explain/`
+- **Name**: `interactions:interaction-explain`
+
+#### What It Does
+Accepts a drug pair (and optional severity), invokes the AI layer, and returns structured plain-language clinical guidance: what the interaction means, what to watch for, and what to do.
+
+#### Request Specification
+```json
+{ "drug_a": "warfarin", "drug_b": "aspirin", "severity": "Major" }
+```
+
+#### Success Response (200 OK)
+```json
+{
+  "success": true,
+  "drug_a": "warfarin",
+  "drug_b": "aspirin",
+  "severity": "Major",
+  "ai_explanation": {
+    "what_does_this_mean": "...",
+    "what_to_watch_for": "...",
+    "what_should_you_do": "...",
+    "disclaimer": "..."
+  }
+}
+```
 
 ---
 

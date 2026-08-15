@@ -170,9 +170,13 @@ DB_PORT=5432
 # Supabase — backend JWT verification
 SUPABASE_URL=https://<your-project-ref>.supabase.co
 SUPABASE_KEY=<your-anon-key>
+
+# openFDA — supporting drug label evidence (never expose this key to the frontend)
+OPENFDA_API_KEY=<your-openfda-api-key>
 ```
 
 > `SUPABASE_JWT_ISSUER` and `SUPABASE_JWKS_URL` are derived automatically from `SUPABASE_URL`. Override only if needed.
+> `OPENFDA_API_KEY` is optional for local development — if absent, the `/api/interactions/check/` endpoint still returns DDInter results with `supporting_evidence: []`.
 
 ### `frontend/.env.local`
 
