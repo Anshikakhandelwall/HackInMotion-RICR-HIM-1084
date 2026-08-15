@@ -14,7 +14,7 @@ import {
   clearStoredAuthData,
 } from '../auth/authService';
 
-const API_BASE = '';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 /**
  * Safely parse JSON response without throwing SyntaxError on empty/HTML/non-JSON bodies.
