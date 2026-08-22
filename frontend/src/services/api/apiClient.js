@@ -38,7 +38,7 @@ const safeJsonParse = async (response) => {
  * @throws {Error}           - On HTTP errors or network failures
  */
 export const apiFetch = async (path, options = {}) => {
-  let token = getStoredAccessToken();
+  let token = await getStoredAccessToken();
 
   const headers = {
     'Content-Type': 'application/json',
