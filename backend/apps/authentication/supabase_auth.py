@@ -372,6 +372,10 @@ class SupabaseAuthentication(BaseAuthentication):
                 #
                 audience="authenticated",
 
+                # Allow up to 60 seconds of clock skew between this server
+                # and Supabase's auth servers (fixes ImmatureSignatureError).
+                leeway=60,
+
                 options={
                     "verify_exp": True,
                     "verify_iss": True,
