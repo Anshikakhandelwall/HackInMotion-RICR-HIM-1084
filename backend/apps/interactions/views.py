@@ -114,10 +114,15 @@ class InteractionCheckView(APIView):
         # ── Step 1: DDInter/RxNorm pairwise interaction check ─────────────────
         result = InteractionEngine.check_interactions(medicines_list)
 
-        # ── Step 2: openFDA supporting evidence (best-effort) ─────────────────
+        # ── Step 2: openFDA supporting evidence (best-effort, never blocks) ───
         # openFDA enriches each resolved medicine with label information.
-        # A failure here never prevents DDInter results from being returned.
-        supporting_evidence = _fetch_openfda_evidence(result.get("checked_medicines", []))
+        # Any failure (timeout, missing key, network error) returns empty list
+        # so DDInter results are always returned to the frontend.
+        try:
+            supporting_evidence = _fetch_openfda_evidence(result.get("checked_medicines", []))
+        except Exception:
+            logger.warning("openFDA evidence fetch failed — returning interaction results without evidence.")
+            supporting_evidence = []
 
         return Response(
             {

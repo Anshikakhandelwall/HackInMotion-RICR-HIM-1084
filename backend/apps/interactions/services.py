@@ -4,6 +4,32 @@ from apps.medicines.models import Medicine, DDInterDrugMapping
 from apps.interactions.models import DrugInteraction
 
 
+# Common brand/generic name aliases → DDInter canonical names
+MEDICINE_ALIASES = {
+    "aspirin": "Acetylsalicylic acid",
+    "paracetamol": "Acetaminophen",
+    "tylenol": "Acetaminophen",
+    "advil": "Ibuprofen",
+    "motrin": "Ibuprofen",
+    "aleve": "Naproxen",
+    "vitamin k": "Phytomenadione",
+    "coumadin": "Warfarin",
+    "plavix": "Clopidogrel",
+    "lipitor": "Atorvastatin",
+    "zocor": "Simvastatin",
+    "crestor": "Rosuvastatin",
+    "prozac": "Fluoxetine",
+    "zoloft": "Sertraline",
+    "xanax": "Alprazolam",
+    "valium": "Diazepam",
+    "ambien": "Zolpidem",
+    "viagra": "Sildenafil",
+    "cialis": "Tadalafil",
+    "metformin": "Metformin",
+    "glucophage": "Metformin",
+}
+
+
 class InteractionEngine:
     """
     Service engine for resolving medicine identifiers and executing pairwise
@@ -29,8 +55,19 @@ class InteractionEngine:
 
             med = None
 
+            # 0. Resolve common brand/alias names to DDInter canonical names
+            canonical = MEDICINE_ALIASES.get(item_str.lower())
+            if canonical:
+                mapping = DDInterDrugMapping.objects.filter(
+                    ddinter_drug_name__iexact=canonical,
+                    mapping_status="matched",
+                ).select_related("medicine").first()
+                if mapping:
+                    med = mapping.medicine
+
             # 1. Try matching by RxCUI
-            med = Medicine.objects.filter(rxcui=item_str).first()
+            if not med:
+                med = Medicine.objects.filter(rxcui=item_str).first()
 
             # 2. If digit, try matching by PK ID
             if not med and item_str.isdigit():
@@ -40,7 +77,7 @@ class InteractionEngine:
             if not med:
                 med = Medicine.objects.filter(rxnorm_name__iexact=item_str).first()
 
-            # 4. Try DDInter mapping lookup
+            # 4. Try DDInter mapping lookup (exact)
             if not med:
                 mapping = DDInterDrugMapping.objects.filter(
                     ddinter_drug_name__iexact=item_str,
@@ -48,6 +85,23 @@ class InteractionEngine:
                 ).select_related("medicine").first()
                 if mapping:
                     med = mapping.medicine
+
+            # 5. Try partial DDInter name match (e.g. "Aspirin" → "Acetylsalicylic acid" won't
+            #    match, but "Acetaminophen" will match "acetaminophen"). Also catches brand names
+            #    that are substrings of the DDInter name.
+            if not med:
+                mapping = DDInterDrugMapping.objects.filter(
+                    ddinter_drug_name__icontains=item_str,
+                    mapping_status="matched",
+                ).select_related("medicine").first()
+                if mapping:
+                    med = mapping.medicine
+
+            # 6. Try partial rxnorm_name match (handles "Aspirin" → "aspirin 81 MG" etc.)
+            if not med:
+                med = Medicine.objects.filter(
+                    rxnorm_name__icontains=item_str
+                ).first()
 
             if med and med.id not in resolved_ids:
                 resolved_ids.add(med.id)

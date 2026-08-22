@@ -24,7 +24,7 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 OPENFDA_LABEL_URL = "https://api.fda.gov/drug/label.json"
-_REQUEST_TIMEOUT = 10  # seconds
+_REQUEST_TIMEOUT = 5  # seconds
 
 
 def _get_api_key() -> str:
