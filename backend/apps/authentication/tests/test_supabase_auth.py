@@ -72,6 +72,7 @@ def _mock_jwks_client(public_key):
     """
     signing_key = MagicMock()
     signing_key.key = public_key
+    signing_key.algorithm_name = "RS256"
     mock_client = MagicMock()
     mock_client.get_signing_key_from_jwt.return_value = signing_key
     return mock_client
@@ -147,7 +148,7 @@ class SupabaseAuthenticationTests(TestCase):
     def test_expired_jwt_raises_401(self):
         token, _ = _make_token(
             self.private_key,
-            {"exp": int(time.time()) - 10},  # expired 10 seconds ago
+            {"exp": int(time.time()) - 120},  # expired 120 seconds ago (beyond 60s leeway)
         )
         with self._patch_jwks():
             request = self._request(f"Bearer {token}")
