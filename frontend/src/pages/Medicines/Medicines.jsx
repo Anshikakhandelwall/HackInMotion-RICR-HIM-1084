@@ -54,7 +54,9 @@ export const Medicines = ({ currentUser, onUpdateProfile, isLoading = false }) =
     if (onUpdateProfile) {
       setIsSaving(true);
       try {
-        await onUpdateProfile({ regularMedicines: formattedList });
+        // Backend expects plain strings, not objects
+        const namesOnly = formattedList.map((m) => m.name);
+        await onUpdateProfile({ regularMedicines: namesOnly });
       } catch (err) {
         console.error('Failed to sync medicines with backend profile:', err);
       } finally {

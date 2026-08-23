@@ -196,8 +196,8 @@ export const MedicineSearch = ({ currentMedicines = [], onAddMedicine }) => {
           {!isLoading && !isError && searchResults.length > 0 && (
             <ul className="search-results-list">
               {searchResults.map((res, index) => {
-                const resName = typeof res === 'string' ? res : (res?.name || 'Unknown medicine');
-                const isAdded = isMedicineAlreadyAdded(resName, res?.id);
+                  const resName = typeof res === 'string' ? res : (res?.rxnorm_name || res?.name || 'Unknown medicine');
+                  const isAdded = isMedicineAlreadyAdded(resName, res?.id);
 
                 return (
                   <li key={res?.id || `res-${index}`} className="search-result-item">
@@ -222,13 +222,27 @@ export const MedicineSearch = ({ currentMedicines = [], onAddMedicine }) => {
             </ul>
           )}
 
-          {/* 5. No Results State */}
+          {/* 5. No Results State — allow adding the typed name directly */}
           {!isLoading && !isError && !noticeMessage && searchResults.length === 0 && (
             <div className="search-state-box no-results">
               <p className="no-results-title">No medicines found</p>
               <p className="no-results-subtitle">
-                Try checking the spelling or using a different name.
+                Not in our database? You can still add it.
               </p>
+              <button
+                type="button"
+                className="result-add-btn"
+                style={{ marginTop: '0.5rem' }}
+                onClick={() => {
+                  if (onAddMedicine && query.trim()) {
+                    onAddMedicine({ name: query.trim() });
+                    setQuery('');
+                    setIsDropdownOpen(false);
+                  }
+                }}
+              >
+                + Add "{query.trim()}"
+              </button>
             </div>
           )}
         </div>
