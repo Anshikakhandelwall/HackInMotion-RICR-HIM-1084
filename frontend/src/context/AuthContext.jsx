@@ -21,34 +21,78 @@ export const AuthProvider = ({ children }) => {
   const [authEvent, setAuthEvent] = useState(null);
 
   useEffect(() => {
-    // 1. Hydrate session from localStorage and /api/auth/me/ on mount.
-    getSession()
-      .then((res) => {
-        const initialSession = res?.data?.session ?? null;
-        setSession(initialSession);
-        setUser(initialSession?.user ?? null);
-      })
-      .catch((err) => {
-        console.warn('Auth session error:', err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    const isSessionExpired = () => {
+      const loginTimeStr = localStorage.getItem('mediguard_login_time');
+      if (!loginTimeStr) return false;
+      const loginTime = parseInt(loginTimeStr, 10);
+      const timeElapsed = Date.now() - loginTime;
+      const FIFTEEN_MINUTES = 15 * 60 * 1000;
+      return timeElapsed > FIFTEEN_MINUTES;
+    };
 
-    // 2. Subscribe to auth state changes.
-    const { data: { subscription } } = onAuthStateChange((event, updatedSession) => {
-      setAuthEvent(event);
-      setSession(updatedSession);
-      setUser(updatedSession?.user ?? null);
+    const handleSessionExpiration = async () => {
+      localStorage.removeItem('mediguard_login_time');
+      try {
+        await authSignOut();
+      } catch (e) {
+        console.error('Failed to sign out expired session:', e);
+      }
+      setUser(null);
+      setSession(null);
       setLoading(false);
+    };
+
+    // 1. Hydrate session on mount
+    if (isSessionExpired()) {
+      handleSessionExpiration();
+    } else {
+      getSession()
+        .then((res) => {
+          const initialSession = res?.data?.session ?? null;
+          if (isSessionExpired()) {
+            handleSessionExpiration();
+          } else {
+            setSession(initialSession);
+            setUser(initialSession?.user ?? null);
+          }
+        })
+        .catch((err) => {
+          console.warn('Auth session error:', err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+
+    // 2. Subscribe to auth state changes
+    const { data: { subscription } } = onAuthStateChange((event, updatedSession) => {
+      if (isSessionExpired()) {
+        handleSessionExpiration();
+      } else {
+        setAuthEvent(event);
+        setSession(updatedSession);
+        setUser(updatedSession?.user ?? null);
+        setLoading(false);
+      }
     });
 
-    return () => subscription.unsubscribe();
+    // 3. Background dynamic session checker (every 10 seconds)
+    const interval = setInterval(() => {
+      if (isSessionExpired()) {
+        handleSessionExpiration();
+      }
+    }, 10000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearInterval(interval);
+    };
   }, []);
 
   const handleSignIn = async (email, password) => {
     const result = await authSignIn(email, password);
     if (!result.error && result.data?.user) {
+      localStorage.setItem('mediguard_login_time', Date.now().toString());
       setUser(result.data.user);
       setSession(result.data.session);
     }
@@ -68,6 +112,7 @@ export const AuthProvider = ({ children }) => {
 
   const handleSignOut = async () => {
     await authSignOut();
+    localStorage.removeItem('mediguard_login_time');
     setUser(null);
     setSession(null);
     setAuthEvent('SIGNED_OUT');
