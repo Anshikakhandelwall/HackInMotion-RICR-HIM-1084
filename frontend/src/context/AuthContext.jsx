@@ -57,9 +57,11 @@ export const AuthProvider = ({ children }) => {
 
   const handleSignUp = async (email, password, metadata) => {
     const result = await authSignUp(email, password, metadata);
-    if (!result.error && result.data?.user) {
-      setUser(result.data.user);
-      setSession(result.data.session);
+    if (!result.error) {
+      // Clear any automatic local session to prevent auto-login
+      await authSignOut();
+      setUser(null);
+      setSession(null);
     }
     return result;
   };

@@ -342,7 +342,6 @@ export const translations = {
     hourTabLabel: "Hour",
     minuteTabLabel: "Minute",
     doneBtn: "Done",
-    cancelBtn: "Cancel",
     reminderTimeLabel: "Reminder Time",
     addTimeBtn: "+ Add Time",
 
@@ -698,7 +697,6 @@ export const translations = {
     hourTabLabel: "घंटा",
     minuteTabLabel: "मिनट",
     doneBtn: "हो गया",
-    cancelBtn: "रद्द करें",
     reminderTimeLabel: "रिमाइंडर का समय",
     addTimeBtn: "+ समय जोड़ें",
 

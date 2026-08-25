@@ -165,8 +165,6 @@ function App() {
     setCurrentView('dashboard_shell');
   };
 
-  // After password-reset email sent → back to login
-  const handleForgotPasswordSuccess = () => setCurrentView('login');
 
   // After new password set successfully → back to login (Supabase signs out)
   const handleResetPasswordSuccess = () => {
@@ -229,7 +227,6 @@ function App() {
         {currentView === 'forgot_password' && (
           <ForgotPasswordPage
             onBackToLogin={handleNavigateToLogin}
-            onSuccess={handleForgotPasswordSuccess}
           />
         )}
 
