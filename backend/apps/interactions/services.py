@@ -86,9 +86,8 @@ class InteractionEngine:
                 if mapping:
                     med = mapping.medicine
 
-            # 5. Try partial DDInter name match (e.g. "Aspirin" → "Acetylsalicylic acid" won't
-            #    match, but "Acetaminophen" will match "acetaminophen"). Also catches brand names
-            #    that are substrings of the DDInter name.
+            # 5. Try partial DDInter name match — input may be a substring of the
+            #    DDInter canonical name (e.g. "Warfarin" inside "Warfarin sodium").
             if not med:
                 mapping = DDInterDrugMapping.objects.filter(
                     ddinter_drug_name__icontains=item_str,
@@ -97,11 +96,61 @@ class InteractionEngine:
                 if mapping:
                     med = mapping.medicine
 
-            # 6. Try partial rxnorm_name match (handles "Aspirin" → "aspirin 81 MG" etc.)
+            # 6. Try DB name contains input (short generic inside longer input is
+            #    handled in step 7 below — this catches the reverse direction first).
             if not med:
                 med = Medicine.objects.filter(
                     rxnorm_name__icontains=item_str
                 ).first()
+
+            # 7. Full drug-name string from RxNorm/search (e.g. "Warfarin 5 MG Oral
+            #    Tablet"): extract each word token and try to resolve the first
+            #    meaningful token. This handles the common case where the user selects
+            #    a full RxNorm concept name from the search dropdown and the local DB
+            #    only stores the bare generic name ("warfarin").
+            if not med and len(item_str.split()) > 1:
+                tokens = item_str.split()
+                for token in tokens:
+                    # Skip dose/form tokens that are never drug names
+                    if token.upper() in {
+                        'MG', 'MCG', 'ML', 'TABLET', 'ORAL', 'CAPSULE',
+                        'SOLUTION', 'INJECTION', 'TOPICAL', 'PATCH',
+                        'EXTENDED', 'RELEASE', 'DELAYED', 'PRODUCT',
+                    }:
+                        continue
+                    # Try alias first
+                    alias_hit = MEDICINE_ALIASES.get(token.lower())
+                    if alias_hit:
+                        mapping = DDInterDrugMapping.objects.filter(
+                            ddinter_drug_name__iexact=alias_hit,
+                            mapping_status="matched",
+                        ).select_related("medicine").first()
+                        if mapping:
+                            med = mapping.medicine
+                            break
+                    # Try exact rxnorm_name
+                    candidate = Medicine.objects.filter(
+                        rxnorm_name__iexact=token
+                    ).first()
+                    if candidate:
+                        med = candidate
+                        break
+                    # Try DDInter exact
+                    mapping = DDInterDrugMapping.objects.filter(
+                        ddinter_drug_name__iexact=token,
+                        mapping_status="matched",
+                    ).select_related("medicine").first()
+                    if mapping:
+                        med = mapping.medicine
+                        break
+                    # Try DB name contains token (only for tokens ≥ 4 chars)
+                    if len(token) >= 4:
+                        candidate = Medicine.objects.filter(
+                            rxnorm_name__icontains=token
+                        ).first()
+                        if candidate:
+                            med = candidate
+                            break
 
             if med and med.id not in resolved_ids:
                 resolved_ids.add(med.id)
