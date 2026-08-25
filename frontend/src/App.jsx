@@ -11,6 +11,7 @@ import SettingsPage from './pages/Settings/SettingsPage';
 import Sidebar from './components/dashboard/Sidebar';
 import Header from './components/dashboard/Header';
 import InteractionDetails from './pages/SafetyCheck/InteractionDetails';
+import SafetyCheckResults from './pages/SafetyCheck/SafetyCheckResults';
 import ForgotPasswordPage from './pages/ForgotPassword/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPassword/ResetPasswordPage';
 import LandingPage from './pages/Landing/LandingPage';
@@ -36,6 +37,10 @@ function App() {
   const [dashboardRoute, setDashboardRoute] = useState('/dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedInteraction, setSelectedInteraction] = useState(null);
+  // Safety Check Results state
+  const [safetyCheckResult, setSafetyCheckResult] = useState(null);
+  const [safetyCheckMedicines, setSafetyCheckMedicines] = useState([]);
+  const [safetyCheckMeta, setSafetyCheckMeta] = useState({});
 
   // ── Handle backend 401 → force logout ──────────────────────────────────
   // apiClient dispatches this event when the Django API rejects the token.
@@ -274,6 +279,26 @@ function App() {
                     currentUser={fullUser}
                     onNavigate={handleDashboardNavigate}
                     onViewDetails={(interaction) => {
+                      setSelectedInteraction(interaction);
+                      setDashboardRoute('/interaction-details');
+                    }}
+                    onResultsReady={(result, medicines, meta) => {
+                      setSafetyCheckResult(result);
+                      setSafetyCheckMedicines(medicines);
+                      setSafetyCheckMeta(meta);
+                      setDashboardRoute('/safety-check-results');
+                    }}
+                  />
+                )}
+
+                {dashboardRoute === '/safety-check-results' && (
+                  <SafetyCheckResults
+                    result={safetyCheckResult}
+                    medicines={safetyCheckMedicines}
+                    checkMeta={safetyCheckMeta}
+                    currentUser={fullUser}
+                    onBack={() => setDashboardRoute('/safety-check')}
+                    onViewInteraction={(interaction) => {
                       setSelectedInteraction(interaction);
                       setDashboardRoute('/interaction-details');
                     }}

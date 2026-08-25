@@ -39,7 +39,7 @@ const getSeverityConfig = (severity) => {
 
 // ── SafetyCheck component ─────────────────────────────────────────────────────
 
-export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
+export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails, onResultsReady }) => {
   // --- User's existing medicines ---
   const profileMeds = Array.isArray(currentUser?.regularMedicines)
     ? currentUser.regularMedicines
@@ -173,6 +173,10 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
   const runCheck = async () => {
     if (allSelected.length < 1) return;
     setPhase('loading');
+    const meta = {
+      checkId: `MG-${Date.now().toString(36).toUpperCase()}`,
+      timestamp: new Date().toISOString(),
+    };
 
     try {
       let res;
@@ -224,6 +228,12 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails }) => {
         const allCards = [...formattedDrug, ...formattedCond];
         setInteractions(allCards);
         setPhase('results');
+
+        // Navigate to the full Results page if the handler is provided
+        if (onResultsReady) {
+          onResultsReady(res, allSelected, meta);
+          return;
+        }
 
         const medNames = allSelected.map(getMedName);
         saveHistoryRecord({
