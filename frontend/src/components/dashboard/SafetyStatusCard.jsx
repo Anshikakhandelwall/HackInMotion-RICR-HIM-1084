@@ -7,7 +7,7 @@ import './SafetyStatusCard.css';
  * Displays prominent medication safety status with warning count and Check Safety CTA.
  * Gracefully handles missing/null data without crashing.
  */
-export const SafetyStatusCard = ({ data, onNavigate }) => {
+export const SafetyStatusCard = ({ data, lastCheck, onNavigate }) => {
   // Graceful fallback for missing/null data
   if (!data) {
     return (
@@ -45,11 +45,17 @@ export const SafetyStatusCard = ({ data, onNavigate }) => {
 
   const {
     title = 'Safety Overview',
-    mainValue = '2 Active Warnings',
-    supportingText = 'Potential medication interactions need your attention.',
-    lastChecked = 'Today, 10:30 AM',
-    hasWarnings = true,
+    mainValue = 'All Clear',
+    supportingText = 'No active medication interactions identified.',
+    lastChecked = 'Today',
+    hasWarnings = false,
   } = data;
+
+  // Medicines from last local history check
+  const lastMeds = lastCheck?.medicines || [];
+  const lastDate = lastCheck ? `${lastCheck.date}${lastCheck.time ? ' · ' + lastCheck.time : ''}` : null;
+  const lastStatus = lastCheck?.status || null;
+  const lastIntCount = lastCheck?.interactionsCount ?? null;
 
   return (
     <div className="dashboard-card safety-status-card">
@@ -85,6 +91,47 @@ export const SafetyStatusCard = ({ data, onNavigate }) => {
       </div>
 
       <p className="safety-description">{supportingText}</p>
+
+      {/* ── Last safety check detail panel ─────────────────────────────── */}
+      {lastCheck && lastMeds.length > 0 && (
+        <div className="ssc-last-check-panel">
+          <div className="ssc-last-check-header">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M12 8v4l3 3" /><circle cx="12" cy="12" r="9" />
+            </svg>
+            <span className="ssc-last-check-label">Last check</span>
+            {lastDate && <span className="ssc-last-check-date">{lastDate}</span>}
+            {lastStatus && (
+              <span className={`ssc-last-check-status ${lastStatus === 'Safe' ? 'ssc-status--safe' : 'ssc-status--attention'}`}>
+                {lastStatus}
+              </span>
+            )}
+          </div>
+          <div className="ssc-last-check-meds">
+            {lastMeds.slice(0, 4).map((med, idx) => (
+              <span key={idx} className="ssc-med-pill">
+                {typeof med === 'string' ? med : (med?.name || med?.rxnorm_name || '')}
+              </span>
+            ))}
+            {lastMeds.length > 4 && (
+              <span className="ssc-med-pill ssc-med-pill--more">+{lastMeds.length - 4} more</span>
+            )}
+          </div>
+          {lastIntCount !== null && (
+            <p className="ssc-last-check-note">
+              {lastIntCount === 0
+                ? 'No interactions were identified in this check.'
+                : `${lastIntCount} interaction${lastIntCount !== 1 ? 's' : ''} identified — view history for details.`}
+            </p>
+          )}
+        </div>
+      )}
+
+      {!lastCheck && (
+        <p className="ssc-no-history-note">
+          No previous safety checks found. Run your first check below.
+        </p>
+      )}
 
       <div className="safety-action-row">
         <Button

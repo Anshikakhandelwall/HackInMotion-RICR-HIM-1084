@@ -5,7 +5,7 @@ import Button from '../../components/common/Button';
 import { useLanguage } from '../../context/LanguageContext';
 import './History.css';
 
-export const History = ({ onNavigate }) => {
+export const History = ({ onNavigate, currentUser }) => {
   const { t } = useLanguage();
   const [historyRecords, setHistoryRecords] = useState(() => getHistory());
   const [selectedRecordId, setSelectedRecordId] = useState(null);
@@ -35,9 +35,10 @@ export const History = ({ onNavigate }) => {
     const selectedRecord = historyRecords.find((record) => record.id === selectedRecordId);
     if (selectedRecord) {
       return (
-        <HistoryDetails 
-          record={selectedRecord} 
-          onBack={() => setSelectedRecordId(null)} 
+        <HistoryDetails
+          record={selectedRecord}
+          onBack={() => setSelectedRecordId(null)}
+          currentUser={currentUser}
         />
       );
     }

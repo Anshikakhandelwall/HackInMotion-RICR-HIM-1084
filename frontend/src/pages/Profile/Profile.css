@@ -212,6 +212,29 @@
   color: var(--color-primary);
 }
 
+/* Allergy pills — warm amber tint */
+.profile-allergy-pill {
+  background-color: #FFF8F0;
+  border-color: rgba(217, 119, 6, 0.3);
+  color: #B45309;
+}
+
+/* Field helper text */
+.profile-field-hint {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  margin-top: 0.2rem;
+}
+
+.profile-field-optional {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  margin-left: 0.2rem;
+}
+
 /* --- COMMIT 11, 12, 13: EDIT MODE, VALIDATION & SAVE STYLES --- */
 .profile-edit-form {
   display: flex;

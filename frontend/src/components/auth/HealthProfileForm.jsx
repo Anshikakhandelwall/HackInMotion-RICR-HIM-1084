@@ -16,6 +16,8 @@ export const HealthProfileForm = ({ onSuccess }) => {
   const { t } = useLanguage();
   const [age, setAge] = useState('');
   const [medicalConditions, setMedicalConditions] = useState('');
+  const [knownAllergies, setKnownAllergies] = useState([]);
+  const [allergyInput, setAllergyInput] = useState('');
   const [regularMedicines, setRegularMedicines] = useState([]);
   const [medicineInput, setMedicineInput] = useState('');
 
@@ -75,6 +77,28 @@ export const HealthProfileForm = ({ onSuccess }) => {
       setRegularMedicines([]);
       setMedicineInput('');
     }
+  };
+
+  // Allergy chip handlers
+  const handleAddAllergy = () => {
+    const trimmed = allergyInput.trim();
+    if (!trimmed) return;
+    const exists = knownAllergies.some((a) => a.toLowerCase() === trimmed.toLowerCase());
+    if (!exists) {
+      setKnownAllergies((prev) => [...prev, trimmed]);
+    }
+    setAllergyInput('');
+  };
+
+  const handleAllergyKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddAllergy();
+    }
+  };
+
+  const handleRemoveAllergy = (indexToRemove) => {
+    setKnownAllergies((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
   const handleAgeChange = (e) => {
@@ -141,6 +165,7 @@ export const HealthProfileForm = ({ onSuccess }) => {
       const result = await createProfile({
         age: Number(age),
         medicalConditions: medicalConditions.trim(),
+        knownAllergies: knownAllergies.join(', '),
         regularMedicines: isNoneActive ? [] : regularMedicines,
       });
 
@@ -213,6 +238,54 @@ export const HealthProfileForm = ({ onSuccess }) => {
           <p className="field-hint-text">
             {t('conditionsHintText')}
           </p>
+        </div>
+
+        {/* Field 3: Known Allergies (always shown, optional) */}
+        <div className="conditional-medicines-section">
+          <label className="section-label" htmlFor="allergyInputField">
+            Known Allergies <span style={{ fontWeight: 400, color: 'var(--color-text-secondary)' }}>(optional)</span>
+          </label>
+          <p className="field-hint-text" style={{ marginBottom: '0.35rem' }}>
+            Add any known drug, food, or substance allergies. This helps MediGuard check for allergy conflicts.
+          </p>
+
+          <div className="medicine-input-row">
+            <input
+              id="allergyInputField"
+              type="text"
+              className="medicine-input-field"
+              placeholder="e.g. Penicillin, Sulfa, Aspirin"
+              value={allergyInput}
+              onChange={(e) => setAllergyInput(e.target.value)}
+              onKeyDown={handleAllergyKeyDown}
+            />
+            <button
+              type="button"
+              className="add-medicine-btn"
+              onClick={handleAddAllergy}
+              disabled={!allergyInput.trim()}
+            >
+              Add
+            </button>
+          </div>
+
+          {knownAllergies.length > 0 && (
+            <div className="medicine-chips-wrapper">
+              {knownAllergies.map((allergen, idx) => (
+                <span key={`${allergen}-${idx}`} className="medicine-chip allergy-chip">
+                  <span className="chip-text">{allergen}</span>
+                  <button
+                    type="button"
+                    className="chip-remove-btn"
+                    onClick={() => handleRemoveAllergy(idx)}
+                    aria-label={`Remove allergy ${allergen}`}
+                  >
+                    &times;
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Conditional Field: Regular Medicines (Hidden when conditions === NONE) */}

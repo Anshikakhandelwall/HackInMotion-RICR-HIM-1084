@@ -72,3 +72,87 @@
 .safety-action-row {
   margin-top: 0.5rem;
 }
+
+/* ── Last check panel ────────────────────────────────────────────────────── */
+
+.ssc-last-check-panel {
+  background: var(--color-bg-subtle, #F7F8FA);
+  border: 1px solid var(--color-border-subtle, var(--color-border-default));
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.9rem;
+  margin-bottom: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ssc-last-check-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  color: var(--color-text-secondary);
+}
+
+.ssc-last-check-label {
+  font-size: 0.775rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+}
+
+.ssc-last-check-date {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.ssc-last-check-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 20px;
+  padding: 0.15rem 0.55rem;
+}
+
+.ssc-status--safe {
+  background: var(--color-success-bg, #F0FDF4);
+  color: #1A6E42;
+  border: 1px solid rgba(45, 138, 86, 0.2);
+}
+
+.ssc-status--attention {
+  background: #FFF8F0;
+  color: #D97706;
+  border: 1px solid rgba(217, 119, 6, 0.2);
+}
+
+.ssc-last-check-meds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.ssc-med-pill {
+  font-size: 0.775rem;
+  background: var(--color-bg-card, #fff);
+  border: 1px solid var(--color-border-default);
+  border-radius: 20px;
+  padding: 0.15rem 0.6rem;
+  color: var(--color-text-primary);
+}
+
+.ssc-med-pill--more {
+  color: var(--color-text-secondary);
+}
+
+.ssc-last-check-note {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.ssc-no-history-note {
+  font-size: 0.8375rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.5rem;
+}

@@ -229,23 +229,25 @@ export const SafetyCheck = ({ currentUser, onNavigate, onViewDetails, onResultsR
         setInteractions(allCards);
         setPhase('results');
 
-        // Navigate to the full Results page if the handler is provided
-        if (onResultsReady) {
-          onResultsReady(res, allSelected, meta);
-          return;
-        }
-
+        // Always save history regardless of navigation path
         const medNames = allSelected.map(getMedName);
         saveHistoryRecord({
-          id: `check-${Date.now()}`,
+          id: meta.checkId || `check-${Date.now()}`,
           date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
           time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+          timestamp: meta.timestamp || Date.now(),
           medicinesCount: medNames.length,
           interactionsCount: allCards.length,
           status: allCards.length > 0 ? 'Attention Required' : 'Safe',
           medicines: medNames,
           interactions: allCards,
         });
+
+        // Navigate to the full Results page if the handler is provided
+        if (onResultsReady) {
+          onResultsReady(res, allSelected, meta);
+          return;
+        }
       } else {
         setPhase('error');
       }
