@@ -16,6 +16,11 @@ class PatientProfileSerializer(serializers.ModelSerializer):
         allow_blank=True,
         default='',
     )
+    knownAllergies = serializers.CharField(
+        source='known_allergies',
+        allow_blank=True,
+        default='',
+    )
     regularMedicines = serializers.JSONField(
         source='regular_medicines',
         default=list,
@@ -30,6 +35,7 @@ class PatientProfileSerializer(serializers.ModelSerializer):
         fields = [
             'age',
             'medicalConditions',
+            'knownAllergies',
             'regularMedicines',
             'profileCompleted',
             'created_at',
@@ -69,6 +75,11 @@ class PatientProfileSerializer(serializers.ModelSerializer):
             return ''
         return value.strip()
 
+    def validate_knownAllergies(self, value):
+        if value is None:
+            return ''
+        return value.strip()
+
     # ── Save helpers ──────────────────────────────────────────────────────────
 
     def update(self, instance, validated_data):
@@ -79,6 +90,9 @@ class PatientProfileSerializer(serializers.ModelSerializer):
         instance.age = validated_data.get('age', instance.age)
         instance.medical_conditions = validated_data.get(
             'medical_conditions', instance.medical_conditions
+        )
+        instance.known_allergies = validated_data.get(
+            'known_allergies', instance.known_allergies
         )
         instance.regular_medicines = validated_data.get(
             'regular_medicines', instance.regular_medicines

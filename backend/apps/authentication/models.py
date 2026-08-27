@@ -11,6 +11,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     age = models.IntegerField(null=True, blank=True)
     medical_conditions = models.TextField(blank=True, default='')
+    known_allergies = models.TextField(blank=True, default='')
     regular_medicines = models.JSONField(default=list, blank=True)
     profile_completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

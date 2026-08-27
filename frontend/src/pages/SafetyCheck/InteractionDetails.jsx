@@ -48,14 +48,28 @@ const getSeverityConfig = (severity) => {
 };
 
 export const InteractionDetails = ({ interaction, onBack }) => {
-  const displayInteraction = interaction || {
-    drugA: 'naproxen',
-    drugB: 'warfarin',
-    severity: 'Major',
-    description: 'Potential major interaction identified between naproxen and warfarin.',
-    evidenceA: null,
-    evidenceB: null,
-  };
+  if (!interaction) {
+    return (
+      <div className="interaction-details-page-container">
+        <div className="back-navigation-container">
+          <button className="back-link-btn" onClick={onBack}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+            Back to Results
+          </button>
+        </div>
+        <div className="interaction-details-card" style={{ textAlign: 'center', padding: '3rem 2rem' }}>
+          <p style={{ fontSize: '1rem', color: 'var(--color-text-secondary)' }}>
+            No interaction selected. Please go back and select an interaction to view details.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const displayInteraction = interaction;
 
   const config = getSeverityConfig(displayInteraction.severity);
 

@@ -195,6 +195,21 @@
   background-color: rgba(166, 61, 53, 0.15);
 }
 
+/* Allergy chip — distinct warm-amber tint vs medicine chips */
+.allergy-chip {
+  background-color: #FFF8F0;
+  border-color: rgba(217, 119, 6, 0.3);
+  color: #B45309;
+}
+
+.allergy-chip .chip-remove-btn {
+  color: #B45309;
+}
+
+.allergy-chip .chip-remove-btn:hover {
+  background-color: rgba(180, 83, 9, 0.12);
+}
+
 .confirm-onboarding-btn {
   margin-top: 0.5rem;
   background-color: var(--color-primary);

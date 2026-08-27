@@ -24,16 +24,20 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
   const [safetyError, setSafetyError] = useState(null);
 
   // ── Recent checks (from local history service) ─────────────────────────
-  const [recentChecks, setRecentChecks] = useState(() => {
-    const saved = getHistory();
-    return saved.slice(0, 3).map((item) => ({
+  const buildRecentChecks = (saved) =>
+    saved.slice(0, 3).map((item) => ({
       id: item.id,
       date: item.date,
+      time: item.time,
       medicineCount: item.medicinesCount,
       status: item.status,
       variant: item.status === 'Safe' ? 'safe' : 'attention',
+      medicines: item.medicines || [],
+      interactionsCount: item.interactionsCount || 0,
     }));
-  });
+
+  const [recentChecks, setRecentChecks] = useState(() => buildRecentChecks(getHistory()));
+  const lastCheck = recentChecks[0] || null;
 
   const fetchDashboardOverview = async () => {
     setSafetyLoading(true);
@@ -58,15 +62,7 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
 
     const handleHistoryUpdate = () => {
       const saved = getHistory();
-      setRecentChecks(
-        saved.slice(0, 3).map((item) => ({
-          id: item.id,
-          date: item.date,
-          medicineCount: item.medicinesCount,
-          status: item.status,
-          variant: item.status === 'Safe' ? 'safe' : 'attention',
-        }))
-      );
+      setRecentChecks(buildRecentChecks(saved));
     };
 
     window.addEventListener('mediguard:history_updated', handleHistoryUpdate);
@@ -113,7 +109,11 @@ export const Dashboard = ({ currentUser, onNavigate }) => {
             </div>
           )}
           {!safetyLoading && !safetyError && safetySummary && (
-            <SafetyStatusCard data={safetySummary} onNavigate={onNavigate} />
+            <SafetyStatusCard
+              data={safetySummary}
+              lastCheck={lastCheck}
+              onNavigate={onNavigate}
+            />
           )}
         </div>
       </section>

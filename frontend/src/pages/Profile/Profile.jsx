@@ -41,6 +41,11 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
       ? rawConditions.trim()
       : t('noneLabel');
 
+  const rawAllergies = profile?.knownAllergies || profile?.known_allergies || '';
+  const allergyList = typeof rawAllergies === 'string'
+    ? rawAllergies.split(/[,;]/).map((a) => a.trim()).filter(Boolean)
+    : [];
+
   const rawMeds = profile?.regularMedicines || profile?.regular_medicines || [];
   const regularMedicinesList = Array.isArray(rawMeds)
     ? rawMeds.filter((m) => m && String(m).trim().length > 0 && String(m).trim().toUpperCase() !== 'NONE')
@@ -53,7 +58,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
   const [saveError, setSaveError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [errors, setErrors] = useState({});
-  const [formData, setFormData] = useState({ medicalHistory: '', regularMedicines: '' });
+  const [formData, setFormData] = useState({ medicalHistory: '', knownAllergies: '', regularMedicines: '' });
 
   // ── Load profile on mount if not provided ──────────────────────────────────
   useEffect(() => {
@@ -83,6 +88,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
   const handleEnterEditMode = () => {
     setFormData({
       medicalHistory: medicalHistory !== t('noneLabel') ? medicalHistory : '',
+      knownAllergies: allergyList.join(', '),
       regularMedicines: hasMedicines ? regularMedicinesList.join(', ') : '',
     });
     setErrors({});
@@ -129,6 +135,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
     try {
       const updateData = {
         medicalConditions: formData.medicalHistory,
+        knownAllergies: formData.knownAllergies.trim(),
         regularMedicines: parsedMedicines,
       };
 
@@ -262,6 +269,26 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
                 )}
               </div>
 
+              {/* Known Allergies — editable */}
+              <div className="profile-field-box edit-box full-width-field">
+                <label htmlFor="profileAllergies" className="profile-field-label">
+                  Known Allergies
+                  <span className="profile-field-optional"> (optional)</span>
+                </label>
+                <input
+                  id="profileAllergies"
+                  type="text"
+                  className="profile-edit-input"
+                  disabled={isSaving}
+                  placeholder="e.g. Penicillin, Sulfa, Aspirin (comma-separated)"
+                  value={formData.knownAllergies}
+                  onChange={(e) => handleInputChange('knownAllergies', e.target.value)}
+                />
+                <span className="profile-field-hint">
+                  Separate multiple allergies with commas. Used for personalised allergy safety checks.
+                </span>
+              </div>
+
               {/* Regular Medicines — editable */}
               <div className={`profile-field-box edit-box full-width-field ${errors.regularMedicines ? 'has-error' : ''}`}>
                 <label htmlFor="profileMeds" className="profile-field-label">
@@ -314,6 +341,21 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
               <span className="profile-field-label">{t('medicalHistoryLabel')}</span>
               <span className="profile-field-value text-wrap">{medicalHistory}</span>
             </div>
+            <div className="profile-field-box full-width-field">
+              <span className="profile-field-label">Known Allergies</span>
+              {allergyList.length > 0 ? (
+                <div className="regular-medicines-tags">
+                  {allergyList.map((allergen, idx) => (
+                    <span key={`profile-allergy-tag-${idx}`} className="profile-med-pill profile-allergy-pill">
+                      {allergen}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <span className="profile-field-value empty-text">None recorded</span>
+              )}
+            </div>
+
             <div className="profile-field-box full-width-field">
               <span className="profile-field-label">{t('regularMedicinesLabel')}</span>
               {hasMedicines ? (

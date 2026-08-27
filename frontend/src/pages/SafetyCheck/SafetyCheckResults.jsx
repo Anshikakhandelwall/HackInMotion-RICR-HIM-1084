@@ -208,18 +208,156 @@ const ClinicalDetails = ({ interaction }) => {
   );
 };
 
+// ── AllergySection — all four states ─────────────────────────────────────────
+/**
+ * Renders the dedicated "Allergy Safety Check" section.
+ *
+ * allergyList      – string[] of allergen names from user profile (may be empty)
+ * allergyConflicts – array of { medicine, allergen, explanation?, recommendation?, source? }
+ *                    computed by the parent (may be empty even when allergyList has entries)
+ * onNavigateToProfile – (path: string) => void — routes to profile page
+ */
+const AllergySection = ({ allergyList, allergyConflicts, onNavigateToProfile }) => {
+  const noAllergiesRecorded = allergyList.length === 0;
+  const hasConflict         = allergyList.length > 0 && allergyConflicts.length > 0;
+  const noConflict          = allergyList.length > 0 && allergyConflicts.length === 0;
+
+  return (
+    <div className="scr-card scr-allergy-section" aria-labelledby="allergy-section-title">
+
+      {/* Section header */}
+      <div className="scr-allergy-section-header">
+        <div className="scr-allergy-section-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M18.364 5.636A9 9 0 1 0 5.636 18.364 9 9 0 0 0 18.364 5.636z" />
+            <path d="M12 8v4m0 4h.01" />
+          </svg>
+        </div>
+        <div>
+          <h2 className="scr-section-title" id="allergy-section-title" style={{ marginBottom: '0.1rem' }}>
+            Allergy Safety Check
+          </h2>
+          <p className="scr-allergy-subtitle">
+            Your selected medicines were checked against the allergies recorded in your profile.
+          </p>
+        </div>
+      </div>
+
+      {/* ── Case 1: Potential conflict ──────────────────────────────────────── */}
+      {hasConflict && (
+        <div className="scr-allergy-conflict-card" role="alert" aria-live="assertive">
+          <div className="scr-allergy-conflict-badge">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+              <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            Potential Allergy Conflict
+          </div>
+
+          {allergyConflicts.map(({ medicine, allergen, explanation, recommendation, source }, idx) => (
+            <div key={idx} className="scr-allergy-conflict-detail">
+              <div className="scr-allergy-conflict-row">
+                <span className="scr-allergy-conflict-field">Medicine</span>
+                <span className="scr-allergy-conflict-value">
+                  <span className="scr-drug-pill">{medicine}</span>
+                </span>
+              </div>
+              <div className="scr-allergy-conflict-row">
+                <span className="scr-allergy-conflict-field">Recorded Allergy</span>
+                <span className="scr-allergy-conflict-value">{allergen}</span>
+              </div>
+              {explanation && (
+                <div className="scr-allergy-conflict-block">
+                  <p className="scr-allergy-conflict-block-label">What this means</p>
+                  <p className="scr-allergy-conflict-block-text">{explanation}</p>
+                </div>
+              )}
+              <div className="scr-allergy-conflict-block">
+                <p className="scr-allergy-conflict-block-label">What to do</p>
+                <p className="scr-allergy-conflict-block-text">
+                  {recommendation ||
+                    'Consult your doctor or pharmacist before taking this medicine. Do not stop or change your medication without professional guidance.'}
+                </p>
+              </div>
+              {source && (
+                <p className="scr-allergy-conflict-source">Source: <strong>{source}</strong></p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── Case 2: No conflict identified ─────────────────────────────────── */}
+      {noConflict && (
+        <div className="scr-allergy-result-card scr-allergy-result-card--ok">
+          <div className="scr-allergy-result-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </div>
+          <div>
+            <p className="scr-allergy-result-title">No Recorded Allergy Conflict Identified</p>
+            <p className="scr-allergy-result-text">
+              No potential conflict was identified between the selected medicines and the allergies
+              currently recorded in your profile based on the available information.
+              Reviewed medicines against {allergyList.length} recorded{' '}
+              {allergyList.length === 1 ? 'allergy' : 'allergies'}:{' '}
+              {allergyList.join(', ')}.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ── Case 4: No allergies in profile ────────────────────────────────── */}
+      {noAllergiesRecorded && (
+        <div className="scr-allergy-result-card scr-allergy-result-card--empty">
+          <div className="scr-allergy-result-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          </div>
+          <div className="scr-allergy-empty-body">
+            <p className="scr-allergy-result-title">No Allergies Recorded</p>
+            <p className="scr-allergy-result-text">
+              You have not added any known allergies to your profile. Add your allergies to enable
+              personalised allergy checks.
+            </p>
+            {onNavigateToProfile && (
+              <button
+                type="button"
+                className="scr-allergy-profile-btn"
+                onClick={() => onNavigateToProfile('/profile')}
+              >
+                Update Profile
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      <p className="scr-allergy-footnote">
+        Allergy results are based on the allergy information recorded in your MediGuard profile and
+        available drug information.
+      </p>
+    </div>
+  );
+};
+
 // ── Main component ─────────────────────────────────────────────────────────────
 
 /**
  * SafetyCheckResults
  *
  * Props:
- *   result       – the raw object returned by checkInteractions / checkPersonalizedSafety
- *   medicines    – array of medicine objects/strings that were checked
- *   checkMeta    – { checkId, timestamp }
- *   currentUser  – user profile object
- *   onBack       – () => void  — back to Safety Check page
- *   onDownload   – () => void  — optional report download handler
+ *   result              – the raw object returned by checkInteractions / checkPersonalizedSafety
+ *   medicines           – array of medicine objects/strings that were checked
+ *   checkMeta           – { checkId, timestamp }
+ *   currentUser         – user profile object
+ *   onBack              – () => void  — back to Safety Check page
+ *   onDownload          – () => void  — optional report download handler
+ *   onNavigateToProfile – (path: string) => void — navigate to Profile page
  */
 export const SafetyCheckResults = ({
   result,
@@ -228,6 +366,7 @@ export const SafetyCheckResults = ({
   currentUser,
   onBack,
   onDownload,
+  onNavigateToProfile,
   onViewInteraction: _onViewInteraction,
 }) => {
   const issueRefs = useRef({});
@@ -291,18 +430,47 @@ export const SafetyCheckResults = ({
   ).length;
   const noInteractionCount = Math.max(0, pairsChecked - interactionsFound);
 
-  // ── Allergy conflict (not yet in backend — show based on allergies + meds) ─
+  // ── Allergy data from profile ─────────────────────────────────────────────
+  // Backend serializer returns camelCase `knownAllergies`.
+  // Also accept snake_case `known_allergies` as a fallback for older sessions.
   const allergies = (
-    currentUser?.allergies ||
+    currentUser?.knownAllergies ||
     currentUser?.known_allergies ||
+    currentUser?.allergies ||
     ''
   );
   const allergyList = typeof allergies === 'string'
     ? allergies.split(/[,;]/).map((a) => a.trim().toLowerCase()).filter(Boolean)
+    : Array.isArray(allergies)
+    ? allergies.map((a) => String(a).trim().toLowerCase()).filter(Boolean)
     : [];
-  const allergyConflicts = allergyList.filter((a) =>
-    medDisplayList.some((m) => getMedName(m).toLowerCase().includes(a))
-  );
+
+  // Build rich conflict objects: { medicine, allergen }
+  // If the backend later returns allergy_conflicts we use those; otherwise we
+  // do a client-side name-inclusion check as a best-effort fallback.
+  const backendAllergyConflicts = isPersonalized
+    ? (result?.allergy_conflicts || [])
+    : [];
+
+  const allergyConflicts = backendAllergyConflicts.length > 0
+    ? backendAllergyConflicts.map((c) => ({
+        medicine:       c.medicine_name || c.medicine || '',
+        allergen:       c.allergen       || c.allergy   || '',
+        explanation:    c.explanation    || c.description || '',
+        recommendation: c.recommendation || '',
+        source:         c.source         || 'MediGuard Profile',
+      }))
+    : allergyList.flatMap((allergen) =>
+        medDisplayList
+          .filter((m) => getMedName(m).toLowerCase().includes(allergen))
+          .map((m) => ({
+            medicine:       getMedName(m),
+            allergen:       allergen,
+            explanation:    `${getMedName(m)} may be related to your recorded allergy to "${allergen}".`,
+            recommendation: 'Consult your doctor or pharmacist before taking this medicine. Do not change your medication without professional guidance.',
+            source:         'MediGuard Profile',
+          }))
+      );
 
   // ── Risk distribution segments ─────────────────────────────────────────────
   const distSegments = [
@@ -759,7 +927,7 @@ export const SafetyCheckResults = ({
         )}
       </div>
 
-      {/* ── BOTTOM TWO-COLUMN: Patient Context + Allergy + Help ─────────────── */}
+      {/* ── BOTTOM TWO-COLUMN: Patient Context + Help ───────────────────────── */}
       <div className="scr-two-col">
 
         {/* Patient Safety Context */}
@@ -818,39 +986,6 @@ export const SafetyCheckResults = ({
             </ul>
           )}
 
-          {/* Allergy Check */}
-          <h3 className="scr-subsection-title">Allergy Check</h3>
-          {allergyList.length === 0 ? (
-            <div className="scr-allergy-state scr-allergy-state--unknown">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
-              </svg>
-              Allergy information was not available in your profile. Allergy screening could not be completed.
-            </div>
-          ) : allergyConflicts.length > 0 ? (
-            <div className="scr-allergy-state scr-allergy-state--conflict" role="alert">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-                <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
-              <div>
-                <strong>Possible allergy conflict identified.</strong>
-                <p>
-                  One or more checked medicines may conflict with your recorded allergies ({allergyConflicts.join(', ')}).
-                  Consult your doctor or pharmacist before taking these medicines.
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="scr-allergy-state scr-allergy-state--ok">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="m9 12 2 2 4-4" />
-              </svg>
-              No known allergy conflict identified based on the allergies recorded in your profile.
-              Reviewed medicines against {allergyList.length} recorded {allergyList.length === 1 ? 'allergy' : 'allergies'}.
-            </div>
-          )}
         </div>
 
         {/* What to Do Next */}
@@ -896,6 +1031,13 @@ export const SafetyCheckResults = ({
           </ul>
         </div>
       </div>
+
+      {/* ── ALLERGY SAFETY CHECK ─────────────────────────────────────────────── */}
+      <AllergySection
+        allergyList={allergyList}
+        allergyConflicts={allergyConflicts}
+        onNavigateToProfile={onNavigateToProfile}
+      />
 
       {/* ── DISCLAIMER ─────────────────────────────────────────────────────── */}
       <div className="scr-disclaimer" role="note">

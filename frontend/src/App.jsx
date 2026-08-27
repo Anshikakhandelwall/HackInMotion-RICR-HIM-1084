@@ -295,6 +295,7 @@ function App() {
                     checkMeta={safetyCheckMeta}
                     currentUser={fullUser}
                     onBack={() => setDashboardRoute('/safety-check')}
+                    onNavigateToProfile={(path) => setDashboardRoute(path || '/profile')}
                     onViewInteraction={(interaction) => {
                       setSelectedInteraction(interaction);
                       setDashboardRoute('/interaction-details');
@@ -310,7 +311,7 @@ function App() {
                 )}
 
                 {dashboardRoute === '/history' && (
-                  <History onNavigate={handleDashboardNavigate} />
+                  <History onNavigate={handleDashboardNavigate} currentUser={fullUser} />
                 )}
 
                 {dashboardRoute === '/profile' && (
