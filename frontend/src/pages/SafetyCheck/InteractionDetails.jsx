@@ -48,6 +48,42 @@ const getSeverityConfig = (severity) => {
 };
 
 export const InteractionDetails = ({ interaction, onBack }) => {
+  // ── All hooks MUST be at the top level — before any conditional return ────
+  const [aiData, setAiData] = useState(null);
+  const [loadingAi, setLoadingAi] = useState(true);
+  const [_aiError, setAiError] = useState(null);
+
+  useEffect(() => {
+    if (!interaction) return; // guard inside the effect, not outside
+
+    let cancelled = false;
+    setLoadingAi(true);
+    setAiError(null);
+
+    const drugA = interaction.drugA || interaction.medicine_a?.name || '';
+    const drugB = interaction.drugB || interaction.medicine_b?.name || '';
+    const severity = interaction.severity || 'Major';
+
+    getInteractionExplanation(drugA, drugB, severity)
+      .then((res) => {
+        if (!cancelled && res && res.success && res.ai_explanation) {
+          setAiData(res.ai_explanation);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          console.warn('AI explanation fetch failed, using fallback:', err);
+          setAiError('Could not load live AI guidance.');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingAi(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [interaction?.drugA, interaction?.drugB, interaction?.severity]);
+
+  // ── Conditional return AFTER all hooks ────────────────────────────────────
   if (!interaction) {
     return (
       <div className="interaction-details-page-container">
@@ -70,40 +106,7 @@ export const InteractionDetails = ({ interaction, onBack }) => {
   }
 
   const displayInteraction = interaction;
-
   const config = getSeverityConfig(displayInteraction.severity);
-
-  const [aiData, setAiData] = useState(null);
-  const [loadingAi, setLoadingAi] = useState(true);
-  const [aiError, setAiError] = useState(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoadingAi(true);
-    setAiError(null);
-
-    const drugA = displayInteraction.drugA || displayInteraction.medicine_a?.name || 'naproxen';
-    const drugB = displayInteraction.drugB || displayInteraction.medicine_b?.name || 'warfarin';
-    const severity = displayInteraction.severity || 'Major';
-
-    getInteractionExplanation(drugA, drugB, severity)
-      .then((res) => {
-        if (!cancelled && res && res.success && res.ai_explanation) {
-          setAiData(res.ai_explanation);
-        }
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          console.warn('AI explanation fetch failed, using fallback:', err);
-          setAiError('Could not load live AI guidance.');
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setLoadingAi(false);
-      });
-
-    return () => { cancelled = true; };
-  }, [displayInteraction.drugA, displayInteraction.drugB, displayInteraction.severity]);
 
   // Collect openFDA supporting evidence entries for this interaction pair.
   const fdaEvidenceEntries = [displayInteraction.evidenceA, displayInteraction.evidenceB].filter(Boolean);
