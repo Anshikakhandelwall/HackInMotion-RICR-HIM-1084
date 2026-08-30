@@ -59,6 +59,17 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 # Disable automatic slash redirect to preserve POST methods during proxying
 APPEND_SLASH = False
 
+# CSRF — trust Vercel frontend and any configured origins
+# DRF API views use token auth (Bearer JWT), not session/cookie auth,
+# so CSRF is not required for API endpoints. We exempt it via
+# SessionAuthentication not being the sole auth class, but Django's
+# CsrfViewMiddleware still fires for non-safe methods.
+_csrf_origins = os.getenv(
+    'CSRF_TRUSTED_ORIGINS',
+    'https://hack-in-motion-ricr-him-1084.vercel.app,http://localhost:5173,http://127.0.0.1:5173',
+)
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_origins.split(',') if o.strip()]
+
 # Production Security Headers
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
