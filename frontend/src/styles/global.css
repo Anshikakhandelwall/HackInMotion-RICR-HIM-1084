@@ -1,7 +1,7 @@
 :root {
   --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   
-  /* Color Palette - Warm Ivory & Brick Red Theme (Strictly NO BLUE/DARK THEME) */
+  /* Color Palette - Warm Ivory & Brick Red Theme */
   --color-bg-main: #FFFDFC;
   --color-bg-surface: #FFFFFF;
   --color-bg-subtle: #FCF5F3;
@@ -43,6 +43,46 @@
   
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s ease;
+}
+
+/* ── Dark mode overrides ─────────────────────────────────────────────────
+   Applied when ThemeContext sets data-theme="dark" on <html>.
+   The brick-red accent is kept; only background, surface, text, and border
+   tokens are overridden to keep the brand identity intact.
+   ─────────────────────────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --color-bg-main: #1A1614;
+  --color-bg-surface: #221E1C;
+  --color-bg-subtle: #2A2422;
+  --color-bg-card: #221E1C;
+  --color-bg-input: #2A2422;
+  --color-bg-input-focus: #302A28;
+  --color-bg-decorative: #3A2826;
+
+  --color-text-primary: #F2EDE9;
+  --color-text-secondary: #A89890;
+  --color-text-muted: #6E5E58;
+
+  /* Accent stays the same brick-red — visible on dark bg */
+  --color-primary: #C95A50;
+  --color-primary-hover: #B54A40;
+  --color-primary-light: #3A1E1C;
+  --color-accent-rose: #C95A50;
+  --color-accent-dusty: #D98278;
+  --color-accent-peach: #B56660;
+
+  --color-border-subtle: #2E2624;
+  --color-border-default: #3A3230;
+  --color-border-focus: #C95A50;
+
+  --color-error: #E05558;
+  --color-error-bg: #2A1A1A;
+  --color-success: #3AAD6A;
+  --color-success-bg: #162318;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 12px 36px -8px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--color-border-default);
+  --shadow-focus: 0 0 0 3px rgba(201, 90, 80, 0.28);
 }
 
 * {
