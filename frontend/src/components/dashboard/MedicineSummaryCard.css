@@ -74,7 +74,7 @@
 .skeleton-item {
   height: 48px;
   border-radius: var(--radius-md);
-  background: linear-gradient(90deg, #FCF5F3 25%, #F5ECE9 50%, #FCF5F3 75%);
+  background: linear-gradient(90deg, var(--color-bg-subtle) 25%, var(--color-border-subtle) 50%, var(--color-bg-subtle) 75%);
   background-size: 200% 100%;
   animation: skeleton-pulse 1.5s infinite;
 }
@@ -104,7 +104,7 @@
   padding: 0.45rem 1rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-error);
-  background-color: #FFFFFF;
+  background-color: var(--color-bg-card);
   color: var(--color-error);
   font-size: 0.825rem;
   font-weight: 600;

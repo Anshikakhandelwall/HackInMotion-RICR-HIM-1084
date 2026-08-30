@@ -1,0 +1,33 @@
+import django.db.models.deletion
+from django.conf import settings
+from django.db import migrations, models
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('authentication', '0002_userprofile_known_allergies'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name='UserSettings',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('notify_safety_alerts', models.BooleanField(default=True)),
+                ('notify_medicine_reminders', models.BooleanField(default=True)),
+                ('notify_safety_check_updates', models.BooleanField(default=True)),
+                ('notify_email', models.BooleanField(default=False)),
+                ('language', models.CharField(default='en', max_length=10)),
+                ('default_safety_check', models.BooleanField(default=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('user', models.OneToOneField(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='settings',
+                    to=settings.AUTH_USER_MODEL,
+                )),
+            ],
+        ),
+    ]

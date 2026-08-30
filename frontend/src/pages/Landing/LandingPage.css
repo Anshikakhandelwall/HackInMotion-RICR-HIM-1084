@@ -18,7 +18,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.1rem 3rem;
-  background-color: rgba(255, 253, 252, 0.92);
+  background-color: color-mix(in srgb, var(--color-bg-main) 92%, transparent);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--color-border-subtle, #F0E6E3);
 }

@@ -23,6 +23,7 @@ urlpatterns = [
     path('', lambda request: JsonResponse({'status': 'healthy', 'service': 'MediGuard Backend REST API', 'version': '1.0.0'})),
     path('admin/', admin.site.urls),
     path('api/auth/', include('apps.authentication.urls')),
+    path('api/settings/', include('apps.authentication.settings_urls')),
     path('api/profile/', include('apps.patients.urls')),
     path('api/medicines/', include('apps.medicines.urls')),
     path('api/interactions/', include('apps.interactions.urls')),

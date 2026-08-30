@@ -205,7 +205,7 @@
   align-items: center;
   padding: 0.35rem 0.85rem;
   border-radius: 20px;
-  background-color: #FFFFFF;
+  background-color: var(--color-bg-card);
   border: 1px solid var(--color-border-default);
   font-size: 0.875rem;
   font-weight: 600;
@@ -243,7 +243,7 @@
 }
 
 .edit-box {
-  background-color: #FFFFFF;
+  background-color: var(--color-bg-surface);
   border-color: var(--color-border-default);
 }
 
@@ -273,7 +273,7 @@
 .profile-edit-input:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(166, 61, 53, 0.12);
-  background-color: #FFFFFF;
+  background-color: var(--color-bg-input-focus);
 }
 
 .profile-edit-input:disabled,
@@ -299,7 +299,7 @@
 .profile-edit-textarea:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(166, 61, 53, 0.12);
-  background-color: #FFFFFF;
+  background-color: var(--color-bg-input-focus);
 }
 
 .profile-edit-input.input-error,
