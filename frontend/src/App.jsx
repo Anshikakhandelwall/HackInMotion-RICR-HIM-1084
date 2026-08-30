@@ -185,7 +185,7 @@ function App() {
   // ── Loading screen (Supabase check + profile check) ────────────────────
   if (loading || currentView === 'loading') {
     return (
-      <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFDFC' }}>
+      <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-bg-main)' }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ width: '36px', height: '36px', border: '3px solid #E2E8F0', borderTopColor: '#0E7490', borderRadius: '50%', margin: '0 auto 1rem', animation: 'spin 0.8s linear infinite' }}></div>
           <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
@@ -242,7 +242,7 @@ function App() {
 
         {/* 6. Dashboard Application Shell — authenticated, profile complete */}
         {currentView === 'dashboard_shell' && (
-          <div style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: '#FFFDFC' }}>
+          <div style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: 'var(--color-bg-main)' }}>
             <Sidebar
               activeRoute={dashboardRoute}
               onNavigate={handleDashboardNavigate}
