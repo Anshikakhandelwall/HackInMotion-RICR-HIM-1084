@@ -661,10 +661,23 @@ class SupabaseAuthentication(BaseAuthentication):
         # Create Django identity if necessary
         # ---------------------------------------------------------------
 
+        # ---------------------------------------------------------------
+        # Extract user_metadata fields from the payload (Supabase embeds
+        # full_name and role here when set during signUp).
+        # ---------------------------------------------------------------
+        user_metadata = payload.get("user_metadata") or {}
+        full_name = (
+            user_metadata.get("full_name")
+            or user_metadata.get("name")
+            or ""
+        ).strip()
+        role_from_meta = (user_metadata.get("role") or "patient").lower().strip()
+
         user, created = User.objects.get_or_create(
             username=sub,
             defaults={
                 "email": email,
+                "first_name": full_name,
                 "is_active": True,
             },
         )
@@ -687,14 +700,52 @@ class SupabaseAuthentication(BaseAuthentication):
             user.email = email
 
         # ---------------------------------------------------------------
+        # Sync role from Supabase user_metadata into UserProfile.
+        # Only overwrite if the profile role is still the default 'patient'
+        # and the JWT carries a non-default role, to avoid clobbering
+        # deliberate role changes made later.
+        # ---------------------------------------------------------------
+        from apps.authentication.models import UserProfile, VALID_ROLES  # local import avoids circular
+
+        profile, profile_created = UserProfile.objects.get_or_create(user=user)
+
+        save_fields = []
+
+        # Sync role from JWT user_metadata (only upgrade from default patient)
+        if role_from_meta in VALID_ROLES and profile.role == "patient" and role_from_meta != "patient":
+            profile.role = role_from_meta
+            save_fields.append("role")
+
+        # Caregivers and pharmacists have no patient health data to fill in.
+        # Mark their profile complete immediately so they land on the dashboard,
+        # not on the patient onboarding form.
+        if profile.role in ("caregiver", "pharmacist") and not profile.profile_completed:
+            profile.profile_completed = True
+            save_fields.append("profile_completed")
+        # Re-check after role may have just been set above
+        if role_from_meta in ("caregiver", "pharmacist") and not profile.profile_completed:
+            profile.profile_completed = True
+            if "profile_completed" not in save_fields:
+                save_fields.append("profile_completed")
+
+        if save_fields:
+            profile.save(update_fields=save_fields)
+
+        # Also sync full_name on first creation (or if blank)
+        if full_name and not user.first_name:
+            User.objects.filter(pk=user.pk).update(first_name=full_name)
+            user.first_name = full_name
+
+        # ---------------------------------------------------------------
         # Logging
         # ---------------------------------------------------------------
 
         if created:
             logger.info(
                 "SupabaseAuthentication: created Django user "
-                "for Supabase sub=%s",
+                "for Supabase sub=%s (role=%s)",
                 sub,
+                role_from_meta,
             )
 
         return user
