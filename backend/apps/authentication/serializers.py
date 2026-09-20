@@ -4,11 +4,12 @@ from rest_framework import serializers
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Serializer for user profile representation including health onboarding state."""
+    """Serializer for user profile representation including health onboarding state and role."""
     full_name = serializers.SerializerMethodField()
     fullName = serializers.SerializerMethodField()
     profile_completed = serializers.SerializerMethodField()
     profileCompleted = serializers.SerializerMethodField()
+    role = serializers.SerializerMethodField()
     age = serializers.SerializerMethodField()
     medical_conditions = serializers.SerializerMethodField()
     medicalConditions = serializers.SerializerMethodField()
@@ -24,6 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
             'fullName',
             'profile_completed',
             'profileCompleted',
+            'role',
             'age',
             'medical_conditions',
             'medicalConditions',
@@ -46,6 +48,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_profileCompleted(self, obj):
         return self.get_profile_completed(obj)
+
+    def get_role(self, obj):
+        if hasattr(obj, 'profile'):
+            return obj.profile.role
+        return 'patient'
 
     def get_age(self, obj):
         if hasattr(obj, 'profile'):
@@ -70,11 +77,12 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.Serializer):
-    """Serializer for user registration."""
+    """Serializer for user registration — including role selection."""
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True, min_length=8)
     fullName = serializers.CharField(required=False, allow_blank=True, write_only=True)
     full_name = serializers.CharField(required=False, allow_blank=True, write_only=True)
+    role = serializers.CharField(required=False, default='patient', write_only=True)
 
     def validate_email(self, value):
         normalized_email = value.lower().strip()
@@ -91,10 +99,19 @@ class RegisterSerializer(serializers.Serializer):
             raise serializers.ValidationError("Password must contain at least one letter.")
         return value
 
+    def validate_role(self, value):
+        from apps.authentication.models import VALID_ROLES
+        role = value.lower().strip() if value else 'patient'
+        if role not in VALID_ROLES:
+            raise serializers.ValidationError(f"Invalid role. Must be one of: {', '.join(VALID_ROLES)}.")
+        return role
+
     def create(self, validated_data):
+        from apps.authentication.models import UserProfile
         email = validated_data['email']
         password = validated_data['password']
         name = validated_data.get('fullName') or validated_data.get('full_name') or ''
+        role = validated_data.get('role', 'patient')
 
         user = User.objects.create_user(
             username=email,
@@ -102,6 +119,10 @@ class RegisterSerializer(serializers.Serializer):
             password=password,
             first_name=name.strip()
         )
+        # The post_save signal already created a UserProfile — just set the role
+        profile = user.profile
+        profile.role = role
+        profile.save(update_fields=['role'])
         return user
 
 

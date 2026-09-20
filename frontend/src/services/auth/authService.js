@@ -16,7 +16,12 @@ export const signUp = async (email, password, metadata = {}) => {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { full_name: metadata.full_name || metadata.fullName || '' } },
+    options: {
+      data: {
+        full_name: metadata.full_name || metadata.fullName || '',
+        role: metadata.role || 'patient',
+      },
+    },
   });
   return { data, error };
 };

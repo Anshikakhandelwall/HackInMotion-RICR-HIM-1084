@@ -1,0 +1,270 @@
+/* ── PatientCaregiverAccess page ──────────────────────────────────────── */
+
+.pca-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1000px;
+}
+
+/* Header */
+.pca-header { display: flex; flex-direction: column; gap: 0.3rem; }
+
+.pca-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.pca-subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  max-width: 600px;
+  line-height: 1.55;
+}
+
+/* Alerts */
+.pca-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.pca-alert--success {
+  background: var(--color-success-bg, #f0fdf4);
+  color: var(--color-success, #166534);
+  border: 1px solid var(--color-success-border, #bbf7d0);
+}
+
+.pca-alert--error {
+  background: var(--color-error-bg, #fef2f2);
+  color: var(--color-error, #991b1b);
+  border: 1px solid var(--color-error-border, #fecaca);
+}
+
+/* Body layout */
+.pca-body {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 700px) {
+  .pca-body { grid-template-columns: 1fr; }
+}
+
+/* Section titles */
+.pca-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 0.85rem;
+}
+
+/* Connected caregivers list */
+.pca-list-section {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+}
+
+.pca-loading {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  padding: 1rem 0;
+}
+
+.pca-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.pca-empty svg { opacity: 0.35; }
+
+.pca-empty-hint {
+  font-size: 0.82rem;
+  color: var(--color-text-muted, var(--color-text-secondary));
+  max-width: 280px;
+}
+
+.pca-caregiver-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.pca-caregiver-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 1rem;
+  background: var(--color-bg-subtle, var(--color-bg-main));
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.pca-caregiver-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--color-primary-bg, #e0f2fe);
+  color: var(--color-primary, #0e7490);
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pca-caregiver-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.pca-caregiver-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pca-caregiver-email {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pca-caregiver-since {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  opacity: 0.75;
+}
+
+.pca-revoke-btn {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-error, #991b1b);
+  background: transparent;
+  border: 1.5px solid var(--color-error, #991b1b);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s;
+  flex-shrink: 0;
+}
+
+.pca-revoke-btn:hover:not(:disabled) {
+  background: var(--color-error-bg, #fef2f2);
+}
+
+.pca-revoke-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Approve form section */
+.pca-approve-section {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.pca-approve-desc {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.pca-approve-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pca-code-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.pca-code-input {
+  padding: 0.55rem 0.85rem;
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-main);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  width: 100%;
+}
+
+.pca-code-input:focus {
+  outline: none;
+  border-color: var(--color-primary, #0e7490);
+  box-shadow: 0 0 0 2px var(--color-primary-ring, rgba(14, 116, 144, 0.2));
+}
+
+.pca-approve-btn {
+  padding: 0.55rem 1rem;
+  background: var(--color-primary, #0e7490);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.12s;
+}
+
+.pca-approve-btn:hover:not(:disabled) { opacity: 0.88; }
+
+.pca-approve-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Privacy note */
+.pca-privacy-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.pca-privacy-note svg { flex-shrink: 0; margin-top: 2px; opacity: 0.7; }

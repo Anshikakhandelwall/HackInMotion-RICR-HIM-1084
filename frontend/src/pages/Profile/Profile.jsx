@@ -14,6 +14,8 @@ import './Profile.css';
 export const Profile = ({ currentUser, onUpdateProfile }) => {
   const { t } = useLanguage();
   const { user: authUser } = useAuth();
+  const role = currentUser?.role || 'patient';
+  const isPatient = role === 'patient';
 
   // ── Remote profile state ──────────────────────────────────────────────────
   const [profile, setProfile] = useState(currentUser || null);
@@ -112,7 +114,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!(formData.medicalHistory || '').trim()) {
+    if (isPatient && !(formData.medicalHistory || '').trim()) {
       newErrors.medicalHistory = t('medHistoryRequired');
     }
     setErrors(newErrors);
@@ -189,7 +191,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
           <p className="profile-page-subtitle">{t('profileSubtitle')}</p>
         </div>
 
-        {!isEditing && (
+        {!isEditing && isPatient && (
           <Button
             type="button"
             variant="primary"
@@ -214,7 +216,7 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
         </div>
 
         {/* Profile Information Section */}
-        {isEditing ? (
+        {isEditing && isPatient ? (
           <form className="profile-edit-form" onSubmit={handleSaveChanges} noValidate>
             {saveError && (
               <div className="save-failure-banner">
@@ -334,42 +336,51 @@ export const Profile = ({ currentUser, onUpdateProfile }) => {
               <span className="profile-field-value">{userEmail}</span>
             </div>
             <div className="profile-field-box">
-              <span className="profile-field-label">{t('ageLabel')}</span>
-              <span className="profile-field-value">{age}</span>
-            </div>
-            <div className="profile-field-box">
-              <span className="profile-field-label">{t('medicalHistoryLabel')}</span>
-              <span className="profile-field-value text-wrap">{medicalHistory}</span>
-            </div>
-            <div className="profile-field-box full-width-field">
-              <span className="profile-field-label">Known Allergies</span>
-              {allergyList.length > 0 ? (
-                <div className="regular-medicines-tags">
-                  {allergyList.map((allergen, idx) => (
-                    <span key={`profile-allergy-tag-${idx}`} className="profile-med-pill profile-allergy-pill">
-                      {allergen}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <span className="profile-field-value empty-text">None recorded</span>
-              )}
+              <span className="profile-field-label">Role</span>
+              <span className="profile-field-value" style={{ textTransform: 'capitalize' }}>{role}</span>
             </div>
 
-            <div className="profile-field-box full-width-field">
-              <span className="profile-field-label">{t('regularMedicinesLabel')}</span>
-              {hasMedicines ? (
-                <div className="regular-medicines-tags">
-                  {regularMedicinesList.map((med, idx) => (
-                    <span key={`profile-med-tag-${idx}`} className="profile-med-pill">
-                      {med}
-                    </span>
-                  ))}
+            {/* Health data — patients only */}
+            {isPatient && (
+              <>
+                <div className="profile-field-box">
+                  <span className="profile-field-label">{t('ageLabel')}</span>
+                  <span className="profile-field-value">{age}</span>
                 </div>
-              ) : (
-                <span className="profile-field-value empty-text">{t('noneLabel')}</span>
-              )}
-            </div>
+                <div className="profile-field-box">
+                  <span className="profile-field-label">{t('medicalHistoryLabel')}</span>
+                  <span className="profile-field-value text-wrap">{medicalHistory}</span>
+                </div>
+                <div className="profile-field-box full-width-field">
+                  <span className="profile-field-label">Known Allergies</span>
+                  {allergyList.length > 0 ? (
+                    <div className="regular-medicines-tags">
+                      {allergyList.map((allergen, idx) => (
+                        <span key={`profile-allergy-tag-${idx}`} className="profile-med-pill profile-allergy-pill">
+                          {allergen}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className="profile-field-value empty-text">None recorded</span>
+                  )}
+                </div>
+                <div className="profile-field-box full-width-field">
+                  <span className="profile-field-label">{t('regularMedicinesLabel')}</span>
+                  {hasMedicines ? (
+                    <div className="regular-medicines-tags">
+                      {regularMedicinesList.map((med, idx) => (
+                        <span key={`profile-med-tag-${idx}`} className="profile-med-pill">
+                          {med}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className="profile-field-value empty-text">{t('noneLabel')}</span>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>

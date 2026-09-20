@@ -29,10 +29,13 @@ class PatientProfileSerializer(serializers.ModelSerializer):
         source='profile_completed',
         read_only=True,
     )
+    # role is readable and writable so the profile endpoint can set it
+    role = serializers.CharField(required=False, default='patient')
 
     class Meta:
         model = UserProfile
         fields = [
+            'role',
             'age',
             'medicalConditions',
             'knownAllergies',
@@ -44,6 +47,14 @@ class PatientProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ['profileCompleted', 'created_at', 'updated_at']
 
     # ── Validation ────────────────────────────────────────────────────────────
+
+    def validate_role(self, value):
+        from apps.authentication.models import VALID_ROLES
+        role = (value or 'patient').lower().strip()
+        if role not in VALID_ROLES:
+            from rest_framework import serializers as _s
+            raise _s.ValidationError(f"Invalid role. Must be one of: {', '.join(VALID_ROLES)}.")
+        return role
 
     def validate_age(self, value):
         if value is not None:
@@ -87,6 +98,7 @@ class PatientProfileSerializer(serializers.ModelSerializer):
         PATCH semantics: only update fields that were explicitly provided.
         Mark profile_completed = True once the minimum required fields are set.
         """
+        instance.role = validated_data.get('role', instance.role)
         instance.age = validated_data.get('age', instance.age)
         instance.medical_conditions = validated_data.get(
             'medical_conditions', instance.medical_conditions
@@ -98,8 +110,11 @@ class PatientProfileSerializer(serializers.ModelSerializer):
             'regular_medicines', instance.regular_medicines
         )
 
-        # Profile is complete once age and medical_conditions are filled.
-        if instance.age and instance.medical_conditions.strip():
+        # Caregivers and pharmacists don't have patient health data — mark complete immediately.
+        if instance.role in ('caregiver', 'pharmacist'):
+            instance.profile_completed = True
+        # Patients: complete once age and medical_conditions are filled.
+        elif instance.age and instance.medical_conditions.strip():
             instance.profile_completed = True
 
         instance.save()
