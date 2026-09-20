@@ -8,10 +8,12 @@ import './Sidebar.css';
  * Navigation sidebar and mobile drawer panel for the MediGuard application shell.
  * Connects existing navigation items to React Router sub-routes and closes mobile menu on selection.
  */
-export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOpen, onClose }) => {
+export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOpen, onClose, currentUser }) => {
   const { t } = useLanguage();
+  const role = currentUser?.role || 'patient';
 
-  const mainNavItems = [
+  // ── Nav items per role ──────────────────────────────────────────────────
+  const patientNavItems = [
     {
       id: '/dashboard',
       label: t('dashboard'),
@@ -55,6 +57,18 @@ export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOp
       ),
     },
     {
+      id: '/patient-caregivers',
+      label: 'My Caregivers',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      ),
+    },
+    {
       id: '/profile',
       label: t('profile'),
       icon: (
@@ -65,6 +79,103 @@ export const Sidebar = ({ activeRoute = '/dashboard', onNavigate, onLogout, isOp
       ),
     },
   ];
+
+  const caregiverNavItems = [
+    {
+      id: '/dashboard',
+      label: t('dashboard'),
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="3" width="7" height="7" rx="2" />
+          <rect x="14" y="3" width="7" height="7" rx="2" />
+          <rect x="14" y="14" width="7" height="7" rx="2" />
+          <rect x="3" y="14" width="7" height="7" rx="2" />
+        </svg>
+      ),
+    },
+    {
+      id: '/caregiver',
+      label: 'My Patients',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      ),
+    },
+    {
+      id: '/safety-check',
+      label: t('safetyCheck'),
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+      ),
+    },
+    {
+      id: '/history',
+      label: t('history'),
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 8v4l3 3" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+      ),
+    },
+  ];
+
+  const pharmacistNavItems = [
+    {
+      id: '/dashboard',
+      label: 'Workspace',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="3" width="7" height="7" rx="2" />
+          <rect x="14" y="3" width="7" height="7" rx="2" />
+          <rect x="14" y="14" width="7" height="7" rx="2" />
+          <rect x="3" y="14" width="7" height="7" rx="2" />
+        </svg>
+      ),
+    },
+    {
+      id: '/safety-check',
+      label: t('safetyCheck'),
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+      ),
+    },
+    {
+      id: '/pharmacist',
+      label: 'Cases',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" />
+          <path d="m8.5 8.5 7 7" />
+        </svg>
+      ),
+    },
+    {
+      id: '/history',
+      label: t('history'),
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 8v4l3 3" />
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+      ),
+    },
+  ];
+
+  const mainNavItems =
+    role === 'caregiver' ? caregiverNavItems :
+    role === 'pharmacist' ? pharmacistNavItems :
+    patientNavItems;
 
   const secondaryNavItems = [
     {
