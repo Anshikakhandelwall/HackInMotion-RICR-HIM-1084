@@ -15,6 +15,9 @@ import SafetyCheckResults from './pages/SafetyCheck/SafetyCheckResults';
 import ForgotPasswordPage from './pages/ForgotPassword/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPassword/ResetPasswordPage';
 import LandingPage from './pages/Landing/LandingPage';
+import CaregiverWorkspace from './pages/CaregiverWorkspace/CaregiverWorkspace';
+import PharmacistWorkspace from './pages/PharmacistWorkspace/PharmacistWorkspace';
+import PatientCaregiverAccess from './pages/PatientCaregiverAccess/PatientCaregiverAccess';
 import { NotificationProvider } from './context/NotificationContext';
 import useAuth from './hooks/useAuth';
 import { getProfile, updateProfile } from './services/profile/profileService';
@@ -25,14 +28,15 @@ function App() {
   const [userProfile, setUserProfile] = useState(null);
 
   // ── View state machine ──────────────────────────────────────────────────
-  // 'loading'          — waiting for Supabase session OR profile check
-  // 'landing'          — public landing page
-  // 'login'            — unauthenticated
-  // 'signup'           — unauthenticated
-  // 'forgot_password'  — unauthenticated, forgot-password form
-  // 'reset_password'   — RECOVERY session active, new-password form
-  // 'onboarding'       — authenticated, profile incomplete
-  // 'dashboard_shell'  — authenticated, profile complete
+  // 'loading'               — waiting for Supabase session OR profile check
+  // 'landing'               — public landing page
+  // 'login'                 — unauthenticated
+  // 'signup'                — unauthenticated
+  // 'forgot_password'       — unauthenticated, forgot-password form
+  // 'reset_password'        — RECOVERY session active, new-password form
+  // 'onboarding'            — patient: profile incomplete
+  // 'caregiver_onboarding'  — caregiver: profile incomplete (just accept terms / set name)
+  // 'dashboard_shell'       — authenticated, profile complete (all roles)
   const [currentView, setCurrentView] = useState('loading');
   const [dashboardRoute, setDashboardRoute] = useState('/dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -94,7 +98,18 @@ function App() {
         const profileData = res?.profile || null;
         setUserProfile(profileData);
         const completed = profileData?.profileCompleted === true;
-        setCurrentView(completed ? 'dashboard_shell' : 'onboarding');
+        const role = profileData?.role || 'patient';
+
+        if (completed) {
+          setCurrentView('dashboard_shell');
+        } else if (role === 'pharmacist') {
+          // Pharmacists go straight to dashboard — no health data onboarding needed
+          setCurrentView('dashboard_shell');
+        } else if (role === 'caregiver') {
+          setCurrentView('caregiver_onboarding');
+        } else {
+          setCurrentView('onboarding');
+        }
       })
       .catch(() => {
         // 404 (no profile yet) or network error → send to onboarding
@@ -235,9 +250,21 @@ function App() {
           <ResetPasswordPage onSuccess={handleResetPasswordSuccess} />
         )}
 
-        {/* 5. Health Profile Onboarding — authenticated, profile incomplete */}
+        {/* 5. Health Profile Onboarding — authenticated patient, profile incomplete */}
         {currentView === 'onboarding' && (
           <HealthProfilePage onSuccess={handleOnboardingSuccess} />
+        )}
+
+        {/* 5b. Caregiver Onboarding — just complete the profile flag */}
+        {currentView === 'caregiver_onboarding' && (
+          <CaregiverWorkspace
+            currentUser={fullUser}
+            onOnboardingComplete={() => {
+              setDashboardRoute('/dashboard');
+              setCurrentView('dashboard_shell');
+            }}
+            isOnboarding
+          />
         )}
 
         {/* 6. Dashboard Application Shell — authenticated, profile complete */}
@@ -249,6 +276,7 @@ function App() {
               onLogout={handleLogout}
               isOpen={isMobileMenuOpen}
               onClose={() => setIsMobileMenuOpen(false)}
+              currentUser={fullUser}
             />
 
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
@@ -259,7 +287,15 @@ function App() {
               />
 
               <main style={{ flex: 1, padding: '1.75rem 2rem', overflowY: 'auto' }}>
-                {dashboardRoute === '/dashboard' && (
+                {dashboardRoute === '/dashboard' && fullUser?.role === 'caregiver' && (
+                  <CaregiverWorkspace currentUser={fullUser} onNavigate={handleDashboardNavigate} />
+                )}
+
+                {dashboardRoute === '/dashboard' && fullUser?.role === 'pharmacist' && (
+                  <PharmacistWorkspace currentUser={fullUser} onNavigate={handleDashboardNavigate} />
+                )}
+
+                {dashboardRoute === '/dashboard' && (!fullUser?.role || fullUser?.role === 'patient') && (
                   <Dashboard currentUser={fullUser} onNavigate={handleDashboardNavigate} />
                 )}
 
@@ -320,6 +356,18 @@ function App() {
 
                 {dashboardRoute === '/settings' && (
                   <SettingsPage />
+                )}
+
+                {dashboardRoute === '/caregiver' && (
+                  <CaregiverWorkspace currentUser={fullUser} onNavigate={handleDashboardNavigate} />
+                )}
+
+                {dashboardRoute === '/patient-caregivers' && (
+                  <PatientCaregiverAccess />
+                )}
+
+                {dashboardRoute === '/pharmacist' && (
+                  <PharmacistWorkspace currentUser={fullUser} onNavigate={handleDashboardNavigate} />
                 )}
               </main>
             </div>
