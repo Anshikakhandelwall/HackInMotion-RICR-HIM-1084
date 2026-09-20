@@ -28,8 +28,47 @@ const friendlySignupError = (msg = '') => {
  * Upon successful registration, navigates to the Login page.
  * DO NOT navigate directly to Health Profile from registration.
  */
+const ROLE_OPTIONS = [
+  {
+    value: 'patient',
+    label: 'Patient',
+    desc: 'Manage my own medications',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    ),
+  },
+  {
+    value: 'caregiver',
+    label: 'Caregiver',
+    desc: 'Manage medicines for others',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    ),
+  },
+  {
+    value: 'pharmacist',
+    label: 'Pharmacist',
+    desc: 'Screen prescriptions & cases',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" />
+        <path d="m8.5 8.5 7 7" />
+      </svg>
+    ),
+  },
+];
+
 export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
   const { t } = useLanguage();
+  const [selectedRole, setSelectedRole] = useState('patient');
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -164,6 +203,7 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
 
     const { data, error } = await signUp(formData.email, formData.password, {
       full_name: formData.fullName,
+      role: selectedRole,
     });
 
     setIsSubmitting(false);
@@ -365,6 +405,26 @@ export const RegisterForm = ({ onNavigateToLogin, onSuccess }) => {
             </button>
           }
         />
+
+        {/* Role Selection */}
+        <div className="role-selection">
+          <span className="role-selection-label">I am a</span>
+          <div className="role-cards">
+            {ROLE_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                className={`role-card${selectedRole === opt.value ? ' role-card--selected' : ''}`}
+                onClick={() => setSelectedRole(opt.value)}
+                aria-pressed={selectedRole === opt.value}
+              >
+                <span className="role-card-icon">{opt.icon}</span>
+                <span className="role-card-name">{opt.label}</span>
+                <span className="role-card-desc">{opt.desc}</span>
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Submit Button */}
         <Button
